@@ -1,0 +1,197 @@
+	.version 1.4
+	.target sm_10, map_f64_to_f32
+	// compiled with C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.0\bin/../open64/lib//be.exe
+	// nvopencc 4.1 built on 2014-03-14
+
+	//-----------------------------------------------------------
+	// Compiling C:/Users/FEDER_~1/AppData/Local/Temp/tmpxft_00003794_00000000-12_vectorAdd.cpp3.i (C:/Users/FEDER_~1/AppData/Local/Temp/ccBI#.a41048)
+	//-----------------------------------------------------------
+
+	//-----------------------------------------------------------
+	// Options:
+	//-----------------------------------------------------------
+	//  Target:ptx, ISA:sm_10, Endian:little, Pointer Size:32
+	//  -O0	(Optimization level)
+	//  -g2	(Debug level)
+	//  -m2	(Report advisories)
+	//-----------------------------------------------------------
+
+	.file	1	"C:/Users/FEDER_~1/AppData/Local/Temp/tmpxft_00003794_00000000-11_vectorAdd.cudafe2.gpu"
+	.file	2	"C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\crtdefs.h"
+	.file	3	"C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v6.0/include\crt/device_runtime.h"
+	.file	4	"C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v6.0/include\host_defines.h"
+	.file	5	"C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v6.0/include\builtin_types.h"
+	.file	6	"c:\program files\nvidia gpu computing toolkit\cuda\v6.0\include\device_types.h"
+	.file	7	"c:\program files\nvidia gpu computing toolkit\cuda\v6.0\include\host_defines.h"
+	.file	8	"c:\program files\nvidia gpu computing toolkit\cuda\v6.0\include\driver_types.h"
+	.file	9	"c:\program files\nvidia gpu computing toolkit\cuda\v6.0\include\surface_types.h"
+	.file	10	"c:\program files\nvidia gpu computing toolkit\cuda\v6.0\include\texture_types.h"
+	.file	11	"c:\program files\nvidia gpu computing toolkit\cuda\v6.0\include\vector_types.h"
+	.file	12	"c:\program files\nvidia gpu computing toolkit\cuda\v6.0\include\builtin_types.h"
+	.file	13	"C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v6.0/include\device_launch_parameters.h"
+	.file	14	"c:\program files\nvidia gpu computing toolkit\cuda\v6.0\include\crt\storage_class.h"
+	.file	15	"S:/Repositories/Corvalius-git/cudalearn.git/CudaLearn.Kernels/vectorAdd.cu"
+	.file	16	"C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v6.0/include\common_functions.h"
+	.file	17	"c:\program files\nvidia gpu computing toolkit\cuda\v6.0\include\math_functions.h"
+	.file	18	"c:\program files\nvidia gpu computing toolkit\cuda\v6.0\include\math_constants.h"
+	.file	19	"c:\program files\nvidia gpu computing toolkit\cuda\v6.0\include\device_functions.h"
+	.file	20	"c:\program files\nvidia gpu computing toolkit\cuda\v6.0\include\sm_11_atomic_functions.h"
+	.file	21	"c:\program files\nvidia gpu computing toolkit\cuda\v6.0\include\sm_12_atomic_functions.h"
+	.file	22	"c:\program files\nvidia gpu computing toolkit\cuda\v6.0\include\sm_13_double_functions.h"
+	.file	23	"c:\program files\nvidia gpu computing toolkit\cuda\v6.0\include\sm_20_atomic_functions.h"
+	.file	24	"c:\program files\nvidia gpu computing toolkit\cuda\v6.0\include\sm_32_atomic_functions.h"
+	.file	25	"c:\program files\nvidia gpu computing toolkit\cuda\v6.0\include\sm_35_atomic_functions.h"
+	.file	26	"c:\program files\nvidia gpu computing toolkit\cuda\v6.0\include\sm_20_intrinsics.h"
+	.file	27	"c:\program files\nvidia gpu computing toolkit\cuda\v6.0\include\sm_30_intrinsics.h"
+	.file	28	"c:\program files\nvidia gpu computing toolkit\cuda\v6.0\include\sm_32_intrinsics.h"
+	.file	29	"c:\program files\nvidia gpu computing toolkit\cuda\v6.0\include\sm_35_intrinsics.h"
+	.file	30	"c:\program files\nvidia gpu computing toolkit\cuda\v6.0\include\surface_functions.h"
+	.file	31	"c:\program files\nvidia gpu computing toolkit\cuda\v6.0\include\texture_fetch_functions.h"
+	.file	32	"c:\program files\nvidia gpu computing toolkit\cuda\v6.0\include\texture_indirect_functions.h"
+	.file	33	"c:\program files\nvidia gpu computing toolkit\cuda\v6.0\include\surface_indirect_functions.h"
+	.file	34	"c:\program files\nvidia gpu computing toolkit\cuda\v6.0\include\math_functions_dbl_ptx1.h"
+
+
+	.entry vectorAdd (
+		.param .u32 __cudaparm_vectorAdd_A,
+		.param .u32 __cudaparm_vectorAdd_B,
+		.param .u32 __cudaparm_vectorAdd_C,
+		.param .s32 __cudaparm_vectorAdd_numElements)
+	{
+	.reg .u32 %r<22>;
+	.reg .f32 %f<5>;
+	.reg .pred %p<3>;
+	.loc	15	33	0
+$LDWbegin_vectorAdd:
+$LDWbeginblock_327_1:
+	.loc	15	35	0
+	cvt.u32.u16 	%r1, %tid.x;
+	cvt.u32.u16 	%r2, %ctaid.x;
+	cvt.u32.u16 	%r3, %ntid.x;
+	mul.lo.u32 	%r4, %r2, %r3;
+	add.u32 	%r5, %r1, %r4;
+	mov.s32 	%r6, %r5;
+	.loc	15	37	0
+	ld.param.s32 	%r7, [__cudaparm_vectorAdd_numElements];
+	mov.s32 	%r8, %r6;
+	setp.le.s32 	%p1, %r7, %r8;
+	@%p1 bra 	$L_0_1282;
+	.loc	15	39	0
+	ld.param.u32 	%r9, [__cudaparm_vectorAdd_A];
+	mov.s32 	%r10, %r6;
+	mul.lo.u32 	%r11, %r10, 4;
+	add.u32 	%r12, %r9, %r11;
+	ld.global.f32 	%f1, [%r12+0];
+	ld.param.u32 	%r13, [__cudaparm_vectorAdd_B];
+	mov.s32 	%r14, %r6;
+	mul.lo.u32 	%r15, %r14, 4;
+	add.u32 	%r16, %r13, %r15;
+	ld.global.f32 	%f2, [%r16+0];
+	add.f32 	%f3, %f1, %f2;
+	ld.param.u32 	%r17, [__cudaparm_vectorAdd_C];
+	mov.s32 	%r18, %r6;
+	mul.lo.u32 	%r19, %r18, 4;
+	add.u32 	%r20, %r17, %r19;
+	st.global.f32 	[%r20+0], %f3;
+$L_0_1282:
+$LDWendblock_327_1:
+	.loc	15	41	0
+	exit;
+$LDWend_vectorAdd:
+	} // vectorAdd
+
+ 	@@DWARF .section .debug_info, "",@progbits
+	@@DWARF .byte	0x02, 0x03, 0x00, 0x00, 0x02, 0x00
+	@@DWARF .4byte	.debug_abbrev
+	@@DWARF .4byte	0x3a430104, 0x6573552f, 0x462f7372, 0x52454445
+	@@DWARF .4byte	0x2f317e5f, 0x44707041, 0x2f617461, 0x61636f4c
+	@@DWARF .4byte	0x65542f6c, 0x742f706d, 0x6678706d, 0x30305f74
+	@@DWARF .4byte	0x37333030, 0x305f3439, 0x30303030, 0x2d303030
+	@@DWARF .4byte	0x765f3231, 0x6f746365, 0x64644172, 0x7070632e
+	@@DWARF .4byte	0x00692e33, 0x525c3a53, 0x736f7065, 0x726f7469
+	@@DWARF .4byte	0x5c736569, 0x76726f43, 0x75696c61, 0x69672d73
+	@@DWARF .4byte	0x75635c74, 0x656c6164, 0x2e6e7261, 0x5c746967
+	@@DWARF .4byte	0x61647543, 0x7261654c, 0x654b2e6e, 0x6c656e72
+	@@DWARF .byte	0x73, 0x00, 0x6f, 0x70, 0x65, 0x6e, 0x63, 0x63
+	@@DWARF .byte	0x20, 0x34, 0x2e, 0x31, 0x00, 0x04, 0x00
+	@@DWARF .4byte	.debug_line
+	@@DWARF .4byte	0x736e7502, 0x656e6769, 0x6e692064, 0x04070074
+	@@DWARF .4byte	0x75bd0b03, 0x33746e69, 0x00f30c00, 0x0b040000
+	@@DWARF .4byte	0xad0078be, 0x02000000, 0x04010023, 0x0079be0b
+	@@DWARF .4byte	0x000000ad, 0x01042302, 0x7abe0b04, 0x0000ad00
+	@@DWARF .4byte	0x08230200, 0x0b050001, 0x6975017d, 0x0033746e
+	@@DWARF .4byte	0x000000bd, 0x0000f306, 0xa00b0700, 0x6d696401
+	@@DWARF .4byte	0x3f0c0033, 0x08000001, 0x7801a10b, 0x0000ad00
+	@@DWARF .4byte	0x00230200, 0xa10b0801, 0xad007901, 0x02000000
+	@@DWARF .4byte	0x08010423, 0x7a01a10b, 0x0000ad00, 0x08230200
+	@@DWARF .4byte	0x0b050001, 0x696401a9, 0x0600336d, 0x06000001
+	@@DWARF .4byte	0x0000013f, 0x746e6902, 0x06040500, 0x00000151
+	@@DWARF .4byte	0x6f6c6602, 0x04007461, 0x015d0904, 0x05040000
+	@@DWARF .4byte	0x756f6402, 0x00656c62, 0x6c020804, 0x20676e6f
+	@@DWARF .4byte	0x676e6f6c, 0x736e7520, 0x656e6769, 0x6e692064
+	@@DWARF .4byte	0x08070074, 0x6e6f6c02, 0x6f6c2067, 0x6920676e
+	@@DWARF .4byte	0x0500746e, 0x6f6c0208, 0x6920676e, 0x0500746e
+	@@DWARF .4byte	0x68630204, 0x06007261, 0x01ae0601, 0xb6090000
+	@@DWARF .4byte	0x04000001, 0x100b0705, 0x6f6c6601, 0x00327461
+	@@DWARF .4byte	0x0001ef08, 0x100b0800, 0x5d007801, 0x02000001
+	@@DWARF .4byte	0x08010023, 0x7901100b, 0x00015d00, 0x04230200
+	@@DWARF .4byte	0x0b050001, 0x6c660189, 0x3274616f, 0x0001c200
+	@@DWARF .4byte	0x00ad0a00, 0x0b010000, 0x0b000002, 0x110c0005
+	@@DWARF .4byte	0x5f5f24c9, 0x61647563, 0x695f7472, 0x69706f32
+	@@DWARF .4byte	0xfe00665f, 0x03000001, 0x6975b50b, 0x0032746e
+	@@DWARF .4byte	0x00024d08, 0xb50b0400, 0x00ad0078, 0x23020000
+	@@DWARF .4byte	0x0b040100, 0xad0079b5, 0x02000000, 0x00010423
+	@@DWARF .4byte	0x017b0b05, 0x746e6975, 0x02240032, 0x51090000
+	@@DWARF .4byte	0x04000001, 0x00ad0a05, 0x6f010000, 0x0b000002
+	@@DWARF .4byte	0x5d0d0006, 0x06000001, 0x0000015d, 0x00016d09
+	@@DWARF .4byte	0x09050400, 0x00000274, 0x0f0e0504, 0x63657621
+	@@DWARF .byte	0x74, 0x6f, 0x72, 0x41, 0x64, 0x64, 0x00, 0x01
+	@@DWARF .byte	0x01, 0x00
+	@@DWARF .4byte	$LDWbegin_vectorAdd
+	@@DWARF .4byte	$LDWend_vectorAdd
+	@@DWARF .byte	0x0f, 0x0f, 0x21, 0x41, 0x00, 0x80, 0x02, 0x00
+	@@DWARF .byte	0x00, 0x05, 0x03
+	@@DWARF .4byte	__cudaparm_vectorAdd_A
+	@@DWARF .byte	0x07, 0x0f, 0x0f, 0x21, 0x42, 0x00, 0x80, 0x02
+	@@DWARF .byte	0x00, 0x00, 0x05, 0x03
+	@@DWARF .4byte	__cudaparm_vectorAdd_B
+	@@DWARF .byte	0x07, 0x0f, 0x0f, 0x21, 0x43, 0x00, 0x66, 0x01
+	@@DWARF .byte	0x00, 0x00, 0x05, 0x03
+	@@DWARF .4byte	__cudaparm_vectorAdd_C
+	@@DWARF .4byte	0x210f0f07, 0x456d756e, 0x656d656c, 0x0073746e
+	@@DWARF .byte	0x51, 0x01, 0x00, 0x00, 0x05, 0x03
+	@@DWARF .4byte	__cudaparm_vectorAdd_numElements
+	@@DWARF .byte	0x07, 0x10
+	@@DWARF .4byte	$LDWbeginblock_327_1
+	@@DWARF .4byte	$LDWendblock_327_1
+	@@DWARF .4byte	0x69230f11, 0x00015100, 0xb6900500, 0x020195e4
+	@@DWARF .byte	0x00, 0x00, 0x00, 0x00
+
+ 	@@DWARF .section .debug_pubnames, "",@progbits
+	@@DWARF .byte	0x1c, 0x00, 0x00, 0x00, 0x02, 0x00
+	@@DWARF .4byte	.debug_info
+	@@DWARF .4byte	0x00000306, 0x00000287, 0x74636576, 0x6441726f
+	@@DWARF .byte	0x64, 0x00, 0x00, 0x00, 0x00, 0x00
+
+ 	@@DWARF .section .debug_line, "",@progbits
+	@@DWARF .4byte	0x00000019, 0x00100002, 0x00040000, 0x000a04ff
+	@@DWARF .byte	0x01, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x01
+	@@DWARF .byte	0x00, 0x00, 0x00, 0x01, 0x01
+
+ 	@@DWARF .section .debug_abbrev, "",@progbits
+	@@DWARF .4byte	0x03011101, 0x25081b08, 0x420b1308, 0x0006100b
+	@@DWARF .4byte	0x00240200, 0x0b3e0803, 0x00000b0b, 0x3a011303
+	@@DWARF .4byte	0x030b3b0b, 0x010b0b08, 0x04000013, 0x0b3a000d
+	@@DWARF .4byte	0x08030b3b, 0x0a381349, 0x00000b32, 0x3a001605
+	@@DWARF .4byte	0x03053b0b, 0x00134908, 0x00260600, 0x00001349
+	@@DWARF .4byte	0x3a011307, 0x03053b0b, 0x010b0b08, 0x08000013
+	@@DWARF .4byte	0x0b3a000d, 0x0803053b, 0x0a381349, 0x00000b32
+	@@DWARF .4byte	0x49000f09, 0x330b0b13, 0x0a00000b, 0x13490101
+	@@DWARF .4byte	0x13010c3c, 0x210b0000, 0x000b2f00, 0x00340c00
+	@@DWARF .4byte	0x053b0b3a, 0x13490803, 0x350d0000, 0x00134900
+	@@DWARF .4byte	0x012e0e00, 0x0b3b0b3a, 0x0c3f0803, 0x0a400c27
+	@@DWARF .4byte	0x01120111, 0x050f0000, 0x3b0b3a00, 0x4908030b
+	@@DWARF .4byte	0x330a0213, 0x1000000b, 0x0111010b, 0x00000112
+	@@DWARF .4byte	0x3a003411, 0x030b3b0b, 0x02134908, 0x000b330a
+	@@DWARF .byte	0x00, 0x00, 0x00
+

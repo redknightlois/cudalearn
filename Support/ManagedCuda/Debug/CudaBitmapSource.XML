@@ -1,0 +1,478 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CudaBitmapSource</name>
+    </assembly>
+    <members>
+        <member name="T:ManagedCuda.CudaBitmapSource.CudaBitmapSource">
+            <summary>
+            CudaBitmapSource is more like a proof of concept and work in progress. 
+            I'm not yet satisfied of it's realisation, but it works quiet nice.
+            </summary>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.#ctor(System.Windows.Media.Imaging.BitmapSource)">
+            <summary>
+            
+            </summary>
+            <param name="_source"></param>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.#ctor(System.Int32,System.Int32,System.Double,System.Double,System.Windows.Media.PixelFormat,System.Windows.Media.Imaging.BitmapPalette)">
+            <summary>
+            
+            </summary>
+            <param name="pixelWidth"></param>
+            <param name="pixelHeight"></param>
+            <param name="dpiX"></param>
+            <param name="dpiY"></param>
+            <param name="pixelFormat"></param>
+            <param name="palette"></param>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.Finalize">
+            <summary>
+            For dispose
+            </summary>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.Dispose">
+            <summary>
+            Dispose
+            </summary>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.Dispose(System.Boolean)">
+            <summary>
+            For IDisposable
+            </summary>
+            <param name="fDisposing"></param>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.GetChannelCount(System.Windows.Media.PixelFormat)">
+            <summary>
+            Get the number of color channels for a given pixel format
+            </summary>
+            <param name="pixelFormat"></param>
+            <returns>0 if not supported, #channels otherwise</returns>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.GetChannelWidth(System.Windows.Media.PixelFormat)">
+            <summary>
+            Get the size of one pixel for one channel in bits
+            </summary>
+            <param name="pixelFormat"></param>
+            <returns>0 if not supported, #Bits otherwise</returns>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.GetPixelSize(System.Windows.Media.PixelFormat)">
+            <summary>
+            Returns the size of one pixel in bits
+            </summary>
+            <param name="pixelFormat"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.CheckPixelFormat(System.Windows.Media.PixelFormat)">
+            <summary>
+            Checks if the pixel format is supported by CudaPitchedVariable.
+            </summary>
+            <param name="pixelFormat">Pixelformat to check</param>
+            <returns>True if the pixelformat is supported</returns>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.CloneCore(System.Windows.Freezable)">
+            <summary>
+            
+            </summary>
+            <param name="sourceFreezable"></param>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.CloneCurrentValueCore(System.Windows.Freezable)">
+            <summary>
+            
+            </summary>
+            <param name="sourceFreezable"></param>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.CopyPixels(System.Array,System.Int32,System.Int32)">
+            <summary>
+            Copies the bitmap pixel data into an array of pixels with the specified stride, 
+            starting at the specified offset. (Host only)
+            </summary>
+            <param name="pixels">The destination array.</param>
+            <param name="stride">The stride of the bitmap.</param>
+            <param name="offset">The pixel location where copying starts.</param>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.CopyPixels(System.Windows.Int32Rect,System.Array,System.Int32,System.Int32)">
+            <summary>
+            Copies the bitmap pixel data within the specified rectangle into an array of pixels that has the 
+            specified stride starting at the specified offset. (Host only)
+            </summary>
+            <param name="sourceRect">The source rectangle to copy.An <see cref="P:System.Windows.Int32Rect.Empty"/> value specifies the entire bitmap.</param>
+            <param name="pixels">The destination array.</param>
+            <param name="stride">The stride of the bitmap.</param>
+            <param name="offset">The pixel location where copying starts.</param>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.CopyPixels(System.Windows.Int32Rect,System.IntPtr,System.Int32,System.Int32)">
+            <summary>
+            Copies the bitmap pixel data within the specified rectangle. (Host only)
+            </summary>
+            <param name="sourceRect">The source rectangle to copy.An <see cref="P:System.Windows.Int32Rect.Empty"/> value specifies the entire bitmap.</param>
+            <param name="buffer">A pointer to the buffer.</param>
+            <param name="bufferSize">The size of the buffer.</param>
+            <param name="stride">The stride of the bitmap.</param>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.CreateInstanceCore">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.FreezeCore(System.Boolean)">
+            <summary>
+            
+            </summary>
+            <param name="isChecking"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.GetAsFrozenCore(System.Windows.Freezable)">
+            <summary>
+            
+            </summary>
+            <param name="sourceFreezable"></param>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.GetCurrentValueAsFrozenCore(System.Windows.Freezable)">
+            <summary>
+            
+            </summary>
+            <param name="sourceFreezable"></param>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.OnPropertyChanged(System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+            
+            </summary>
+            <param name="e"></param>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.ShouldSerializeProperty(System.Windows.DependencyProperty)">
+            <summary>
+            
+            </summary>
+            <param name="dp"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.ToString">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.AddDirtyRect(System.Windows.Int32Rect)">
+            <summary>
+            Specifies the area of the bitmap that changed. 
+            </summary>
+            <param name="dirtyRect">An Int32Rect representing the area that changed.Dimensions are in pixels.</param>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.Lock">
+            <summary>
+            Reserves the back buffer for updates.
+            </summary>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.TryLock(System.Windows.Duration)">
+            <summary>
+            Attempts to lock the bitmap, waiting for no longer than the specified length of time. 
+            </summary>
+            <param name="timeout">A <see cref="T:System.Windows.Duration"/> that represents the length of time to wait.A value of 
+            0 returns immediately.A value of <see cref="P:System.Windows.Duration.Forever"/> blocks indefinitely.</param>
+            <returns>true if the lock was acquired; otherwise, false.</returns>
+            <remarks>When a lock is acquired, the behavior of the <see cref="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.TryLock(System.Windows.Duration)"/> method is the same as the <see cref="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.Lock"/> method.</remarks>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.Unlock">
+            <summary>
+            Releases the back buffer to make it available for display. 
+            </summary>
+            <remarks>The Unlock method decrements the lock count.When the lock count reaches 0, 
+            a render pass is requested if the <see cref="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.AddDirtyRect(System.Windows.Int32Rect)"/> method has been called.</remarks>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.WritePixels(System.Windows.Int32Rect,System.Array,System.Int32,System.Int32)">
+            <summary>
+            Updates the pixels in the specified region of the bitmap. (Host only)
+            </summary>
+            <param name="sourceRect">The rectangle of the WriteableBitmap to update.</param>
+            <param name="pixels">The pixel array used to update the bitmap.</param>
+            <param name="stride">The stride of the update region in pixels.</param>
+            <param name="offset">The input buffer offset.</param>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.WritePixels(System.Windows.Int32Rect,System.IntPtr,System.Int32,System.Int32)">
+            <summary>
+            Updates the pixels in the specified region of the bitmap. (Host only)
+            </summary>
+            <param name="sourceRect">The rectangle of the WriteableBitmap to update.</param>
+            <param name="buffer">The input buffer used to update the bitmap.</param>
+            <param name="bufferSize">The size of the input buffer.</param>
+            <param name="stride">The stride of the update region in buffer.</param>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.WritePixels(System.Windows.Int32Rect,System.Array,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Updates the pixels in the specified region of the bitmap. (Host only)
+            </summary>
+            <param name="sourceRect">The rectangle in sourceBuffer to copy.</param>
+            <param name="sourceBuffer">The input buffer used to update the bitmap.</param>
+            <param name="sourceBufferStride">The stride of the input buffer, in bytes.</param>
+            <param name="destinationX">The destination x-coordinate of the left-most pixel in the back buffer.</param>
+            <param name="destinationY">The destination y-coordinate of the top-most pixel in the back buffer.</param>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.WritePixels(System.Windows.Int32Rect,System.IntPtr,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Updates the pixels in the specified region of the bitmap. (Host only)
+            </summary>
+            <param name="sourceRect">The rectangle in sourceBuffer to copy.</param>
+            <param name="sourceBuffer">The input buffer used to update the bitmap.</param>
+            <param name="sourceBufferSize">The size of the input buffer.</param>
+            <param name="sourceBufferStride">The stride of the input buffer, in bytes.</param>
+            <param name="destinationX">The destination x-coordinate of the left-most pixel in the back buffer.</param>
+            <param name="destinationY">The destination y-coordinate of the top-most pixel in the back buffer.</param>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.UpdateHost">
+            <summary>
+            Update host buffer. I.e. copy from device to host.
+            </summary>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.UpdateDevice">
+            <summary>
+            Update device buffer. I.e. copy from host to device.
+            </summary>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.GetPitchedDeviceVariableUchar4">
+            <summary>
+            If the pixel format can be represented by a uchar4 data type a CudaPitchedDeviceVariable is returned, else null.
+            </summary>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.GetPitchedDeviceVariableFloat4">
+            <summary>
+            If the pixel format can be represented by a float4 data type a CudaPitchedDeviceVariable is returned, else null.
+            </summary>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.GetPitchedDeviceVariableFloat">
+            <summary>
+            If the pixel format can be represented by a float data type a CudaPitchedDeviceVariable is returned, else null.
+            </summary>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.GetPitchedDeviceVariableUshort4">
+            <summary>
+            If the pixel format can be represented by a ushort4 data type a CudaPitchedDeviceVariable is returned, else null.
+            </summary>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.GetPitchedDeviceVariableUint">
+            <summary>
+            If the pixel format can be represented by a uint data type a CudaPitchedDeviceVariable is returned, else null.
+            </summary>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.GetPitchedDeviceVariable``1">
+            <summary>
+            Returns a CudaPitchedDeviceVariable of type T.
+            If the device image buffer is not allocated pitched GetPitchedDeviceVariable() returns null.
+            </summary>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.GetDeviceVariableByte">
+            <summary>
+            If the pixel format can be represented by a byte data type a CudaDeviceVariable is returned, else null.
+            </summary>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.GetDeviceVariableUchar3">
+            <summary>
+            If the pixel format can be represented by a uchar3 data type a CudaDeviceVariable is returned, else null.
+            </summary>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.GetDeviceVariableUshort">
+            <summary>
+            If the pixel format can be represented by a ushort data type a CudaDeviceVariable is returned, else null.
+            </summary>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.GetDeviceVariableUshort3">
+            <summary>
+            If the pixel format can be represented by a ushort3 data type a CudaDeviceVariable is returned, else null.
+            </summary>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.GetDeviceVariable``1">
+            <summary>
+            Returns a CudaDeviceVariable of type T.
+            If the device image buffer is allocated pitched GetDeviceVariable() returns null.
+            </summary>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.CopyToDevice(ManagedCuda.BasicTypes.CUdeviceptr)">
+            <summary>
+            Copy data from device to device memory. Assuming that source has same memory layout as image data.
+            </summary>
+            <param name="source">Source pointer to device memory</param>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.CopyToDevice``1(ManagedCuda.CudaDeviceVariable{``0})">
+            <summary>
+            Copy data from device to device memory
+            </summary>
+            <param name="source">Source</param>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.CopyToDevice``1(ManagedCuda.CudaPitchedDeviceVariable{``0})">
+            <summary>
+            Copy from device to device memory
+            </summary>
+            <param name="deviceSrc">Source</param>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.CopyToDevice``1(``0[],ManagedCuda.BasicTypes.SizeT)">
+            <summary>
+            Copy data from host to device memory
+            </summary>
+            <param name="source">Source pointer to host memory</param>
+            <param name="pitch">Line pitch</param>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.SuggestPixelType">
+            <summary>
+            returns a type which bests fits the pixel representation in device memory.<para/>
+            If no type can be found (for example: 1 bit BlackWhite images) null is returned.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.SuggestCUArrayFormat">
+            <summary>
+            Tries to find a CUArrayFormat matching the pixel format.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.CreateTextureFromImage(ManagedCuda.CudaKernel,System.String,ManagedCuda.BasicTypes.CUAddressMode,ManagedCuda.BasicTypes.CUFilterMode,ManagedCuda.BasicTypes.CUTexRefSetFlags)">
+            <summary>
+            Creates a texture reference from the underlying device picture buffer. <para/>
+            If the buffer was not allocated "pitched" or the pixel type cannot be determined from <see cref="T:System.Windows.Media.PixelFormat"/> automatically, null is returned.<para/>
+            Uses reflection to handle dynamic types.
+            </summary>
+            <param name="kernel"></param>
+            <param name="texName"></param>
+            <param name="addressMode"></param>
+            <param name="filterMode"></param>
+            <param name="flags"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ManagedCuda.CudaBitmapSource.CudaBitmapSource.CreateTextureFromImage``1(ManagedCuda.CudaKernel,System.String,ManagedCuda.BasicTypes.CUAddressMode,ManagedCuda.BasicTypes.CUFilterMode,ManagedCuda.BasicTypes.CUTexRefSetFlags)">
+            <summary>
+            Creates a texture reference from the underlying device picture buffer with type T.<para/>
+            If the buffer was not allocated "pitched", null is returned.
+            </summary>
+            <param name="kernel"></param>
+            <param name="texName"></param>
+            <param name="addressMode"></param>
+            <param name="filterMode"></param>
+            <param name="flags"></param>
+            <returns></returns>
+        </member>
+        <member name="P:ManagedCuda.CudaBitmapSource.CudaBitmapSource.DpiX">
+            <summary>
+            Gets the horizontal dots per inch (dpi) of the image.
+            </summary>
+        </member>
+        <member name="P:ManagedCuda.CudaBitmapSource.CudaBitmapSource.DpiY">
+            <summary>
+            Gets the vertical dots per inch (dpi) of the image. 
+            </summary>
+        </member>
+        <member name="P:ManagedCuda.CudaBitmapSource.CudaBitmapSource.Format">
+            <summary>
+            Gets the native PixelFormat of the bitmap data.
+            </summary>
+        </member>
+        <member name="P:ManagedCuda.CudaBitmapSource.CudaBitmapSource.Height">
+            <summary>
+            Gets the height of the source bitmap in device-independent units (1/96th inch per unit). (Overrides ImageSource.Height.)
+            </summary>
+        </member>
+        <member name="P:ManagedCuda.CudaBitmapSource.CudaBitmapSource.IsDownloading">
+            <summary>
+            Gets a value that indicates whether the BitmapSource content is currently downloading. 
+            </summary>
+        </member>
+        <member name="P:ManagedCuda.CudaBitmapSource.CudaBitmapSource.Metadata">
+            <summary>
+            Gets the metadata that is associated with this bitmap image. (Overrides ImageSource.Metadata.)
+            </summary>
+        </member>
+        <member name="P:ManagedCuda.CudaBitmapSource.CudaBitmapSource.Palette">
+            <summary>
+            Gets the color palette of the bitmap, if one is specified. 
+            </summary>
+        </member>
+        <member name="P:ManagedCuda.CudaBitmapSource.CudaBitmapSource.PixelHeight">
+            <summary>
+            Gets the height of the bitmap in pixels.
+            </summary>
+        </member>
+        <member name="P:ManagedCuda.CudaBitmapSource.CudaBitmapSource.PixelWidth">
+            <summary>
+            Gets the width of the bitmap in pixels.
+            </summary>
+        </member>
+        <member name="P:ManagedCuda.CudaBitmapSource.CudaBitmapSource.Width">
+            <summary>
+            Gets the width of the bitmap in device-independent units (1/96th inch per unit). (Overrides ImageSource.Width.)
+            </summary>
+        </member>
+        <member name="E:ManagedCuda.CudaBitmapSource.CudaBitmapSource.DecodeFailed">
+            <summary>
+            Occurs when the image fails to load, due to a corrupt image header. (Inherited from BitmapSource.)
+            </summary>
+        </member>
+        <member name="E:ManagedCuda.CudaBitmapSource.CudaBitmapSource.DownloadCompleted">
+            <summary>
+            Occurs when the bitmap content has been completely downloaded. (Inherited from BitmapSource.)
+            </summary>
+        </member>
+        <member name="E:ManagedCuda.CudaBitmapSource.CudaBitmapSource.DownloadFailed">
+            <summary>
+            Occurs when the bitmap content failed to download. (Inherited from BitmapSource.)
+            </summary>
+        </member>
+        <member name="E:ManagedCuda.CudaBitmapSource.CudaBitmapSource.DownloadProgress">
+            <summary>
+            Occurs when the download progress of the bitmap content has changed. (Inherited from BitmapSource.)
+            </summary>
+        </member>
+        <member name="P:ManagedCuda.CudaBitmapSource.CudaBitmapSource.BackBuffer">
+            <summary>
+            Gets a pointer to the back buffer. 
+            </summary>
+        </member>
+        <member name="P:ManagedCuda.CudaBitmapSource.CudaBitmapSource.BackBufferStride">
+            <summary>
+            Gets a value indicating the number of bytes in a single row of pixel data. 
+            </summary>
+        </member>
+        <member name="P:ManagedCuda.CudaBitmapSource.CudaBitmapSource.InnerWritableBitmap">
+            <summary>
+            In order to show changes directly on the GUI, use the inner WritableBitmap as source.
+            </summary>
+        </member>
+        <member name="P:ManagedCuda.CudaBitmapSource.CudaBitmapSource.DevicePointer">
+            <summary>
+            Device pointer to allocated buffer on device
+            </summary>
+        </member>
+        <member name="P:ManagedCuda.CudaBitmapSource.CudaBitmapSource.DeviceStride">
+            <summary>
+            Stride or Pitch of the device buffer. <para/>
+            If memory is allocated pitched, it returns the real pitch as given by CUDA.<para/>
+            If memory is allocated non-pitched, it returns (pixel size in bytes) x (width in pixels).
+            </summary>
+        </member>
+        <member name="P:ManagedCuda.CudaBitmapSource.CudaBitmapSource.IsPitched">
+            <summary>
+            Indicates if pixel type is compatible to pitched memory allocation.<para/>
+            If true, device buffer was allocated using cuMemAllocPitch.
+            </summary>
+        </member>
+        <member name="P:ManagedCuda.CudaBitmapSource.CudaBitmapSource.ChannelCount">
+            <summary>
+            Returns the number of color channels of the underlying pixel format
+            </summary>
+        </member>
+        <member name="P:ManagedCuda.CudaBitmapSource.CudaBitmapSource.ChannelWidth">
+            <summary>
+            Returns the size of one pixel for one channel in bits
+            </summary>
+        </member>
+        <member name="P:ManagedCuda.CudaBitmapSource.CudaBitmapSource.BitsPerPixel">
+            <summary>
+            Returns the size of one pixel (all channels) in bits
+            </summary>
+        </member>
+        <member name="P:ManagedCuda.CudaBitmapSource.CudaBitmapSource.BytesPerPixel">
+            <summary>
+            Returns the size of one pixel (all channels) in bytes
+            </summary>
+        </member>
+    </members>
+</doc>
