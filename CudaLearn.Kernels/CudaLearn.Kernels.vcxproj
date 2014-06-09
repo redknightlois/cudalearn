@@ -21,6 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{7A4616ED-BE52-4363-8C36-11B053475259}</ProjectGuid>
     <RootNamespace>CudaLearn_Kernels</RootNamespace>
+    <ProjectName>CudaLearn.Kernels</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
