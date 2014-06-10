@@ -2,6 +2,7 @@
 using ManagedCuda.VectorTypes;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,11 +33,11 @@ namespace CudaLearn
 
             int threadsPerBlock = context.GetDeviceInfo().MaxThreadsPerBlock;
             int blocksPerGrid = (numElements + threadsPerBlock - 1) / threadsPerBlock;
-            
+
             var kernel = context.LoadKernelPTX("vectorAdd.ptx", "vectorAdd");
             kernel.BlockDimensions = new dim3(threadsPerBlock);
             kernel.GridDimensions = new dim3(blocksPerGrid);
-            Console.WriteLine( string.Format( "X:{0} Y:{1} Z:{2}", kernel.GridDimensions.x, kernel.GridDimensions.y, kernel.GridDimensions.z ));
+            Console.WriteLine(string.Format("X:{0} Y:{1} Z:{2}", kernel.GridDimensions.x, kernel.GridDimensions.y, kernel.GridDimensions.z));
 
             kernel.Run(input1.DevicePointer, input2.DevicePointer, output.DevicePointer, numElements);
 

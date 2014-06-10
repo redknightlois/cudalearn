@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Linq;
+using System.Runtime;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,7 +15,11 @@ namespace CudaLearn
     {                
         public readonly int Rows;
         public readonly int Columns;
-        protected readonly T[,] Data;
+
+        /// <summary>
+        /// Data is stored in Column-Major to be compliant with the BLAS packages
+        /// </summary>
+        private readonly T[,] Data;
 
         private Lazy<Decomposition<T>> decomposition;
 
@@ -65,7 +71,7 @@ namespace CudaLearn
 
             Rows = iRows;
             Columns = iCols;
-            Data = new T[Rows, Columns];
+            Data = new T[Columns, Rows];
 
             this.decomposition = new Lazy<Decomposition<T>>(() => MakeLU(this), true);
         }
@@ -77,10 +83,10 @@ namespace CudaLearn
 
             Rows = iRows;
             Columns = iCols;
-            Data = new T[Rows, Columns];
+            Data = new T[Columns, Rows];
 
-            for (int i = 0; i < Rows; i++)
-                for (int j = 0; j < Columns; j++)
+            for (int i = 0; i < Columns ; i++)
+                for (int j = 0; j < Rows; j++)
                     Data[i, j] = value;
 
             this.decomposition = new Lazy<Decomposition<T>>(() => MakeLU(this), true);
@@ -93,36 +99,36 @@ namespace CudaLearn
 
         public T this[int iRow, int iCol]      // Access this matrix as a 2D array
         {
-            get { return Data[iRow, iCol]; }
-            set { Data[iRow, iCol] = value; }
+            get { return Data[iCol, iRow]; }
+            set { Data[iCol, iRow] = value; }
         }
 
         public Matrix<T> GetColumn(int k)
         {
             Matrix<T> m = new Matrix<T>(Rows, 1);
             for (int i = 0; i < Rows; i++)
-                m[i, 0] = Data[i, k];
+                m[i, 0] = this[i, k];
             return m;
         }
 
         public void SetColumn(Matrix<T> v, int k)
         {
             for (int i = 0; i < Rows; i++)
-                Data[i, k] = v[i, 0];
+                this[i, k] = v[i, 0];
         }
 
         public Matrix<T> GetRow(int k)
         {
             Matrix<T> m = new Matrix<T>(1, Columns);
             for (int i = 0; i < Columns; i++)
-                m[0, i] = Data[k, i];
+                m[0, i] = this[k, i];
             return m;
         }
 
         public void SetRow(Matrix<T> v, int k)
         {
             for (int i = 0; i < Columns; i++)
-                Data[k, i] = v[0, i];
+                this[k, i] = v[0, i];
         }
 
 
@@ -134,7 +140,7 @@ namespace CudaLearn
             Matrix<T> matrix = new Matrix<T>(Rows, Columns);
             for (int i = 0; i < Rows; i++)
                 for (int j = 0; j < Columns; j++)
-                    matrix[i, j] = Data[i, j];
+                    matrix[i, j] = this[i, j];
             return matrix;
         }
 
@@ -170,7 +176,7 @@ namespace CudaLearn
             string s = "";
             for (int i = 0; i < Rows; i++)
             {
-                for (int j = 0; j < Columns; j++) s += String.Format("{0,5:0.00}", Data[i, j]) + " ";
+                for (int j = 0; j < Columns; j++) s += String.Format("{0,5:0.00}", this[i, j]) + " ";
                 s += "\r\n";
             }
             return s;
