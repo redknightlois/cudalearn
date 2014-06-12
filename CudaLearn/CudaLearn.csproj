@@ -14,7 +14,7 @@
     <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -60,7 +60,7 @@
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -105,14 +105,13 @@
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CudaBlas">
-      <HintPath>..\Support\ManagedCuda\x64\Release\CudaBlas.dll</HintPath>
+    <Reference Include="CudaBlas, Version=6.0.5221.27274, Culture=neutral, PublicKeyToken=539d54d12e99fedb, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Support\ManagedCuda\x86\Release\CudaBlas.dll</HintPath>
     </Reference>
-    <Reference Include="CudaSparse">
-      <HintPath>..\Support\ManagedCuda\x64\Release\CudaSparse.dll</HintPath>
-    </Reference>
-    <Reference Include="ManagedCuda">
-      <HintPath>..\Support\ManagedCuda\Debug\ManagedCuda.dll</HintPath>
+    <Reference Include="ManagedCuda, Version=6.0.5221.23941, Culture=neutral, PublicKeyToken=242d898828717aa0, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Support\ManagedCuda\Release\ManagedCuda.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -126,7 +125,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CudaLearnModule.cs" />
     <Compile Include="Decomposition.cs" />
+    <Compile Include="GpuMatrix`1.cs" />
+    <Compile Include="IGpuMatrixStorage.cs" />
     <Compile Include="Matrix`1.cs" />
     <Compile Include="MatrixHelper.cs">
       <AutoGen>True</AutoGen>
@@ -135,6 +137,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="BlasMath.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

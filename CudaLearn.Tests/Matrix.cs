@@ -20,7 +20,6 @@ namespace CudaLearn.Tests
 
         private struct SampleStruct
         {
-            int X;
         }
 
         [Fact]

@@ -12,14 +12,14 @@ namespace CudaLearn
 {
     public class Matrix<T> : IEquatable<Matrix<T>>
         where T : struct
-    {                
+    {
         public readonly int Rows;
         public readonly int Columns;
 
         /// <summary>
         /// Data is stored in Column-Major to be compliant with the BLAS packages
         /// </summary>
-        private readonly T[,] Data;
+        private readonly T[] Data;
 
         private Lazy<Decomposition<T>> decomposition;
 
@@ -34,34 +34,34 @@ namespace CudaLearn
 
         public static readonly T Epsilon;
 
-        static Matrix ()
+        static Matrix()
         {
             if (typeof(T) == typeof(int))
             {
                 Zero = (T)(object)0;
                 One = (T)(object)1;
-                DefaultEpsilon = (T)(object)0;                
+                DefaultEpsilon = (T)(object)0;
             }
             else if (typeof(T) == typeof(float))
             {
                 Zero = (T)(object)0f;
                 One = (T)(object)1f;
-                DefaultEpsilon = (T)(object)0.00001f;        
+                DefaultEpsilon = (T)(object)0.00001f;
             }
             else if (typeof(T) == typeof(double))
             {
                 Zero = (T)(object)0d;
                 One = (T)(object)1d;
-                DefaultEpsilon = (T)(object)0.00001d;               
+                DefaultEpsilon = (T)(object)0.00001d;
             }
             else
             {
                 Zero = default(T);
                 One = default(T);
-                DefaultEpsilon = default(T);   
+                DefaultEpsilon = default(T);
             }
 
-            Epsilon = DefaultEpsilon;            
+            Epsilon = DefaultEpsilon;
         }
 
         public Matrix(int iRows, int iCols)         // Matrix Class constructor
@@ -71,23 +71,23 @@ namespace CudaLearn
 
             Rows = iRows;
             Columns = iCols;
-            Data = new T[Columns, Rows];
+            Data = new T[Columns * Rows];
 
             this.decomposition = new Lazy<Decomposition<T>>(() => MakeLU(this), true);
         }
 
         public Matrix(int iRows, int iCols, T value)         // Matrix Class constructor
-        {            
+        {
             Contract.Requires<NotSupportedException>(typeof(T) == typeof(int) || typeof(T) == typeof(float) || typeof(T) == typeof(double));
             Contract.Requires<ArgumentException>(iRows > 0 && iCols > 0);
 
             Rows = iRows;
             Columns = iCols;
-            Data = new T[Columns, Rows];
+            Data = new T[Columns * Rows];
 
-            for (int i = 0; i < Columns ; i++)
+            for (int i = 0; i < Columns; i++)
                 for (int j = 0; j < Rows; j++)
-                    Data[i, j] = value;
+                    this[i, j] = value;
 
             this.decomposition = new Lazy<Decomposition<T>>(() => MakeLU(this), true);
         }
@@ -99,8 +99,20 @@ namespace CudaLearn
 
         public T this[int iRow, int iCol]      // Access this matrix as a 2D array
         {
-            get { return Data[iCol, iRow]; }
-            set { Data[iCol, iRow] = value; }
+            get
+            {
+                Contract.Requires(iRow >= 0 && iRow < Rows);
+                Contract.Requires(iCol >= 0 && iCol < Columns);
+
+                return Data[Rows * iCol + iRow];
+            }
+            set
+            {
+                Contract.Requires(iRow >= 0 && iRow < Rows);
+                Contract.Requires(iCol >= 0 && iCol < Columns);
+
+                Data[Rows * iCol + iRow] = value;
+            }
         }
 
         public Matrix<T> GetColumn(int k)
@@ -408,7 +420,7 @@ namespace CudaLearn
                 return MatrixHelper.StrassenMultiply(t1, t2) as Matrix<T>;
             }
 
-            throw new NotSupportedException("Type: {0} is not supported by the Matrix<T> class."); 
+            throw new NotSupportedException("Type: {0} is not supported by the Matrix<T> class.");
         }
 
         public static Matrix<T> operator *(T c, Matrix<T> m)
@@ -489,7 +501,7 @@ namespace CudaLearn
                 return MatrixHelper.Add(t1, t2) as Matrix<T>;
             }
 
-            throw new NotSupportedException("Type: {0} is not supported by the Matrix<T> class."); 
+            throw new NotSupportedException("Type: {0} is not supported by the Matrix<T> class.");
         }
 
         public static Matrix<T> operator -(Matrix<T> m1, Matrix<T> m2)
@@ -515,7 +527,7 @@ namespace CudaLearn
                 return MatrixHelper.Substract(t1, t2) as Matrix<T>;
             }
 
-            throw new NotSupportedException("Type: {0} is not supported by the Matrix<T> class.");  
+            throw new NotSupportedException("Type: {0} is not supported by the Matrix<T> class.");
         }
 
         public static Matrix<T> operator +(T c, Matrix<T> m)
