@@ -8,7 +8,7 @@ using Xunit;
 
 namespace CudaLearn.Tests
 {
-    public class MatrixTest
+    public class MatrixTest : MathTestsBase
     {
         [Fact]
         public void CreateGenericMatrixWithNumericTypes()
@@ -236,10 +236,6 @@ namespace CudaLearn.Tests
             Assert.True(EqualsWithEpsilon(-2, m2.Determinant()));
         }
 
-        private bool EqualsWithEpsilon(float a, float b)
-        {
-            return Math.Abs(a - b) < Matrix<float>.Epsilon;
-        }
 
         [Fact]
         public void InverseOfMatrix()

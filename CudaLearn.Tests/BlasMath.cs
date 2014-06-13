@@ -27,7 +27,7 @@ namespace CudaLearn.Tests
                 mc[0, j] = aux;
             }
 
-            double gpuSum = BlasMath.AbsoluteSum(m);
+            double gpuSum = BlasMath.SumMagnitudes(m);
 
             double cpuSum = 0;
             for (int j = 0; j < columns; j++)

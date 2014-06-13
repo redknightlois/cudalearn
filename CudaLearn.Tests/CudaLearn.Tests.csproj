@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="BlasMath.cs" />
     <Compile Include="GpuMatrix.cs" />
+    <Compile Include="MathTestsBase.cs" />
     <Compile Include="Matrix.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

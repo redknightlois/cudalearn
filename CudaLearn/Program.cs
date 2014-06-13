@@ -51,7 +51,7 @@ namespace CudaLearn
             double sum = 0;
             for (int k = 0; k < 1000; k++)
             {
-                sum = BlasMath.AbsoluteSum(m);
+                sum = BlasMath.SumMagnitudes(m);
             }
 
             Console.WriteLine("GPU Blas sequential = " + watch.ElapsedMilliseconds);

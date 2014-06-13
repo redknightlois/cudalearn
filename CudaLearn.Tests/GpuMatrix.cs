@@ -7,7 +7,7 @@ using Xunit;
 
 namespace CudaLearn.Tests
 {
-    public class GpuMatrixTest
+    public class GpuMatrixTest : MathTestsBase
     {
         public GpuMatrixTest()
         {
@@ -29,14 +29,32 @@ namespace CudaLearn.Tests
 
         [Fact]
         public void CreateGenericMatrixWithInvalidTypes()
-        {
-            
-
+        {            
             Assert.Throws<NotSupportedException>(() => new GpuMatrix<byte>(2, 2));
             Assert.Throws<NotSupportedException>(() => new GpuMatrix<SampleStruct>(2, 2));
             Assert.Throws<NotSupportedException>(() => new GpuMatrix<sbyte>(2, 2));
         }
 
+        [Fact]
+        public void ConstructorsShouldWork()
+        {
+            var m1 = new GpuMatrix<int>(2, 2, 10);
+            var m2 = GpuMatrix<int>.Zeroes(2, 2);
+            var m3 = GpuMatrix<int>.Identity(2, 2);
+
+            for (int i = 0; i < m1.Rows; i++)
+            {
+                for (int j = 0; j < m1.Columns; j++)
+                {
+                    Assert.Equal(10, m1[i, j]);
+                    Assert.Equal(0, m2[i, j]);
+                    if (i == j)
+                        Assert.Equal(1, m3[i, j]);
+                    else
+                        Assert.Equal(0, m3[i, j]);
+                }
+            }
+        }
 
         [Fact]
         public void MultiplyWithNonSquareMatrix()
@@ -103,6 +121,80 @@ namespace CudaLearn.Tests
             expected[1, 1] = 7;
 
             Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void CloneOnDeviceWithInt()
+        {
+            var m1 = new GpuMatrix<int>(2, 2);
+            m1[0, 0] = 1;
+            m1[0, 1] = 5;
+            m1[1, 0] = 3;
+            m1[1, 1] = 2;
+
+            var m2 = new GpuMatrix<int>(m1);
+            var m3 = m1.Clone();
+
+            Assert.Equal(m1, m2);
+            Assert.Equal(m2, m3);
+
+            Assert.Equal(1, m3[0, 0]);
+            Assert.Equal(5, m3[0, 1]);
+            Assert.Equal(3, m3[1, 0]);
+            Assert.Equal(2, m3[1, 1]);
+        }
+
+        [Fact]
+        public void CloneOnDeviceWithFloat()
+        {
+            var m1 = new GpuMatrix<float>(2, 2);
+            m1[0, 0] = 1;
+            m1[0, 1] = 5;
+            m1[1, 0] = 3;
+            m1[1, 1] = 2;
+
+            var m2 = new GpuMatrix<float>(m1);
+            var m3 = m1.Clone();
+
+            Assert.Equal(m1, m2);
+            Assert.Equal(m2, m3);
+
+            Assert.Equal(1, m3[0, 0]);
+            Assert.Equal(5, m3[0, 1]);
+            Assert.Equal(3, m3[1, 0]);
+            Assert.Equal(2, m3[1, 1]);
+        }
+
+
+        [Fact]
+        public void AdditionAndSubstractionWithMatrix()
+        {
+            var m1 = new GpuMatrix<float>(2, 2);
+            m1[0, 0] = 1;
+            m1[0, 1] = 5;
+            m1[1, 0] = 3;
+            m1[1, 1] = 2;
+
+            var m2 = -m1;
+            var m3 = m1.Clone();
+
+            var result = m1 + m2;
+            Assert.Equal(GpuMatrix<float>.Zeroes(2, 2), result);
+
+            result = m1 - m3;
+            Assert.Equal(GpuMatrix<float>.Zeroes(2, 2), result);
+
+            result = m1 - 5;
+
+            var e1 = new GpuMatrix<float>(2, 2);
+            e1[0, 0] = -4;
+            e1[0, 1] = 0;
+            e1[1, 0] = -2;
+            e1[1, 1] = -3;
+            Assert.Equal(e1, result);
+
+            result = result + 5;
+            Assert.Equal(m1, result);
         }
     }
 }

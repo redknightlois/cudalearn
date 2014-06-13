@@ -40,7 +40,7 @@ namespace CudaLearn
             {
                 Zero = (T)(object)0;
                 One = (T)(object)1;
-                DefaultEpsilon = (T)(object)0;
+                DefaultEpsilon = (T)(object)1;
             }
             else if (typeof(T) == typeof(float))
             {

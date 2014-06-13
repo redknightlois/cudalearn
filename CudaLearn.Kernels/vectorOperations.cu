@@ -30,11 +30,11 @@ __device__ void vectorEquals(const T *A, const T *B, bool *C, int numElements, T
 	if (i < numElements)
 	{
 		// Calculate the difference. 
-		float result = A[i] - B[i];
+		T result = A[i] - B[i];
 		result = result >= 0 ? result : -result;
 
-		// We dont care who wins. We will only signal C[0] when this value changes. So there is no need for atomics.
-		if (result > epsilon)
+		// We dont care who wins. We will only signal C[0] when this value changes. So there is no need for atomics or handling the race condition.
+		if (result >= epsilon)
 			C[0] = false;
 	}
 }
@@ -57,6 +57,17 @@ __device__ void vectorAdd(const T *A, const T *B, T *C, int numElements)
 	}
 }
 
+template< typename T >
+__device__ void vectorAxpb(const T *A, const T a, const T b, T *C, int numElements)
+{
+	int i = blockDim.x * blockIdx.x + threadIdx.x;
+
+	if (i < numElements)
+	{
+		C[i] = a * A[i] + b;
+	}
+}
+
 extern "C"  
 {
 
@@ -65,14 +76,29 @@ extern "C"
 		vectorAdd<float>(A, B, C, numElements);
 	}
 
-	__global__ void vectorAdd1d(const float *A, const float *B, float *C, int numElements)
+	__global__ void vectorAdd1d(const double *A, const double *B, double *C, int numElements)
 	{
-		vectorAdd<float>(A, B, C, numElements);
+		vectorAdd<double>(A, B, C, numElements);
 	}
 
-	__global__ void vectorAdd1i(const float *A, const float *B, float *C, int numElements)
+	__global__ void vectorAdd1i(const int *A, const int *B, int *C, int numElements)
 	{
-		vectorAdd<float>(A, B, C, numElements);
+		vectorAdd<int>(A, B, C, numElements);
+	}
+
+	__global__ void vectorAxpb1f(const float *A, const float a, const float b, float *C, int numElements)
+	{
+		vectorAxpb<float>(A, a, b, C, numElements);
+	}
+
+	__global__ void vectorAxpb1d(const double *A, const double a, const double b, double *C, int numElements)
+	{
+		vectorAxpb<double>(A, a, b, C, numElements);
+	}
+
+	__global__ void vectorAxpb1i(const int *A, const int a, const int b, int *C, int numElements)
+	{
+		vectorAxpb<int>(A, a, b, C, numElements);
 	}
 
 
@@ -86,9 +112,9 @@ extern "C"
 		vectorEquals<double>(A, B, C, numElements, epsilon);
 	}
 
-	__global__ void vectorEquals1i(const int *A, const int *B, bool *C, int numElements)
+	__global__ void vectorEquals1i(const int *A, const int *B, bool *C, int numElements, int epsilon)
 	{
-		vectorEquals<int>(A, B, C, numElements, 0);
+		vectorEquals<int>(A, B, C, numElements, epsilon);
 	}
 }
 
