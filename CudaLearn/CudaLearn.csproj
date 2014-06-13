@@ -141,14 +141,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <Content Include="vectorAdd.ptx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <None Include="MatrixHelper.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>MatrixHelper.cs</LastGenOutput>
     </None>
     <None Include="packages.config" />
+    <None Include="vectorOperations.ptx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

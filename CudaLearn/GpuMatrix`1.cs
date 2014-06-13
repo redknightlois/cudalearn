@@ -97,7 +97,7 @@ namespace CudaLearn
                 Contract.Requires(iCol >= 0 && iCol < Columns);
 
                 if ( !CudaLearnModule.AllowHandyForDebugButVerySlowGpuMemoryAccess )
-                    throw new InvalidOperationException("You cannot set values individually in the GPUMatrix<T> for performance reasons.");
+                    throw new InvalidOperationException("You cannot set values individually in the GpuMatrix<T> for performance reasons.");
 
                 GpuData[Rows * iCol + iRow] = value;
             }
@@ -211,53 +211,45 @@ namespace CudaLearn
                 var t1 = m1 as GpuMatrix<int>;
                 var t2 = m2 as GpuMatrix<int>;
                 var e = (int)(object)epsilon;
-                //return MatrixHelper.Equals(t1, t2, e);
-                throw new NotImplementedException();
+                return BlasMath.Equals(t1, t2, 0);
             }
             else if (typeof(T) == typeof(float))
             {
                 var t1 = m1 as GpuMatrix<float>;
                 var t2 = m2 as GpuMatrix<float>;
                 var e = (float)(object)epsilon;
-                //return MatrixHelper.Equals(t1, t2, e);
-                throw new NotImplementedException();
+
+                return BlasMath.Equals(t1, t2, e);
             }
             else if (typeof(T) == typeof(double))
             {
                 var t1 = m1 as GpuMatrix<double>;
                 var t2 = m2 as GpuMatrix<double>;
                 var e = (double)(object)epsilon;
-                //return MatrixHelper.Equals(t1, t2, e);
-                throw new NotImplementedException();
+                return BlasMath.Equals(t1, t2, e);
             }
 
-            throw new NotSupportedException("Type: {0} is not supported by the Matrix<T> class.");
+            throw new NotSupportedException("Type: {0} is not supported by the GpuMatrix<T> class.");
         }
 
         public static GpuMatrix<T> operator *(GpuMatrix<T> m1, GpuMatrix<T> m2)
         {
             Contract.Requires<ArgumentNullException>(m1 != null && m2 != null);
 
-            if (typeof(T) == typeof(int))
-            {
-                var t1 = m1 as GpuMatrix<int>;
-                var t2 = m2 as GpuMatrix<int>;
-                throw new NotImplementedException();
-            }
-            else if (typeof(T) == typeof(float))
+            if (typeof(T) == typeof(float))
             {
                 var t1 = m1 as GpuMatrix<float>;
                 var t2 = m2 as GpuMatrix<float>;
-                throw new NotImplementedException();
+                return BlasMath.Multiply(t1, t2) as GpuMatrix<T>;
             }
             else if (typeof(T) == typeof(double))
             {
                 var t1 = m1 as GpuMatrix<double>;
                 var t2 = m2 as GpuMatrix<double>;
-                throw new NotImplementedException();
+                return BlasMath.Multiply(t1, t2) as GpuMatrix<T>;
             }
 
-            throw new NotSupportedException("Type: {0} is not supported by the Matrix<T> class.");
+            throw new NotSupportedException("Type: {0} is not supported by the GpuMatrix<T> class.");
         }
 
         public static GpuMatrix<T> operator *(T c, GpuMatrix<T> m)
@@ -283,7 +275,7 @@ namespace CudaLearn
                 throw new NotImplementedException();
             }
 
-            throw new NotSupportedException("Type: {0} is not supported by the Matrix<T> class.");
+            throw new NotSupportedException("Type: {0} is not supported by the GpuMatrix<T> class.");
         }
 
         public static GpuMatrix<T> operator *(GpuMatrix<T> m, T c)
@@ -313,7 +305,7 @@ namespace CudaLearn
                 throw new NotImplementedException();
             }
 
-            throw new NotSupportedException("Type: {0} is not supported by the Matrix<T> class.");
+            throw new NotSupportedException("Type: {0} is not supported by the GpuMatrix<T> class.");
         }
         public static GpuMatrix<T> operator +(GpuMatrix<T> m1, GpuMatrix<T> m2)
         {
@@ -338,7 +330,7 @@ namespace CudaLearn
                 throw new NotImplementedException();
             }
 
-            throw new NotSupportedException("Type: {0} is not supported by the Matrix<T> class.");
+            throw new NotSupportedException("Type: {0} is not supported by the GpuMatrix<T> class.");
         }
 
         public static GpuMatrix<T> operator -(GpuMatrix<T> m1, GpuMatrix<T> m2)
@@ -364,7 +356,7 @@ namespace CudaLearn
                 throw new NotImplementedException();
             }
 
-            throw new NotSupportedException("Type: {0} is not supported by the Matrix<T> class.");
+            throw new NotSupportedException("Type: {0} is not supported by the GpuMatrix<T> class.");
         }
 
         public static GpuMatrix<T> operator +(T c, GpuMatrix<T> m)
@@ -390,7 +382,7 @@ namespace CudaLearn
                 throw new NotImplementedException();
             }
 
-            throw new NotSupportedException("Type: {0} is not supported by the Matrix<T> class.");
+            throw new NotSupportedException("Type: {0} is not supported by the GpuMatrix<T> class.");
         }
 
         public static GpuMatrix<T> operator +(GpuMatrix<T> m, T c)
@@ -423,7 +415,7 @@ namespace CudaLearn
                 throw new NotImplementedException();
             }
 
-            throw new NotSupportedException("Type: {0} is not supported by the Matrix<T> class.");
+            throw new NotSupportedException("Type: {0} is not supported by the GpuMatrix<T> class.");
         }
 
         public static GpuMatrix<T> operator -(GpuMatrix<T> m, T c)

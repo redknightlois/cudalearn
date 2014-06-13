@@ -88,7 +88,7 @@ namespace CudaLearn
             int threadsPerBlock = context.GetDeviceInfo().MaxThreadsPerBlock;
             int blocksPerGrid = (numElements + threadsPerBlock - 1) / threadsPerBlock;
 
-            var kernel = context.LoadKernelPTX("vectorAdd.ptx", "vectorAdd");
+            var kernel = context.LoadKernelPTX("vectorOperations.ptx", "vectorAdd1f");
             kernel.BlockDimensions = new dim3(threadsPerBlock);
             kernel.GridDimensions = new dim3(blocksPerGrid);
             Console.WriteLine(string.Format("X:{0} Y:{1} Z:{2}", kernel.GridDimensions.x, kernel.GridDimensions.y, kernel.GridDimensions.z));
