@@ -355,6 +355,9 @@ namespace CudaLearn
 
         public string ToString(string format, IFormatProvider formatProvider)
         {
+            if (Rows * Columns > 36)
+                return string.Format( "M[{0},{1}] is too large to convert to string. Use a dedicated dumper.", Rows, Columns );
+
             string s = "";
             for (int i = 0; i < Rows; i++)
             {
