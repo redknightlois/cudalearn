@@ -21,7 +21,10 @@ namespace CudaLearn
 
         public static readonly T Zero;
         public static readonly T One;
+        public static readonly T NegativeOne;
         public static readonly T DefaultEpsilon;
+
+        public static readonly Func<T,T> Negative = NegativeConstant;
 
         public static readonly T Epsilon;
 
@@ -31,28 +34,53 @@ namespace CudaLearn
             {
                 Zero = (T)(object)0;
                 One = (T)(object)1;
-                DefaultEpsilon = (T)(object)1;                
+                NegativeOne = (T)(object)-1;
+                DefaultEpsilon = (T)(object)1;
             }
             else if (typeof(T) == typeof(float))
             {
                 Zero = (T)(object)0f;
                 One = (T)(object)1f;
-                DefaultEpsilon = (T)(object)0.00001f;        
+                NegativeOne = (T)(object)-1f;
+                DefaultEpsilon = (T)(object)0.00001f;
             }
             else if (typeof(T) == typeof(double))
             {
                 Zero = (T)(object)0d;
                 One = (T)(object)1d;
-                DefaultEpsilon = (T)(object)0.00001d;               
+                NegativeOne = (T)(object)-1d;
+                DefaultEpsilon = (T)(object)0.00001d;
             }
             else
             {
                 Zero = default(T);
                 One = default(T);
+                NegativeOne = default(T);
                 DefaultEpsilon = default(T);   
             }
 
             Epsilon = DefaultEpsilon;            
+        }
+
+        private static T NegativeConstant(T c)
+        {            
+            if (typeof(T) == typeof(int))
+            {
+                var aux = -(int)(object)c;
+                return (T)(object)aux;
+            }
+            else if (typeof(T) == typeof(float))
+            {
+                var aux = -(float)(object)c;
+                return (T)(object)aux;
+            }
+            else if (typeof(T) == typeof(double))
+            {
+                var aux = -(double)(object)c;
+                return (T)(object)aux;
+            }
+
+            throw new NotSupportedException("Type: {0} is not supported by the GpuMatrix<T> class.");
         }
 
         public GpuMatrix(int iRows, int iCols)         // Matrix Class constructor
@@ -270,31 +298,13 @@ namespace CudaLearn
         {
             Contract.Requires<ArgumentNullException>(m != null);
 
-            if (typeof(T) == typeof(int))
-            {
-                var t = m as GpuMatrix<int>;
-                throw new NotImplementedException();
-            }
-            else if (typeof(T) == typeof(float))
-            {
-                var t = m as GpuMatrix<float>;
-                var negative = GpuMatrix<float>.Zeroes(m.Rows, m.Columns);
-                BlasMath.AxpyInPlace(t, -GpuMatrix<float>.One, ref negative);
-                return negative as GpuMatrix<T>;
-            }
-            else if (typeof(T) == typeof(double))
-            {
-                var t = m as GpuMatrix<double>;
-                var negative = GpuMatrix<double>.Zeroes(m.Rows, m.Columns);
-                BlasMath.AxpyInPlace(t, -GpuMatrix<double>.One, ref negative);
-                return negative as GpuMatrix<T>;
-            }
-
-            throw new NotSupportedException("Type: {0} is not supported by the GpuMatrix<T> class.");
+            var negative = GpuMatrix<T>.Zeroes(m.Rows, m.Columns);
+            BlasMath.AxpyInPlace<T>(m, GpuMatrix<T>.NegativeOne, ref negative);
+            return negative;
         }
         public static GpuMatrix<T> operator +(GpuMatrix<T> m1, GpuMatrix<T> m2)
         {
-            Contract.Requires<NotSupportedException>(typeof(T) == typeof(float) || typeof(T) == typeof(double));
+            Contract.Requires<NotSupportedException>(typeof(T) == typeof(float) || typeof(T) == typeof(double) || typeof(T) == typeof(int));
             Contract.Requires<ArgumentNullException>(m1 != null && m2 != null);
 
             return BlasMath.Axpy(m1, GpuMatrix<T>.One, m2) as GpuMatrix<T>;
@@ -302,35 +312,15 @@ namespace CudaLearn
 
         public static GpuMatrix<T> operator -(GpuMatrix<T> m1, GpuMatrix<T> m2)
         {
-            Contract.Requires<NotSupportedException>(typeof(T) == typeof(float) || typeof(T) == typeof(double));
+            Contract.Requires<NotSupportedException>(typeof(T) == typeof(float) || typeof(T) == typeof(double) || typeof(T) == typeof(int));
             Contract.Requires<ArgumentNullException>(m1 != null && m2 != null);
 
-            if (typeof(T) == typeof(int))
-            {
-                var t1 = m1 as GpuMatrix<int>;
-                var t2 = m2 as GpuMatrix<int>;
-                
-                throw new NotImplementedException();
-            }
-            else if (typeof(T) == typeof(float))
-            {
-                var t1 = m1 as GpuMatrix<float>;
-                var t2 = m2 as GpuMatrix<float>;
-                return BlasMath.Axpy(t2, -GpuMatrix<float>.One, t1) as GpuMatrix<T>;
-            }
-            else if (typeof(T) == typeof(double))
-            {
-                var t1 = m1 as GpuMatrix<double>;
-                var t2 = m2 as GpuMatrix<double>;
-                return BlasMath.Axpy(t2, -GpuMatrix<double>.One, t1) as GpuMatrix<T>;
-            }
-
-            throw new NotSupportedException("Type: {0} is not supported by the GpuMatrix<T> class.");
+            return BlasMath.Axpy(m2, GpuMatrix<T>.NegativeOne, m1);
         }
 
         public static GpuMatrix<T> operator +(T c, GpuMatrix<T> m)
         {
-            Contract.Requires(typeof(T) == typeof(int) || typeof(T) == typeof(float) || typeof(T) == typeof(double));
+            Contract.Requires(typeof(T) == typeof(int) || typeof(T) == typeof(float) || typeof(T) == typeof(double) || typeof(T) == typeof(int));
             Contract.Requires<ArgumentNullException>(m != null);
 
             return BlasMath.Axpb(m, GpuMatrix<T>.One, c);
@@ -347,23 +337,7 @@ namespace CudaLearn
         {
             Contract.Requires<ArgumentNullException>(m != null);
 
-            if (typeof(T) == typeof(int))
-            {
-                var t = m as GpuMatrix<int>;
-                return BlasMath.Axpb(t, GpuMatrix<int>.One, -(int)(object)c) as GpuMatrix<T>;
-            }
-            else if (typeof(T) == typeof(float))
-            {
-                var t = m as GpuMatrix<float>;
-                return BlasMath.Axpb(t, GpuMatrix<float>.One, -(float)(object)c) as GpuMatrix<T>;
-            }
-            else if (typeof(T) == typeof(double))
-            {
-                var t = m as GpuMatrix<double>;
-                return BlasMath.Axpb(t, GpuMatrix<double>.One, -(double)(object)c) as GpuMatrix<T>;
-            }
-
-            throw new NotSupportedException("Type: {0} is not supported by the GpuMatrix<T> class.");
+            return BlasMath.Axpb(m, GpuMatrix<T>.One, NegativeConstant(c)) as GpuMatrix<T>;            
         }
 
         public static GpuMatrix<T> operator -(GpuMatrix<T> m, T c)

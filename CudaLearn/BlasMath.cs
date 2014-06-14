@@ -33,7 +33,7 @@ namespace CudaLearn
             throw new NotSupportedException("Type: {0} is not supported by the BLAS library.");
         }
 
-        public static double AbsoluteSum<T>(Matrix<T> matrix) where T : struct
+        public static double SumMagnitudes<T>(Matrix<T> matrix) where T : struct
         {
             Contract.Requires<ArgumentNullException>(matrix != null);
             Contract.Requires(matrix.Rows == 1);
@@ -41,7 +41,72 @@ namespace CudaLearn
             throw new NotImplementedException();
         }
 
-        public static GpuMatrix<T> Axpb<T>(GpuMatrix<T> m1, T a, T b ) where T : struct
+        #region Axpby = alpha * x + beta * y
+
+        public static GpuMatrix<T> Axpby<T>(GpuMatrix<T> m1, T a, GpuMatrix<T> m2, T b) where T : struct
+        {
+            Contract.Requires<ArgumentNullException>(m1 != null);
+            Contract.Requires<ArgumentNullException>(m2 != null);
+            Contract.Requires<ArgumentException>(m1.Rows == m2.Rows && m1.Columns == m2.Columns);
+
+            var context = CudaLearnModule.Context;
+            var blas = CudaLearnModule.BlasContext;
+            var d1 = ((IGpuMatrixStorage<T>)m1).GetDeviceMemory();
+            var d2 = ((IGpuMatrixStorage<T>)m2).GetDeviceMemory();
+
+            var m3 = new GpuMatrix<T>(m1.Rows, m1.Columns);
+            var d3 = ((IGpuMatrixStorage<T>)m3).GetDeviceMemory();
+
+            int numElements = m1.Rows * m1.Columns;
+            int threadsPerBlock = context.GetDeviceInfo().MaxThreadsPerBlock;
+            int blocksPerGrid = (numElements + threadsPerBlock - 1) / threadsPerBlock;
+
+            CudaKernel kernel = context.LoadKernelPTX("vectorOperations.ptx", GetCudaOperationWithSuffix<T>("vectorAxpby"));
+            // TODO Minimize the tail effect. http://devblogs.nvidia.com/parallelforall/cuda-pro-tip-minimize-the-tail-effect/
+            kernel.BlockDimensions = new dim3(threadsPerBlock);
+            kernel.GridDimensions = new dim3(blocksPerGrid);
+
+            if (typeof(T) == typeof(float) || typeof(T) == typeof(double) || typeof(T) == typeof(int))
+            {
+                kernel.Run(d1.DevicePointer, a, d2.DevicePointer, b, d3.DevicePointer, numElements);
+            }
+            else throw new NotSupportedException("Type: {0} is not supported by the BLAS library.");
+
+            return m3;
+        }
+
+        public static void AxpbyInPlace<T>(GpuMatrix<T> m1, T alpha, ref GpuMatrix<T> m2, T beta) where T : struct
+        {
+            Contract.Requires<ArgumentNullException>(m1 != null);
+            Contract.Requires<ArgumentNullException>(m2 != null);
+            Contract.Requires<ArgumentException>(m1.Rows == m2.Rows && m1.Columns == m2.Columns);
+
+            var context = CudaLearnModule.Context;
+            var blas = CudaLearnModule.BlasContext;
+            var d1 = ((IGpuMatrixStorage<T>)m1).GetDeviceMemory();
+            var d2 = ((IGpuMatrixStorage<T>)m2).GetDeviceMemory();
+
+            int numElements = m1.Rows * m1.Columns;
+            int threadsPerBlock = context.GetDeviceInfo().MaxThreadsPerBlock;
+            int blocksPerGrid = (numElements + threadsPerBlock - 1) / threadsPerBlock;
+
+            CudaKernel kernel = context.LoadKernelPTX("vectorOperations.ptx", GetCudaOperationWithSuffix<T>("vectorAxpby"));
+            // TODO Minimize the tail effect. http://devblogs.nvidia.com/parallelforall/cuda-pro-tip-minimize-the-tail-effect/
+            kernel.BlockDimensions = new dim3(threadsPerBlock);
+            kernel.GridDimensions = new dim3(blocksPerGrid);
+
+            if (typeof(T) == typeof(float) || typeof(T) == typeof(double) || typeof(T) == typeof(int))
+            {
+                kernel.Run(d1.DevicePointer, alpha, d2.DevicePointer, beta, d2.DevicePointer, numElements);
+            }
+            else throw new NotSupportedException("Type: {0} is not supported by the BLAS library.");
+        }
+
+        #endregion
+
+        #region Axpb = alpha * x + beta
+
+        public static GpuMatrix<T> Axpb<T>(GpuMatrix<T> m1, T a, T b) where T : struct
         {
             Contract.Requires<ArgumentNullException>(m1 != null);
 
@@ -60,16 +125,45 @@ namespace CudaLearn
             // TODO Minimize the tail effect. http://devblogs.nvidia.com/parallelforall/cuda-pro-tip-minimize-the-tail-effect/
             kernel.BlockDimensions = new dim3(threadsPerBlock);
             kernel.GridDimensions = new dim3(blocksPerGrid);
-            Console.WriteLine(string.Format("X:{0} Y:{1} Z:{2}", kernel.GridDimensions.x, kernel.GridDimensions.y, kernel.GridDimensions.z));
 
             if (typeof(T) == typeof(float) || typeof(T) == typeof(double) || typeof(T) == typeof(int))
             {
                 kernel.Run(d1.DevicePointer, a, b, d3.DevicePointer, numElements);
-            }          
+            }
             else throw new NotSupportedException("Type: {0} is not supported by the BLAS library.");
 
             return m3;
         }
+
+        public static void AxpbInPlace<T>(ref GpuMatrix<T> m1, T a, T b) where T : struct
+        {
+            Contract.Requires<ArgumentNullException>(m1 != null);
+
+            var context = CudaLearnModule.Context;
+            var blas = CudaLearnModule.BlasContext;
+            var d1 = ((IGpuMatrixStorage<T>)m1).GetDeviceMemory();
+
+            int numElements = m1.Rows * m1.Columns;
+            int threadsPerBlock = context.GetDeviceInfo().MaxThreadsPerBlock;
+            int blocksPerGrid = (numElements + threadsPerBlock - 1) / threadsPerBlock;
+
+            CudaKernel kernel = context.LoadKernelPTX("vectorOperations.ptx", GetCudaOperationWithSuffix<T>("vectorAxpb"));
+            // TODO Minimize the tail effect. http://devblogs.nvidia.com/parallelforall/cuda-pro-tip-minimize-the-tail-effect/
+            kernel.BlockDimensions = new dim3(threadsPerBlock);
+            kernel.GridDimensions = new dim3(blocksPerGrid);
+
+            if (typeof(T) == typeof(float) || typeof(T) == typeof(double) || typeof(T) == typeof(int))
+            {
+                kernel.Run(d1.DevicePointer, a, b, d1.DevicePointer, numElements);
+            }
+            else throw new NotSupportedException("Type: {0} is not supported by the BLAS library.");
+        }
+
+
+
+        #endregion
+
+        #region Axpy = alpha * x + y
 
         public static GpuMatrix<T> Axpy<T>(GpuMatrix<T> m1, T alpha, GpuMatrix<T> m2) where T : struct
         {
@@ -88,16 +182,32 @@ namespace CudaLearn
             {
                 blas.Copy(d2 as CudaDeviceVariable<float>, 1, d3 as CudaDeviceVariable<float>, 1);
                 blas.Axpy((float)(object)alpha, d1 as CudaDeviceVariable<float>, 1, d3 as CudaDeviceVariable<float>, 1);
-                return m3;
+
             }
             else if (typeof(T) == typeof(double))
-            {                
+            {
                 blas.Copy(d2 as CudaDeviceVariable<double>, 1, d3 as CudaDeviceVariable<double>, 1);
                 blas.Axpy((double)(object)alpha, d1 as CudaDeviceVariable<double>, 1, d3 as CudaDeviceVariable<double>, 1);
-                return m3;
-            }
 
-            throw new NotSupportedException("Type: {0} is not supported by the BLAS library.");
+            }
+            else if (typeof(T) == typeof(int))
+            {
+                int numElements = m1.Rows * m1.Columns;
+
+                var context = CudaLearnModule.Context;
+                int threadsPerBlock = context.GetDeviceInfo().MaxThreadsPerBlock;
+                int blocksPerGrid = (numElements + threadsPerBlock - 1) / threadsPerBlock;
+
+                CudaKernel kernel = context.LoadKernelPTX("vectorOperations.ptx", GetCudaOperationWithSuffix<T>("vectorAxpby"));
+                // TODO Minimize the tail effect. http://devblogs.nvidia.com/parallelforall/cuda-pro-tip-minimize-the-tail-effect/
+                kernel.BlockDimensions = new dim3(threadsPerBlock);
+                kernel.GridDimensions = new dim3(blocksPerGrid);
+
+                kernel.Run(d1.DevicePointer, alpha, d2.DevicePointer, 1, d3.DevicePointer, numElements);
+            }
+            else throw new NotSupportedException("Type: {0} is not supported by the BLAS library.");
+
+            return m3;            
         }
 
         public static void AxpyInPlace<T>(GpuMatrix<T> m1, T alpha, ref GpuMatrix<T> m2) where T : struct
@@ -118,8 +228,25 @@ namespace CudaLearn
             {
                 blas.Axpy((double)(object)alpha, d1 as CudaDeviceVariable<double>, 1, d2 as CudaDeviceVariable<double>, 1);
             }
+            else if (typeof(T) == typeof(int))
+            {
+                int numElements = m1.Rows * m1.Columns;
+
+                var context = CudaLearnModule.Context;
+                int threadsPerBlock = context.GetDeviceInfo().MaxThreadsPerBlock;
+                int blocksPerGrid = (numElements + threadsPerBlock - 1) / threadsPerBlock;
+
+                CudaKernel kernel = context.LoadKernelPTX("vectorOperations.ptx", GetCudaOperationWithSuffix<T>("vectorAxpby"));
+                // TODO Minimize the tail effect. http://devblogs.nvidia.com/parallelforall/cuda-pro-tip-minimize-the-tail-effect/
+                kernel.BlockDimensions = new dim3(threadsPerBlock);
+                kernel.GridDimensions = new dim3(blocksPerGrid);
+
+                kernel.Run(d1.DevicePointer, alpha, d2.DevicePointer, 1, d2.DevicePointer, numElements);
+            }
             else throw new NotSupportedException("Type: {0} is not supported by the BLAS library.");
         }
+
+        #endregion 
 
         public static GpuMatrix<T> Multiply<T>(GpuMatrix<T> m1, GpuMatrix<T> m2) where T : struct
         {
@@ -188,14 +315,12 @@ namespace CudaLearn
             // TODO Minimize the tail effect. http://devblogs.nvidia.com/parallelforall/cuda-pro-tip-minimize-the-tail-effect/
             kernel.BlockDimensions = new dim3(threadsPerBlock);
             kernel.GridDimensions = new dim3(blocksPerGrid);
-            Console.WriteLine(string.Format("X:{0} Y:{1} Z:{2}", kernel.GridDimensions.x, kernel.GridDimensions.y, kernel.GridDimensions.z));
 
             var equals = new bool[1];
             CudaDeviceVariable<bool> result = new CudaDeviceVariable<bool>(1);
             kernel.Run(d1.DevicePointer, d2.DevicePointer, result.DevicePointer, numElements, epsilon);
             result.CopyToHost(equals);
             return equals[0];
-
         }
     }
 }

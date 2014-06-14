@@ -58,13 +58,24 @@ __device__ void vectorAdd(const T *A, const T *B, T *C, int numElements)
 }
 
 template< typename T >
-__device__ void vectorAxpb(const T *A, const T a, const T b, T *C, int numElements)
+__device__ void vectorAxpby(const T *x, const T a, const T *y, const T b, T *C, int numElements)
 {
 	int i = blockDim.x * blockIdx.x + threadIdx.x;
 
 	if (i < numElements)
 	{
-		C[i] = a * A[i] + b;
+		C[i] = a * x[i] + b * y[i];
+	}
+}
+
+template< typename T >
+__device__ void vectorAxpb(const T *x, const T a, const T b, T *C, int numElements)
+{
+	int i = blockDim.x * blockIdx.x + threadIdx.x;
+
+	if (i < numElements)
+	{
+		C[i] = a * x[i] + b;
 	}
 }
 
@@ -86,19 +97,36 @@ extern "C"
 		vectorAdd<int>(A, B, C, numElements);
 	}
 
-	__global__ void vectorAxpb1f(const float *A, const float a, const float b, float *C, int numElements)
+
+	__global__ void vectorAxpby1f(const float *x, const float a, const float *y, const float b, float *C, int numElements)
 	{
-		vectorAxpb<float>(A, a, b, C, numElements);
+		vectorAxpby<float>(x, a, y, b, C, numElements);
 	}
 
-	__global__ void vectorAxpb1d(const double *A, const double a, const double b, double *C, int numElements)
+	__global__ void vectorAxpby1d(const double *x, const double a, const double *y, const double b, double *C, int numElements)
 	{
-		vectorAxpb<double>(A, a, b, C, numElements);
+		vectorAxpby<double>(x, a, y, b, C, numElements);
 	}
 
-	__global__ void vectorAxpb1i(const int *A, const int a, const int b, int *C, int numElements)
+	__global__ void vectorAxpby1i(const int *x, const int a, const int *y, const int b, int *C, int numElements)
 	{
-		vectorAxpb<int>(A, a, b, C, numElements);
+		vectorAxpby<int>(x, a, y, b, C, numElements);
+	}
+
+
+	__global__ void vectorAxpb1f(const float *x, const float a, const float b, float *C, int numElements)
+	{
+		vectorAxpb<float>(x, a, b, C, numElements);
+	}
+
+	__global__ void vectorAxpb1d(const double *x, const double a, const double b, double *C, int numElements)
+	{
+		vectorAxpb<double>(x, a, b, C, numElements);
+	}
+
+	__global__ void vectorAxpb1i(const int *x, const int a, const int b, int *C, int numElements)
+	{
+		vectorAxpb<int>(x, a, b, C, numElements);
 	}
 
 
