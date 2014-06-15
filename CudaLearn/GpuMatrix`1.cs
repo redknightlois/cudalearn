@@ -94,18 +94,16 @@ namespace CudaLearn
         }
 
         public GpuMatrix(int iRows, int iCols, T value)         // Matrix Class constructor
-        {            
+        {
             Contract.Requires<NotSupportedException>(typeof(T) == typeof(int) || typeof(T) == typeof(float) || typeof(T) == typeof(double));
             Contract.Requires<ArgumentException>(iRows > 0 && iCols > 0);
 
             Rows = iRows;
             Columns = iCols;
             GpuData = new CudaDeviceVariable<T>(Rows * Columns);
-            
-            // TODO Find a better way to do this. A memset or something like that
-            for (int i = 0; i < Columns; i++)
-                for (int j = 0; j < Rows; j++)
-                    this[i, j] = value;
+
+            var aux = this;
+            BlasMath.SetConstant(ref aux, value);
         }
 
         public GpuMatrix(GpuMatrix<T> matrix)
@@ -169,15 +167,14 @@ namespace CudaLearn
         /// <summary>
         /// Creates an identity matrix.
         /// </summary>
-        public static GpuMatrix<T> Identity(int iRows, int iCols)
+        public static GpuMatrix<T> Identity(int iRows)
         {
-            Contract.Requires<ArgumentException>(iRows > 0 && iCols > 0);
+            Contract.Requires<ArgumentException>(iRows > 0);
 
-            var matrix = new GpuMatrix<T>(iRows, iCols, GpuMatrix<T>.Zero);
+            var m = new GpuMatrix<T>(iRows, iRows);
+            BlasMath.SetIdentity(ref m);
 
-            for (int i = 0; i < Math.Min(iRows, iCols); i++)
-                matrix[i, i] = GpuMatrix<T>.One;
-            return matrix;
+            return m;
         }
 
         /// <summary>
@@ -375,6 +372,30 @@ namespace CudaLearn
         public override string ToString()                           // Function returns matrix as a string
         {
             return this.ToString("G", CultureInfo.CurrentCulture);
+        }
+
+        public static implicit operator GpuMatrix<T>(Matrix<T> m)
+        {            
+            var r = new GpuMatrix<T>(m.Rows, m.Columns);
+
+            var mt = ((IHostMatrixStorage<T>)m).GetHostMemory();
+            var rt = ((IGpuMatrixStorage<T>)r).GetDeviceMemory();
+
+            rt.CopyToDevice(mt);
+
+            return r;
+        }
+
+        public static explicit operator Matrix<T> ( GpuMatrix<T> m )
+        {
+            var r = new Matrix<T>(m.Rows, m.Columns);
+
+            var mt = ((IGpuMatrixStorage<T>)m).GetDeviceMemory();            
+            var rt = ((IHostMatrixStorage<T>)r).GetHostMemory();
+
+            mt.CopyToHost(rt);
+            
+            return r;
         }
     }
 }

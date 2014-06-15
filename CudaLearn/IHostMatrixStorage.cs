@@ -1,5 +1,4 @@
-﻿using ManagedCuda;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,8 +10,8 @@ namespace CudaLearn
     /// This interface is only intended for advanced uses only. 
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IGpuMatrixStorage<T> : IFluentInterface where T : struct
+    public interface IHostMatrixStorage<T> : IFluentInterface where T : struct
     {
-        CudaDeviceVariable<T> GetDeviceMemory();
+        T[] GetHostMemory();
     }
 }

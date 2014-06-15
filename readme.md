@@ -54,7 +54,7 @@ Bizspark and startups are elegible to get a free project wide license if their r
  
 Personal and demonstration use and non-for-profit are eligible to get a free project wide license.
 
-### Features by hire
+### Features for hire
 
 You can ask for a quote on any specific feature your business requires to assign a dedicated team to tackle it.
 

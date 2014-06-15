@@ -7,14 +7,16 @@ using Xunit;
 
 namespace CudaLearn.Tests
 {
-    public class BlasMathTests
+    public class BlasMathTests : MathTestsBase
     {
+        public BlasMathTests()
+        {
+            CudaLearnModule.AllowHandyForDebugButVerySlowGpuMemoryAccess = true;
+        }
+
         [Fact]
         public void AbsoluteSumSuccessful()
         {
-            CudaLearnModule.Initialize();
-            CudaLearnModule.AllowHandyForDebugButVerySlowGpuMemoryAccess = true;
-
             var generator = new Random(123);
             int columns = 450;
 

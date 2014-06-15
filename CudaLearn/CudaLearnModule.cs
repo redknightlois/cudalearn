@@ -30,5 +30,22 @@ namespace CudaLearn
             _context = new CudaContext();
             _blasContext = new CudaBlas();
         }
+
+        public static void Release()
+        {
+            if (_blasContext != null)
+            {
+                _blasContext.Dispose();
+                _blasContext = null;
+            }    
+
+            if (_context != null)
+            {
+                _context.Dispose();
+                _context = null;
+            }
+        }
+
+
     }
 }

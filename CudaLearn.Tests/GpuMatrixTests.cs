@@ -12,7 +12,6 @@ namespace CudaLearn.Tests
     {
         public GpuMatrixTest()
         {
-            CudaLearnModule.Initialize();
             CudaLearnModule.AllowHandyForDebugButVerySlowGpuMemoryAccess = true;
         }
 
@@ -45,7 +44,7 @@ namespace CudaLearn.Tests
         {
             var m1 = new GpuMatrix<T>(2, 2, value);
             var m2 = GpuMatrix<T>.Zeroes(2, 2);
-            var m3 = GpuMatrix<T>.Identity(2, 2);
+            var m3 = GpuMatrix<T>.Identity(2);
 
             for (int i = 0; i < m1.Rows; i++)
             {

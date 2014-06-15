@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CudaLearn
 {
-    public class Matrix<T> : IEquatable<Matrix<T>>
+    public class Matrix<T> : IEquatable<Matrix<T>>, IHostMatrixStorage<T>
         where T : struct
     {
         public readonly int Rows;
@@ -88,6 +88,33 @@ namespace CudaLearn
             for (int i = 0; i < Columns; i++)
                 for (int j = 0; j < Rows; j++)
                     this[i, j] = value;
+
+            this.decomposition = new Lazy<Decomposition<T>>(() => MakeLU(this), true);
+        }
+
+        public Matrix(int iRows, int iCols, T[] values)         // Matrix Class constructor
+        {
+            Contract.Requires<NotSupportedException>(typeof(T) == typeof(int) || typeof(T) == typeof(float) || typeof(T) == typeof(double));
+            Contract.Requires<ArgumentException>(iRows > 0 && iCols > 0);
+            Contract.Requires<ArgumentException>(iRows * iCols == values.Length);
+
+            Rows = iRows;
+            Columns = iCols;            
+            Data = new T[Columns * Rows];
+
+            // Optimization. We are not relinquishing the ownership of the T[] array. Therefore we must copy the data. 
+            // Small data is faster to copy in a loop than bigger data. The 32 bytes data is a guesstimation that must be
+            // checked. Autotuning this may make sense in the future. 
+            // http://blog.wouldbetheologian.com/2011/11/my-favorite-c-micro-optimization-1.html
+            if ( values.Length < 32 )
+            {
+                for ( int i = 0; i < values.Length; i++ )
+                    Data[i] = values[i];
+            }
+            else
+            {
+                Buffer.BlockCopy( values, 0, this.Data, 0, values.Length);
+            }
 
             this.decomposition = new Lazy<Decomposition<T>>(() => MakeLU(this), true);
         }
@@ -172,13 +199,13 @@ namespace CudaLearn
         /// <summary>
         /// Creates an identity matrix.
         /// </summary>
-        public static Matrix<T> Identity(int iRows, int iCols)
+        public static Matrix<T> Identity(int iRows)
         {
-            Contract.Requires<ArgumentException>(iRows > 0 && iCols > 0);
+            Contract.Requires<ArgumentException>(iRows > 0);
 
-            var matrix = new Matrix<T>(iRows, iCols);
+            var matrix = new Matrix<T>(iRows, iRows);
 
-            for (int i = 0; i < Math.Min(iRows, iCols); i++)
+            for (int i = 0; i < iRows; i++)
                 matrix[i, i] = Matrix<T>.One;
             return matrix;
         }
@@ -251,9 +278,10 @@ namespace CudaLearn
         public static Matrix<T> Power(Matrix<T> m, int pow)           // Power matrix to exponent
         {
             Contract.Requires<ArgumentNullException>(m != null);
+            Contract.Requires<ArgumentException>(m.IsSquare);
 
             if (pow == 0)
-                return Identity(m.Rows, m.Columns);
+                return Identity(m.Rows);
             if (pow == 1)
                 return m.Clone();
             if (pow == -1)
@@ -267,7 +295,7 @@ namespace CudaLearn
             }
             else x = m.Clone();
 
-            Matrix<T> ret = Identity(m.Rows, m.Columns);
+            Matrix<T> ret = Identity(m.Rows);
             while (pow != 0)
             {
                 if ((pow & 1) == 1)
@@ -594,6 +622,11 @@ namespace CudaLearn
             Contract.Requires<ArgumentNullException>(m != null);
 
             return c - m;
+        }
+
+        T[] IHostMatrixStorage<T>.GetHostMemory()
+        {
+            return this.Data;
         }
     }
 }

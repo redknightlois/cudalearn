@@ -128,7 +128,9 @@
     <Compile Include="CudaLearnModule.cs" />
     <Compile Include="Decomposition.cs" />
     <Compile Include="GpuMatrix`1.cs" />
+    <Compile Include="IFluentInterface.cs" />
     <Compile Include="IGpuMatrixStorage.cs" />
+    <Compile Include="IHostMatrixStorage.cs" />
     <Compile Include="Matrix`1.cs" />
     <Compile Include="MatrixHelper.cs">
       <AutoGen>True</AutoGen>
@@ -145,9 +147,12 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>MatrixHelper.cs</LastGenOutput>
     </None>
+    <None Include="matrixOperations.ptx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="vectorOperations.ptx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>

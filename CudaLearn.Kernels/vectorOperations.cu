@@ -1,20 +1,4 @@
-#define _SIZE_T_DEFINED 
-#ifndef __CUDACC__ 
-#define __CUDACC__ 
-#endif 
-#ifndef __cplusplus 
-#define __cplusplus 
-#endif
-
-#include <cuda.h> 
-#include <device_launch_parameters.h> 
-#include <texture_fetch_functions.h> 
-#include <builtin_types.h> 
-#include <vector_functions.h> 
-#include "float.h" 
-
-
-
+#include "common.h"
 
 template< typename T >
 __device__ void vectorEquals(const T *A, const T *B, bool *C, int numElements, T epsilon)
@@ -79,7 +63,20 @@ __device__ void vectorAxpb(const T *x, const T a, const T b, T *C, int numElemen
 	}
 }
 
-extern "C"  
+template< typename T >
+__device__ void vectorSet(T *x, const T a, int numElements)
+{
+	int i = blockDim.x * blockIdx.x + threadIdx.x;
+
+	if (i < numElements)
+	{
+		x[i] = a;
+	}
+}
+
+
+
+extern "C"
 {
 
 	__global__ void vectorAdd1f(const float *A, const float *B, float *C, int numElements)
@@ -127,6 +124,22 @@ extern "C"
 	__global__ void vectorAxpb1i(const int *x, const int a, const int b, int *C, int numElements)
 	{
 		vectorAxpb<int>(x, a, b, C, numElements);
+	}
+
+
+	__global__ void vectorSet1f(float *x, const float a, int numElements)
+	{
+		vectorSet<float>(x, a, numElements);
+	}
+
+	__global__ void vectorSet1d(double *x, const double a, int numElements)
+	{
+		vectorSet<double>(x, a, numElements);
+	}
+
+	__global__ void vectorSet1i(int *x, const int a, int numElements)
+	{
+		vectorSet<int>(x, a, numElements);
 	}
 
 

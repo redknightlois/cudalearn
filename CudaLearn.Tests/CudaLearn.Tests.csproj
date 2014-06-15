@@ -47,10 +47,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BlasMath.cs" />
-    <Compile Include="GpuMatrix.cs" />
+    <Compile Include="BlasMathTests.cs" />
+    <Compile Include="GpuMatrixTests.cs" />
     <Compile Include="MathTestsBase.cs" />
-    <Compile Include="Matrix.cs" />
+    <Compile Include="MatrixTests.cs" />
+    <Compile Include="MixedMatrixOperationsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

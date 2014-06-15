@@ -211,7 +211,7 @@ namespace CudaLearn.Tests
         [Fact]
         public void DeterminantFromIntMatrixIsNotSupported()
         {
-            var i = Matrix<int>.Identity(2, 2);
+            var i = Matrix<int>.Identity(2);
             Assert.Throws<NotSupportedException>(() => i.Determinant());
         }
 
@@ -255,8 +255,8 @@ namespace CudaLearn.Tests
 
             Assert.Equal(mInverse, m.Invert());
 
-            Assert.Equal(Matrix<float>.Identity(2, 2), m * mInverse);
-            Assert.Equal(Matrix<float>.Identity(2, 2), mInverse * m);
+            Assert.Equal(Matrix<float>.Identity(2), m * mInverse);
+            Assert.Equal(Matrix<float>.Identity(2), mInverse * m);
         }
 
         [Fact]
@@ -294,7 +294,7 @@ namespace CudaLearn.Tests
                 for (int j = 0; j < m.Columns; j++)
                     m[i, j] = 1;
 
-            var identity = Matrix<float>.Identity(256, 256);
+            var identity = Matrix<float>.Identity(256);
 
             var m1 = m * identity;
             var m2 = identity * m;
@@ -332,7 +332,7 @@ namespace CudaLearn.Tests
 
             var mInverse = m.Invert();
 
-            var identity = Matrix<double>.Identity(256, 256);
+            var identity = Matrix<double>.Identity(256);
 
             Assert.Equal(identity, m * mInverse);
             Assert.Equal(identity, mInverse * m);

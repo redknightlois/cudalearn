@@ -159,6 +159,51 @@ namespace CudaLearn
             else throw new NotSupportedException("Type: {0} is not supported by the BLAS library.");
         }
 
+        public static void SetConstant<T>(ref GpuMatrix<T> m, T c) where T : struct
+        {
+            Contract.Requires<ArgumentNullException>(m != null);
+
+            var context = CudaLearnModule.Context;
+            var d1 = ((IGpuMatrixStorage<T>)m).GetDeviceMemory();
+
+            int numElements = m.Rows * m.Columns;
+            int threadsPerBlock = context.GetDeviceInfo().MaxThreadsPerBlock;
+            int blocksPerGrid = (numElements + threadsPerBlock - 1) / threadsPerBlock;
+
+            CudaKernel kernel = context.LoadKernelPTX("vectorOperations.ptx", GetCudaOperationWithSuffix<T>("vectorSet"));
+            // TODO Minimize the tail effect. http://devblogs.nvidia.com/parallelforall/cuda-pro-tip-minimize-the-tail-effect/
+            kernel.BlockDimensions = new dim3(threadsPerBlock);
+            kernel.GridDimensions = new dim3(blocksPerGrid);
+
+            if (typeof(T) == typeof(float) || typeof(T) == typeof(double) || typeof(T) == typeof(int))
+            {
+                kernel.Run(d1.DevicePointer, c, numElements);
+            }
+            else throw new NotSupportedException("Type: {0} is not supported by the BLAS library.");
+
+        }
+
+        public static void SetIdentity<T>( ref GpuMatrix<T> m ) where T : struct
+        {
+            Contract.Requires<ArgumentNullException>(m != null);
+            Contract.Requires<ArgumentException>(m.Rows == m.Columns);
+
+            var context = CudaLearnModule.Context;
+            var d1 = ((IGpuMatrixStorage<T>)m).GetDeviceMemory();
+
+            int threadsPerBlock = 8;
+            int blocksPerGrid = (m.Rows + threadsPerBlock - 1) / threadsPerBlock;
+
+            CudaKernel kernel = context.LoadKernelPTX("matrixOperations.ptx", GetCudaOperationWithSuffix<T>("matrixSetIdentity"));
+            kernel.BlockDimensions = new dim3(threadsPerBlock, threadsPerBlock);
+            kernel.GridDimensions = new dim3(blocksPerGrid, blocksPerGrid);
+
+            if (typeof(T) == typeof(float) || typeof(T) == typeof(double) || typeof(T) == typeof(int))
+            {
+                kernel.Run(d1.DevicePointer, m.Rows);
+            }
+            else throw new NotSupportedException("Type: {0} is not supported by the BLAS library.");
+        }
 
 
         #endregion
@@ -273,7 +318,7 @@ namespace CudaLearn
             }
 
             throw new NotSupportedException("Type: {0} is not supported by the BLAS library.");
-        }
+        }        
 
         public static bool Equals<T>(GpuMatrix<T> m1, GpuMatrix<T> m2) where T : struct
         {
