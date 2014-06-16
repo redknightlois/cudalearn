@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CudaLearn
 {
-    public class GpuMatrix<T> : IEquatable<GpuMatrix<T>>, IGpuMatrixStorage<T>  where T : struct
+    public class GpuMatrix<T> : IEquatable<GpuMatrix<T>>, IGpuMatrixStorage<T>, IDisposable  where T : struct
     {
         public readonly int Rows;
         public readonly int Columns;
@@ -396,6 +396,12 @@ namespace CudaLearn
             mt.CopyToHost(rt);
             
             return r;
+        }
+
+        public virtual void Dispose()
+        {
+            if (this.GpuData != null)
+                this.GpuData.Dispose();
         }
     }
 }

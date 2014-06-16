@@ -22,11 +22,12 @@ namespace CudaLearn.Tests
                 for (int j = 0; j < c.Columns; j++)
                     c[i, j] = generator.Next(150) / 150.0f;
 
-
-            var g = GpuMatrix<double>.Identity(size);
-
-            GpuMatrix<double> r = g * c * g;
-            Matrix<double> c1 = (Matrix<double>) r;
+            Matrix<double> c1;
+            using ( var g = GpuMatrix<double>.Identity(size) )
+            using ( var r = g * c * g )
+            {
+                c1 = (Matrix<double>)r;
+            }
 
             // We perform all tests in the Host (CPU). 
             Assert.Equal<Matrix<double>>(c1, c);

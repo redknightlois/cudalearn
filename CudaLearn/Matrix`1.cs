@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CudaLearn
 {
-    public class Matrix<T> : IEquatable<Matrix<T>>, IHostMatrixStorage<T>
+    public class Matrix<T> : IEquatable<Matrix<T>>, IHostMatrixStorage<T>, IDisposable
         where T : struct
     {
         public readonly int Rows;
@@ -627,6 +627,10 @@ namespace CudaLearn
         T[] IHostMatrixStorage<T>.GetHostMemory()
         {
             return this.Data;
+        }
+
+        public virtual void Dispose()
+        {
         }
     }
 }
