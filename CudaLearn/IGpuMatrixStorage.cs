@@ -14,5 +14,9 @@ namespace CudaLearn
     public interface IGpuMatrixStorage<T> : IFluentInterface where T : struct
     {
         CudaDeviceVariable<T> GetDeviceMemory();
+
+        void Lock();
+
+        void Unlock();
     }
 }

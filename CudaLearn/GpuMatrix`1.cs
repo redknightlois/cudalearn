@@ -129,12 +129,18 @@ namespace CudaLearn
                 Contract.Requires(iRow >= 0 && iRow < Rows);
                 Contract.Requires(iCol >= 0 && iCol < Columns);
 
+                if (isLocked)
+                    throw new InvalidOperationException("The matrix storage is in locked mode.");
+
                 return GpuData[Rows * iCol + iRow];
             }
             set
             {
                 Contract.Requires(iRow >= 0 && iRow < Rows);
                 Contract.Requires(iCol >= 0 && iCol < Columns);
+
+                if (isLocked)
+                    throw new InvalidOperationException("The matrix storage is in locked mode.");
 
                 if ( !CudaLearnModule.AllowHandyForDebugButVerySlowGpuMemoryAccess )
                     throw new InvalidOperationException("You cannot set values individually in the GpuMatrix<T> for performance reasons.");
@@ -147,7 +153,10 @@ namespace CudaLearn
         /// Function returns the copy of this matrix
         /// </summary>
         public GpuMatrix<T> Clone()
-        {            
+        {
+            if (isLocked)
+                throw new InvalidOperationException("The matrix storage is in locked mode.");
+
             return new GpuMatrix<T>(this);
         }
 
@@ -184,6 +193,9 @@ namespace CudaLearn
         {
             Contract.Requires<ArgumentNullException>(m != null);
 
+            if (m.isLocked)
+                throw new InvalidOperationException("The matrix storage is in locked mode.");
+
             throw new NotImplementedException();
         }
 
@@ -202,6 +214,9 @@ namespace CudaLearn
 
         public static GpuMatrix<T> Invert(GpuMatrix<T> m)
         {
+            if (m.isLocked)
+                throw new InvalidOperationException("The matrix storage is in locked mode.");
+
             if (typeof(T) == typeof(float))
             {
                 var t = m as GpuMatrix<float>;
@@ -221,6 +236,9 @@ namespace CudaLearn
 
         public bool Equals(GpuMatrix<T> other)
         {
+            if (isLocked)
+                throw new InvalidOperationException("The matrix storage is in locked mode.");
+
             if (other == null)
                 return false;
 
@@ -260,6 +278,9 @@ namespace CudaLearn
         {
             Contract.Requires<ArgumentNullException>(m1 != null && m2 != null);
 
+            if (m1.isLocked || m2.isLocked)
+                throw new InvalidOperationException("The matrix storage is in locked mode.");
+
             if (typeof(T) == typeof(float))
             {
                 var t1 = m1 as GpuMatrix<float>;
@@ -281,6 +302,9 @@ namespace CudaLearn
             Contract.Requires(typeof(T) == typeof(int) || typeof(T) == typeof(float) || typeof(T) == typeof(double));
             Contract.Requires<ArgumentNullException>(m != null);
 
+            if (m.isLocked)
+                throw new InvalidOperationException("The matrix storage is in locked mode.");
+
             return BlasMath.Axpb(m, c, GpuMatrix<T>.Zero);
         }
 
@@ -294,6 +318,9 @@ namespace CudaLearn
         public static GpuMatrix<T> operator -(GpuMatrix<T> m)
         {
             Contract.Requires<ArgumentNullException>(m != null);
+            
+            if (m.isLocked)
+                throw new InvalidOperationException("The matrix storage is in locked mode.");
 
             var negative = GpuMatrix<T>.Zeroes(m.Rows, m.Columns);
             BlasMath.AxpyInPlace<T>(m, GpuMatrix<T>.NegativeOne, ref negative);
@@ -304,6 +331,9 @@ namespace CudaLearn
             Contract.Requires<NotSupportedException>(typeof(T) == typeof(float) || typeof(T) == typeof(double) || typeof(T) == typeof(int));
             Contract.Requires<ArgumentNullException>(m1 != null && m2 != null);
 
+            if (m1.isLocked || m2.isLocked)
+                throw new InvalidOperationException("The matrix storage is in locked mode.");
+
             return BlasMath.Axpy(m1, GpuMatrix<T>.One, m2) as GpuMatrix<T>;
         }
 
@@ -312,6 +342,9 @@ namespace CudaLearn
             Contract.Requires<NotSupportedException>(typeof(T) == typeof(float) || typeof(T) == typeof(double) || typeof(T) == typeof(int));
             Contract.Requires<ArgumentNullException>(m1 != null && m2 != null);
 
+            if (m1.isLocked || m2.isLocked)
+                throw new InvalidOperationException("The matrix storage is in locked mode.");
+
             return BlasMath.Axpy(m2, GpuMatrix<T>.NegativeOne, m1);
         }
 
@@ -319,6 +352,9 @@ namespace CudaLearn
         {
             Contract.Requires(typeof(T) == typeof(int) || typeof(T) == typeof(float) || typeof(T) == typeof(double) || typeof(T) == typeof(int));
             Contract.Requires<ArgumentNullException>(m != null);
+            
+            if (m.isLocked)
+                throw new InvalidOperationException("The matrix storage is in locked mode.");
 
             return BlasMath.Axpb(m, GpuMatrix<T>.One, c);
         }
@@ -333,6 +369,9 @@ namespace CudaLearn
         public static GpuMatrix<T> operator -(T c, GpuMatrix<T> m)
         {
             Contract.Requires<ArgumentNullException>(m != null);
+
+            if (m.isLocked)
+                throw new InvalidOperationException("The matrix storage is in locked mode.");
 
             return BlasMath.Axpb(m, GpuMatrix<T>.One, NegativeConstant(c)) as GpuMatrix<T>;            
         }
@@ -352,6 +391,9 @@ namespace CudaLearn
 
         public string ToString(string format, IFormatProvider formatProvider)
         {
+            if (isLocked)
+                throw new InvalidOperationException("The matrix storage is in locked mode.");
+
             if (Rows * Columns > 36)
                 return string.Format( "M[{0},{1}] is too large to convert to string. Use a dedicated dumper.", Rows, Columns );
 
@@ -375,7 +417,7 @@ namespace CudaLearn
         }
 
         public static implicit operator GpuMatrix<T>(Matrix<T> m)
-        {            
+        {
             var r = new GpuMatrix<T>(m.Rows, m.Columns);
 
             var mt = ((IHostMatrixStorage<T>)m).GetHostMemory();
@@ -388,6 +430,9 @@ namespace CudaLearn
 
         public static explicit operator Matrix<T> ( GpuMatrix<T> m )
         {
+            if (m.isLocked)
+                throw new InvalidOperationException("The matrix storage is in locked mode.");
+
             var r = new Matrix<T>(m.Rows, m.Columns);
 
             var mt = ((IGpuMatrixStorage<T>)m).GetDeviceMemory();            
@@ -400,8 +445,24 @@ namespace CudaLearn
 
         public virtual void Dispose()
         {
+            if (isLocked)
+                throw new InvalidOperationException("The matrix storage is in locked mode.");
+
             if (this.GpuData != null)
                 this.GpuData.Dispose();
+        }
+
+
+        private bool isLocked = false;
+
+        void IGpuMatrixStorage<T>.Lock()
+        {
+            this.isLocked = true;
+        }
+
+        void IGpuMatrixStorage<T>.Unlock()
+        {
+            this.isLocked = false;
         }
     }
 }
