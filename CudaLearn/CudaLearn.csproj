@@ -105,19 +105,36 @@
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CudaBlas, Version=6.0.5221.27274, Culture=neutral, PublicKeyToken=539d54d12e99fedb, processorArchitecture=AMD64">
+    <Reference Include="CudaBitmapSource, Version=6.0.23.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Support\ManagedCuda\x86\Release\CudaBlas.dll</HintPath>
+      <HintPath>..\packages\ManagedCuda-60-x86-unofficial.6.0.23\lib\net45\x86\CudaBitmapSource.dll</HintPath>
     </Reference>
-    <Reference Include="ManagedCuda, Version=6.0.5221.23941, Culture=neutral, PublicKeyToken=242d898828717aa0, processorArchitecture=MSIL">
+    <Reference Include="CudaBlas, Version=6.0.23.0, Culture=neutral, PublicKeyToken=539d54d12e99fedb, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Support\ManagedCuda\Release\ManagedCuda.dll</HintPath>
+      <HintPath>..\packages\ManagedCuda-60-x86-unofficial.6.0.23\lib\net45\x86\CudaBlas.dll</HintPath>
+    </Reference>
+    <Reference Include="CudaFFT, Version=6.0.23.0, Culture=neutral, PublicKeyToken=f066edfa1acb2f23, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\ManagedCuda-60-x86-unofficial.6.0.23\lib\net45\x86\CudaFFT.dll</HintPath>
+    </Reference>
+    <Reference Include="CudaRand, Version=6.0.23.0, Culture=neutral, PublicKeyToken=fe981579f4e9a066, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\ManagedCuda-60-x86-unofficial.6.0.23\lib\net45\x86\CudaRand.dll</HintPath>
+    </Reference>
+    <Reference Include="CudaSparse, Version=6.0.23.0, Culture=neutral, PublicKeyToken=f65ee2ae6b331585, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\ManagedCuda-60-x86-unofficial.6.0.23\lib\net45\x86\CudaSparse.dll</HintPath>
+    </Reference>
+    <Reference Include="ManagedCuda, Version=6.0.23.0, Culture=neutral, PublicKeyToken=242d898828717aa0, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\ManagedCuda-60-x86-unofficial.6.0.23\lib\net45\x86\ManagedCuda.dll</HintPath>
+    </Reference>
+    <Reference Include="NPP, Version=6.0.23.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\ManagedCuda-60-x86-unofficial.6.0.23\lib\net45\x86\NPP.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Numerics.Vectors">
-      <HintPath>..\packages\Microsoft.Bcl.Simd.1.0.2-beta\lib\portable-net45+win8\System.Numerics.Vectors.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
