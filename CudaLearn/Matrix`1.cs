@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CudaLearn
 {
-    public class Matrix<T> : IEquatable<Matrix<T>>, IHostMatrixStorage<T>, IDisposable
+    public partial class Matrix<T> : IEquatable<Matrix<T>>, IHostMatrixStorage<T>, IDisposable
         where T : struct
     {
         public readonly int Rows;
@@ -484,6 +484,34 @@ namespace CudaLearn
             return c * m;
         }
 
+        public static Matrix<T> operator /(Matrix<T> m, T c)
+        {
+            Contract.Requires<ArgumentNullException>(m != null);
+
+            if (typeof(T) == typeof(int))
+            {
+                throw new NotImplementedException();
+            }
+            else if (typeof(T) == typeof(float))
+            {
+                var t = m as Matrix<float>;
+                float c1 = (float)(object)c;
+                return t * (1.0f / c1) as Matrix<T>;
+            }
+            else if (typeof(T) == typeof(double))
+            {
+                var t = m as Matrix<double>;
+                double c1 = (double)(object)c;
+                return t * (1.0f / c1) as Matrix<T>;
+            }
+            throw new NotSupportedException("Type: {0} is not supported by the Matrix<T> class.");
+        }
+
+        public static Matrix<T> operator /(T c, Matrix<T> m )
+        {
+            return m / c;
+        }
+
         public static Matrix<T> operator -(Matrix<T> m)
         {
             Contract.Requires<ArgumentNullException>(m != null);
@@ -624,6 +652,49 @@ namespace CudaLearn
             return c - m;
         }
 
+        public static Matrix<T> operator ^(Matrix<T> m, int x)
+        {
+            Contract.Requires<ArgumentNullException>(m != null);
+            return m.Power(x);
+        }
+
+        public static Matrix<T> operator >(Matrix<T> m1, Matrix<T> m2)
+        {
+            Contract.Requires<ArgumentNullException>(m1 != null);
+            Contract.Requires<ArgumentNullException>(m2 != null);
+
+            throw new NotImplementedException();
+        }
+
+        public static Matrix<T> operator >=(Matrix<T> m1, Matrix<T> m2)
+        {
+            Contract.Requires<ArgumentNullException>(m1 != null);
+            Contract.Requires<ArgumentNullException>(m2 != null);
+
+            throw new NotImplementedException();
+        }
+
+        public static Matrix<T> operator <(Matrix<T> m1, Matrix<T> m2)
+        {
+            Contract.Requires<ArgumentNullException>(m1 != null);
+            Contract.Requires<ArgumentNullException>(m2 != null);
+
+            throw new NotImplementedException();
+        }
+
+        public static Matrix<T> operator <=(Matrix<T> m1, Matrix<T> m2)
+        {
+            Contract.Requires<ArgumentNullException>(m1 != null);
+            Contract.Requires<ArgumentNullException>(m2 != null);
+
+            throw new NotImplementedException();
+        }
+
+        public static implicit operator Matrix<T>(T[] m)
+        {
+            return new Matrix<T>(m.Length, 1, m);
+        }
+
         T[] IHostMatrixStorage<T>.GetHostMemory()
         {
             return this.Data;
@@ -631,6 +702,16 @@ namespace CudaLearn
 
         public virtual void Dispose()
         {
+        }
+
+
+        [ContractInvariantMethod]
+        private void ObjectInvariants()
+        {
+            Contract.Invariant(this.Rows > 0);
+            Contract.Invariant(this.Columns > 0);
+            Contract.Invariant(this.Data != null);
+            Contract.Invariant(this.Data.Length == this.Rows * this.Columns);
         }
     }
 }

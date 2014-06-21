@@ -1,5 +1,4 @@
 ﻿using ManagedCuda;
-using ManagedCuda.VectorTypes;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CudaLearn
+namespace CudaLearn.Examples.Performance
 {
-    public class Program
+    public static class GpuMemoryAccessExample
     {
         private static Random generator = new Random();
         private static CudaDeviceVariable<float> Create(int size)
@@ -21,7 +20,7 @@ namespace CudaLearn
             return aux;
         }
 
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             CudaLearnModule.Initialize();
             CudaLearnModule.AllowHandyForDebugButVerySlowGpuMemoryAccess = true;
@@ -44,7 +43,7 @@ namespace CudaLearn
             watch.Restart();
 
             m = new GpuMatrix<double>(rows, columns);
-            using ( var s = new MemoryAccessScope<double>(m))
+            using (var s = new MemoryAccessScope<double>(m))
             {
                 for (int i = 0; i < m.Rows; i++)
                     for (int j = 0; j < m.Columns; j++)
@@ -89,29 +88,6 @@ namespace CudaLearn
 
             Console.WriteLine("Total Sum: " + sum);
             Console.ReadLine();
-
-
-            //var context = CudaLearnModule.Context;
-
-            //int numElements = 4096;
-
-            //var input1 = Create(numElements);
-            //var input2 = Create(numElements);
-            //var output = new CudaDeviceVariable<float>(numElements);
-
-            //int threadsPerBlock = context.GetDeviceInfo().MaxThreadsPerBlock;
-            //int blocksPerGrid = (numElements + threadsPerBlock - 1) / threadsPerBlock;
-
-            //var kernel = context.LoadKernelPTX("vectorOperations.ptx", "vectorAdd1f");
-            //kernel.BlockDimensions = new dim3(threadsPerBlock);
-            //kernel.GridDimensions = new dim3(blocksPerGrid);
-            //Console.WriteLine(string.Format("X:{0} Y:{1} Z:{2}", kernel.GridDimensions.x, kernel.GridDimensions.y, kernel.GridDimensions.z));
-
-            //kernel.Run(input1.DevicePointer, input2.DevicePointer, output.DevicePointer, numElements);
-
-            //for (int i = 0; i < numElements; i++)
-            //    Console.Write(output[i] + ",");
-            //Console.WriteLine();
         }
     }
 }

@@ -15,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		WE-Markdown.css = WE-Markdown.css
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CudaLearn.Examples", "CudaLearn.Examples\CudaLearn.Examples.csproj", "{C3FB8D8C-55C4-4598-B3D4-4CCFFFEF351D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -65,6 +67,18 @@ Global
 		{CBDBE39A-AC9B-4A24-8942-5BCA24134E71}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{CBDBE39A-AC9B-4A24-8942-5BCA24134E71}.Release|Win32.ActiveCfg = Release|Any CPU
 		{CBDBE39A-AC9B-4A24-8942-5BCA24134E71}.Release|x64.ActiveCfg = Release|Any CPU
+		{C3FB8D8C-55C4-4598-B3D4-4CCFFFEF351D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3FB8D8C-55C4-4598-B3D4-4CCFFFEF351D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3FB8D8C-55C4-4598-B3D4-4CCFFFEF351D}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{C3FB8D8C-55C4-4598-B3D4-4CCFFFEF351D}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{C3FB8D8C-55C4-4598-B3D4-4CCFFFEF351D}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{C3FB8D8C-55C4-4598-B3D4-4CCFFFEF351D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C3FB8D8C-55C4-4598-B3D4-4CCFFFEF351D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3FB8D8C-55C4-4598-B3D4-4CCFFFEF351D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3FB8D8C-55C4-4598-B3D4-4CCFFFEF351D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{C3FB8D8C-55C4-4598-B3D4-4CCFFFEF351D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{C3FB8D8C-55C4-4598-B3D4-4CCFFFEF351D}.Release|Win32.ActiveCfg = Release|Any CPU
+		{C3FB8D8C-55C4-4598-B3D4-4CCFFFEF351D}.Release|x64.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

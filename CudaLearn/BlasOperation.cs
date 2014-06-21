@@ -11,6 +11,5 @@ namespace CudaLearn
     {
         NonTranspose = Operation.NonTranspose,
         Transpose = Operation.Transpose,
-        ConjugateTranspose = Operation.ConjugateTranspose,
     }
 }

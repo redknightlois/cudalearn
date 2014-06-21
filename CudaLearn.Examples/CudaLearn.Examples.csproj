@@ -4,14 +4,29 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5EF2A1B7-88F4-414B-B903-2E030D02485D}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{C3FB8D8C-55C4-4598-B3D4-4CCFFFEF351D}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CudaLearn</RootNamespace>
-    <AssemblyName>CudaLearn</AssemblyName>
+    <RootNamespace>CudaLearn.Examples</RootNamespace>
+    <AssemblyName>CudaLearn.Examples</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
+    <CodeContractsAssemblyMode>0</CodeContractsAssemblyMode>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -24,7 +39,7 @@
     <WarningLevel>4</WarningLevel>
     <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
     <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
-    <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
+    <CodeContractsRuntimeThrowOnFailure>False</CodeContractsRuntimeThrowOnFailure>
     <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
     <CodeContractsRuntimeSkipQuantifiers>False</CodeContractsRuntimeSkipQuantifiers>
     <CodeContractsRunCodeAnalysis>True</CodeContractsRunCodeAnalysis>
@@ -37,9 +52,9 @@
     <CodeContractsInferRequires>True</CodeContractsInferRequires>
     <CodeContractsInferEnsures>True</CodeContractsInferEnsures>
     <CodeContractsInferObjectInvariants>True</CodeContractsInferObjectInvariants>
-    <CodeContractsSuggestAssumptions>False</CodeContractsSuggestAssumptions>
+    <CodeContractsSuggestAssumptions>True</CodeContractsSuggestAssumptions>
     <CodeContractsSuggestRequires>True</CodeContractsSuggestRequires>
-    <CodeContractsSuggestObjectInvariants>True</CodeContractsSuggestObjectInvariants>
+    <CodeContractsSuggestObjectInvariants>False</CodeContractsSuggestObjectInvariants>
     <CodeContractsSuggestReadonly>True</CodeContractsSuggestReadonly>
     <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
     <CodeContractsShowSquigglies>True</CodeContractsShowSquigglies>
@@ -54,7 +69,7 @@
     <CodeContractsBaseLineFile />
     <CodeContractsCacheAnalysisResults>True</CodeContractsCacheAnalysisResults>
     <CodeContractsFailBuildOnWarnings>False</CodeContractsFailBuildOnWarnings>
-    <CodeContractsBeingOptimisticOnExternal>False</CodeContractsBeingOptimisticOnExternal>
+    <CodeContractsBeingOptimisticOnExternal>True</CodeContractsBeingOptimisticOnExternal>
     <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
     <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
@@ -80,8 +95,8 @@
     <CodeContractsRedundantAssumptions>True</CodeContractsRedundantAssumptions>
     <CodeContractsMissingPublicRequiresAsWarnings>True</CodeContractsMissingPublicRequiresAsWarnings>
     <CodeContractsInferRequires>True</CodeContractsInferRequires>
-    <CodeContractsInferEnsures>True</CodeContractsInferEnsures>
-    <CodeContractsInferObjectInvariants>True</CodeContractsInferObjectInvariants>
+    <CodeContractsInferEnsures>False</CodeContractsInferEnsures>
+    <CodeContractsInferObjectInvariants>False</CodeContractsInferObjectInvariants>
     <CodeContractsSuggestAssumptions>False</CodeContractsSuggestAssumptions>
     <CodeContractsSuggestRequires>False</CodeContractsSuggestRequires>
     <CodeContractsSuggestObjectInvariants>False</CodeContractsSuggestObjectInvariants>
@@ -105,35 +120,28 @@
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject />
+    <StartupObject>CudaLearn.Examples.Performance.GpuMemoryAccessExample</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CudaBitmapSource, Version=6.0.23.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="CudaBitmapSource">
       <HintPath>..\packages\ManagedCuda-60-x86-unofficial.6.0.23\lib\net45\x86\CudaBitmapSource.dll</HintPath>
     </Reference>
-    <Reference Include="CudaBlas, Version=6.0.23.0, Culture=neutral, PublicKeyToken=539d54d12e99fedb, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="CudaBlas">
       <HintPath>..\packages\ManagedCuda-60-x86-unofficial.6.0.23\lib\net45\x86\CudaBlas.dll</HintPath>
     </Reference>
-    <Reference Include="CudaFFT, Version=6.0.23.0, Culture=neutral, PublicKeyToken=f066edfa1acb2f23, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="CudaFFT">
       <HintPath>..\packages\ManagedCuda-60-x86-unofficial.6.0.23\lib\net45\x86\CudaFFT.dll</HintPath>
     </Reference>
-    <Reference Include="CudaRand, Version=6.0.23.0, Culture=neutral, PublicKeyToken=fe981579f4e9a066, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="CudaRand">
       <HintPath>..\packages\ManagedCuda-60-x86-unofficial.6.0.23\lib\net45\x86\CudaRand.dll</HintPath>
     </Reference>
-    <Reference Include="CudaSparse, Version=6.0.23.0, Culture=neutral, PublicKeyToken=f65ee2ae6b331585, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="CudaSparse">
       <HintPath>..\packages\ManagedCuda-60-x86-unofficial.6.0.23\lib\net45\x86\CudaSparse.dll</HintPath>
     </Reference>
-    <Reference Include="ManagedCuda, Version=6.0.23.0, Culture=neutral, PublicKeyToken=242d898828717aa0, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="ManagedCuda">
       <HintPath>..\packages\ManagedCuda-60-x86-unofficial.6.0.23\lib\net45\x86\ManagedCuda.dll</HintPath>
     </Reference>
-    <Reference Include="NPP, Version=6.0.23.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="NPP">
       <HintPath>..\packages\ManagedCuda-60-x86-unofficial.6.0.23\lib\net45\x86\NPP.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -145,43 +153,38 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Axis.cs" />
-    <Compile Include="CudaLearnModule.cs" />
-    <Compile Include="Decomposition.cs" />
-    <Compile Include="Functions.cs" />
-    <Compile Include="GpuMatrix`1.cs" />
-    <Compile Include="GpuMatrix`1.Operations.cs" />
-    <Compile Include="IFluentInterface.cs" />
-    <Compile Include="IGpuMatrixStorage.cs" />
-    <Compile Include="IHostMatrixStorage.cs" />
-    <Compile Include="BlasOperation.cs" />
-    <Compile Include="Matrix`1.Operations.cs" />
-    <Compile Include="MemoryAccessScope.cs" />
-    <Compile Include="Matrix`1.cs" />
-    <Compile Include="MatrixHelper.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>MatrixHelper.tt</DependentUpon>
-    </Compile>
+    <Compile Include="Performance\GpuMemoryAccessExample.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="BlasMath.cs" />
+    <Compile Include="Rbm\GpuRbmExample.cs" />
+    <Compile Include="Rbm\MnistDatabase.cs" />
+    <Compile Include="Rbm\CpuRbmExample.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="MatrixHelper.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>MatrixHelper.cs</LastGenOutput>
-    </None>
-    <None Include="matrixOperations.ptx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="packages.config" />
-    <None Include="vectorOperations.ptx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+    <ProjectReference Include="..\CudaLearn\CudaLearn.csproj">
+      <Project>{5ef2a1b7-88f4-414b-b903-2e030d02485d}</Project>
+      <Name>CudaLearn</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

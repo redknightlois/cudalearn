@@ -51,7 +51,7 @@ using System.Diagnostics.Contracts;
 
 namespace CudaLearn
 {
-	internal static class MatrixHelper
+	public static class MatrixHelper
 	{
 		
 	<# foreach (var type in types ) 
@@ -145,7 +145,7 @@ namespace CudaLearn
 
 				internal static Decomposition<<#=type#>> LUDecomposition( Matrix<<#=type#>> m )
 				{				
-					var L = Matrix<<#=type#>>.Identity(m.Rows, m.Columns);
+					var L = Matrix<<#=type#>>.Identity(m.Rows);
 					var U = m.Clone();
 
 					var pi = new int[m.Rows];
@@ -198,8 +198,13 @@ namespace CudaLearn
 				
 					return new Decomposition<<#=type#>> ( L, U, pi, detOfP );		
 				}						
-			<#}#>
-
+			<#}#>		
+			
+			public static Matrix<<#=type#>> AsMatrix(this <#=type#>[] m)
+	        {
+				return m;
+			}
+						
 
 			internal static bool Equals(Matrix<<#=type#>> m1, Matrix<<#=type#>> m2, <#=type#> epsilon)
 			{

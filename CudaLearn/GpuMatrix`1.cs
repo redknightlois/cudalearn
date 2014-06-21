@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CudaLearn
 {
-    public class GpuMatrix<T> : IEquatable<GpuMatrix<T>>, IGpuMatrixStorage<T>, IDisposable  where T : struct
+    public partial class GpuMatrix<T> : IEquatable<GpuMatrix<T>>, IGpuMatrixStorage<T>, IDisposable where T : struct
     {
         public readonly int Rows;
         public readonly int Columns;
@@ -383,6 +383,73 @@ namespace CudaLearn
             return c - m;
         }
 
+        public static GpuMatrix<T> operator /(GpuMatrix<T> m, T c)
+        {
+            Contract.Requires<ArgumentNullException>(m != null);
+
+            if (typeof(T) == typeof(int))
+            {
+                throw new NotImplementedException();
+            }
+            else if (typeof(T) == typeof(float))
+            {
+                var t = m as GpuMatrix<float>;
+                float c1 = (float)(object)c;
+                return t * (1.0f / c1) as GpuMatrix<T>;
+            }
+            else if (typeof(T) == typeof(double))
+            {
+                var t = m as GpuMatrix<double>;
+                double c1 = (double)(object)c;
+                return t * (1.0f / c1) as GpuMatrix<T>;
+            }
+            throw new NotSupportedException("Type: {0} is not supported by the Matrix<T> class.");
+        }
+
+        public static GpuMatrix<T> operator /(T c, GpuMatrix<T> m)
+        {
+            return m / c;
+        }
+
+        public static GpuMatrix<T> operator ^(GpuMatrix<T> m, int x)
+        {
+            Contract.Requires<ArgumentNullException>(m != null);
+
+            throw new NotImplementedException();
+        }
+
+        public static GpuMatrix<T> operator >(GpuMatrix<T> m1, GpuMatrix<T> m2)
+        {
+            Contract.Requires<ArgumentNullException>(m1 != null);
+            Contract.Requires<ArgumentNullException>(m2 != null);
+
+            throw new NotImplementedException();
+        }
+
+        public static GpuMatrix<T> operator >=(GpuMatrix<T> m1, GpuMatrix<T> m2)
+        {
+            Contract.Requires<ArgumentNullException>(m1 != null);
+            Contract.Requires<ArgumentNullException>(m2 != null);
+
+            throw new NotImplementedException();
+        }
+
+        public static GpuMatrix<T> operator <(GpuMatrix<T> m1, GpuMatrix<T> m2)
+        {
+            Contract.Requires<ArgumentNullException>(m1 != null);
+            Contract.Requires<ArgumentNullException>(m2 != null);
+
+            throw new NotImplementedException();
+        }
+
+        public static GpuMatrix<T> operator <=(GpuMatrix<T> m1, GpuMatrix<T> m2)
+        {
+            Contract.Requires<ArgumentNullException>(m1 != null);
+            Contract.Requires<ArgumentNullException>(m2 != null);
+
+            throw new NotImplementedException();
+        }
+
         CudaDeviceVariable<T> IGpuMatrixStorage<T>.GetDeviceMemory()
         {
             return GpuData;
@@ -450,6 +517,15 @@ namespace CudaLearn
 
             if (this.GpuData != null)
                 this.GpuData.Dispose();
+        }
+
+        [ContractInvariantMethod]
+        private void ObjectInvariants()
+        {
+            Contract.Invariant(this.Rows > 0);
+            Contract.Invariant(this.Columns > 0);
+            Contract.Invariant(this.GpuData != null);
+            Contract.Invariant(this.GpuData.Size == this.Rows * this.Columns);
         }
 
 
