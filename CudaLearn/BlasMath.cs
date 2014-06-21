@@ -293,6 +293,80 @@ namespace CudaLearn
 
         #endregion 
 
+        #region alpha * x * y + beta * z ,
+        public static GpuMatrix<T> Gemm<T>(T alpha, GpuMatrix<T> x, GpuMatrix<T> y, T beta, GpuMatrix<T> z, BlasOperation opx = BlasOperation.NonTranspose, BlasOperation opy = BlasOperation.NonTranspose) where T : struct
+        {
+            Contract.Requires<ArgumentException>(opx == BlasOperation.NonTranspose ? x.Rows == z.Rows : x.Columns == z.Rows);
+            Contract.Requires<ArgumentException>(opy == BlasOperation.NonTranspose ? y.Columns == z.Columns : y.Rows == z.Columns);
+
+            var blas = CudaLearnModule.BlasContext;
+            var x1 = ((IGpuMatrixStorage<T>)x).GetDeviceMemory();
+            var y2 = ((IGpuMatrixStorage<T>)y).GetDeviceMemory();
+            var z3 = ((IGpuMatrixStorage<T>)z).GetDeviceMemory();
+
+            var o = new GpuMatrix<T>(opx == BlasOperation.NonTranspose ? x.Rows : x.Columns, opy == BlasOperation.NonTranspose ? y.Columns : y.Rows);
+            var o1 = ((IGpuMatrixStorage<T>)o).GetDeviceMemory();
+
+            int m = z.Rows;
+            int n = z.Columns;
+            int k = opy == BlasOperation.NonTranspose ? y.Rows : y.Columns ;
+
+            if (typeof(T) == typeof(float))
+            {
+                float a = (float)(object)alpha;
+                float b = (float)(object)beta;
+
+                blas.Copy(z3 as CudaDeviceVariable<float>, 1, o1 as CudaDeviceVariable<float>, 1);
+                blas.Gemm((Operation)opx, (Operation)opy, m, n, k, a, x1 as CudaDeviceVariable<float>, x.Rows, y2 as CudaDeviceVariable<float>, y.Rows, b, o1 as CudaDeviceVariable<float>, o.Rows);
+                return o;
+            }
+            else if (typeof(T) == typeof(double))
+            {
+                double a = (double)(object)alpha;
+                double b = (double)(object)beta;
+
+                blas.Copy(z3 as CudaDeviceVariable<double>, 1, o1 as CudaDeviceVariable<double>, 1);
+                blas.Gemm((Operation)opx, (Operation)opy, m, n, k, a, x1 as CudaDeviceVariable<double>, x.Rows, y2 as CudaDeviceVariable<double>, y.Rows, b, o1 as CudaDeviceVariable<double>, o.Rows);
+                return o;
+            }
+
+            throw new NotSupportedException("Type: {0} is not supported by the BLAS library.");
+        }
+
+        public static void GemmInPlace<T>(T alpha, GpuMatrix<T> x, GpuMatrix<T> y, T beta, ref GpuMatrix<T> z, BlasOperation opx = BlasOperation.NonTranspose, BlasOperation opy = BlasOperation.NonTranspose) where T : struct
+        {
+            Contract.Requires<ArgumentException>(opx == BlasOperation.NonTranspose ? x.Rows == z.Rows : x.Columns == z.Rows);
+            Contract.Requires<ArgumentException>(opy == BlasOperation.NonTranspose ? y.Columns == z.Columns : y.Rows == z.Columns);
+
+            var blas = CudaLearnModule.BlasContext;
+            var x1 = ((IGpuMatrixStorage<T>)x).GetDeviceMemory();
+            var y2 = ((IGpuMatrixStorage<T>)y).GetDeviceMemory();
+            var z3 = ((IGpuMatrixStorage<T>)z).GetDeviceMemory();
+
+            int m = z.Rows;
+            int n = z.Columns;
+            int k = opy == BlasOperation.NonTranspose ? y.Rows : y.Columns;
+
+            if (typeof(T) == typeof(float))
+            {
+                float a = (float)(object)alpha;
+                float b = (float)(object)beta;
+
+                blas.Gemm((Operation)opx, (Operation)opy,  m, n, k, a, x1 as CudaDeviceVariable<float>, x.Rows, y2 as CudaDeviceVariable<float>, y.Rows, b, z3 as CudaDeviceVariable<float>, z.Rows);
+            }
+            else if (typeof(T) == typeof(double))
+            {
+                double a = (double)(object)alpha;
+                double b = (double)(object)beta;
+
+                blas.Gemm((Operation)opx, (Operation)opy, m, n, k, a, x1 as CudaDeviceVariable<double>, x.Rows, y2 as CudaDeviceVariable<double>, y.Rows, b, z3 as CudaDeviceVariable<double>, z.Rows);
+            }
+
+            throw new NotSupportedException("Type: {0} is not supported by the BLAS library.");
+        }
+
+        #endregion
+
         public static GpuMatrix<T> Multiply<T>(GpuMatrix<T> m1, GpuMatrix<T> m2) where T : struct
         {
             Contract.Requires<ArgumentNullException>(m1 != null);

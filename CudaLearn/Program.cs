@@ -27,7 +27,10 @@ namespace CudaLearn
             CudaLearnModule.AllowHandyForDebugButVerySlowGpuMemoryAccess = true;
 
             int rows = 1;
-            int columns = 100000;
+            int columns = 1000000;
+
+            Console.WriteLine("Generating 1M random elements on the CPU");
+            Console.WriteLine();
 
             var watch = new Stopwatch();
             watch.Restart();
@@ -37,7 +40,18 @@ namespace CudaLearn
                 for (int j = 0; j < m.Columns; j++)
                     m[i, j] = generator.Next(150) / 150.0f;
 
-            Console.WriteLine("GPU Set per [i,j] = " + watch.ElapsedMilliseconds);
+            Console.WriteLine("GPU Naked Set per [i,j] = " + watch.ElapsedMilliseconds);
+            watch.Restart();
+
+            m = new GpuMatrix<double>(rows, columns);
+            using ( var s = new MemoryAccessScope<double>(m))
+            {
+                for (int i = 0; i < m.Rows; i++)
+                    for (int j = 0; j < m.Columns; j++)
+                        s[i, j] = generator.Next(150) / 150.0f;
+            }
+
+            Console.WriteLine("GPU MemoryScope Set per [i,j] = " + watch.ElapsedMilliseconds);
             watch.Restart();
 
             var mc = new Matrix<double>(rows, columns);
@@ -45,7 +59,7 @@ namespace CudaLearn
                 for (int j = 0; j < mc.Columns; j++)
                     mc[i, j] = generator.Next(150) / 150.0f;
 
-            Console.WriteLine("CPU Set per [i,j] = " + watch.ElapsedMilliseconds);
+            Console.WriteLine("CPU Naked Set per [i,j] = " + watch.ElapsedMilliseconds);
             watch.Restart();
 
             double sum = 0;
@@ -77,27 +91,27 @@ namespace CudaLearn
             Console.ReadLine();
 
 
-            var context = CudaLearnModule.Context;
+            //var context = CudaLearnModule.Context;
 
-            int numElements = 4096;
+            //int numElements = 4096;
 
-            var input1 = Create(numElements);
-            var input2 = Create(numElements);
-            var output = new CudaDeviceVariable<float>(numElements);
+            //var input1 = Create(numElements);
+            //var input2 = Create(numElements);
+            //var output = new CudaDeviceVariable<float>(numElements);
 
-            int threadsPerBlock = context.GetDeviceInfo().MaxThreadsPerBlock;
-            int blocksPerGrid = (numElements + threadsPerBlock - 1) / threadsPerBlock;
+            //int threadsPerBlock = context.GetDeviceInfo().MaxThreadsPerBlock;
+            //int blocksPerGrid = (numElements + threadsPerBlock - 1) / threadsPerBlock;
 
-            var kernel = context.LoadKernelPTX("vectorOperations.ptx", "vectorAdd1f");
-            kernel.BlockDimensions = new dim3(threadsPerBlock);
-            kernel.GridDimensions = new dim3(blocksPerGrid);
-            Console.WriteLine(string.Format("X:{0} Y:{1} Z:{2}", kernel.GridDimensions.x, kernel.GridDimensions.y, kernel.GridDimensions.z));
+            //var kernel = context.LoadKernelPTX("vectorOperations.ptx", "vectorAdd1f");
+            //kernel.BlockDimensions = new dim3(threadsPerBlock);
+            //kernel.GridDimensions = new dim3(blocksPerGrid);
+            //Console.WriteLine(string.Format("X:{0} Y:{1} Z:{2}", kernel.GridDimensions.x, kernel.GridDimensions.y, kernel.GridDimensions.z));
 
-            kernel.Run(input1.DevicePointer, input2.DevicePointer, output.DevicePointer, numElements);
+            //kernel.Run(input1.DevicePointer, input2.DevicePointer, output.DevicePointer, numElements);
 
-            for (int i = 0; i < numElements; i++)
-                Console.Write(output[i] + ",");
-            Console.WriteLine();
+            //for (int i = 0; i < numElements; i++)
+            //    Console.Write(output[i] + ",");
+            //Console.WriteLine();
         }
     }
 }

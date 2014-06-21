@@ -85,8 +85,8 @@ namespace CudaLearn
             Columns = iCols;
             Data = new T[Columns * Rows];
 
-            for (int i = 0; i < Columns; i++)
-                for (int j = 0; j < Rows; j++)
+            for (int i = 0; i < Rows; i++)
+                for (int j = 0; j < Columns; j++)
                     this[i, j] = value;
 
             this.decomposition = new Lazy<Decomposition<T>>(() => MakeLU(this), true);
