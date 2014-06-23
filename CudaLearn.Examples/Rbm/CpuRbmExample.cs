@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,7 +12,8 @@ namespace CudaLearn.Examples.Rbm
     {
         public static void Main(string[] args)
         {
-            var database = new MnistDatabase();
+            var database = new MnistDatabase(new DirectoryInfo("."));
+            var trainingSet = database.GetTrainingSet();
 
             // Training parameters
 
@@ -21,11 +23,11 @@ namespace CudaLearn.Examples.Rbm
             int num_epochs = 10;
             int batch_size = 64;
 
-            int num_batches = database.Samples / batch_size;
+            int num_batches = trainingSet.Samples / batch_size;
 
             // Training parameters
 
-            int num_vis = database.SampleSize;
+            int num_vis = trainingSet.SampleSize;
             int num_hid = 1024;
 
             // Initialize Weights
@@ -45,9 +47,9 @@ namespace CudaLearn.Examples.Rbm
             {
                 Console.WriteLine(string.Format("Epoch {0}", epoch + 1));
 
-                foreach (var v_true in database.Batches(batch_size))
+                foreach (var v_true in trainingSet.Batches(batch_size))
                 {
-                    Matrix<float> v = v_true;
+                    Matrix<float> v = v_true.Item1;
 
                     // Apply momentum
                     wu_vh *= momentum;
@@ -77,7 +79,7 @@ namespace CudaLearn.Examples.Rbm
                     w_v += epsilon / batch_size * wu_v;
                     w_h += epsilon / batch_size * wu_h;
 
-                    error[epoch] = Functions.Mean((v - v_true) ^ 2, Axis.None);
+                    error[epoch] = Functions.Mean((v - v_true.Item1) ^ 2, Axis.None);
                 }
             }
 

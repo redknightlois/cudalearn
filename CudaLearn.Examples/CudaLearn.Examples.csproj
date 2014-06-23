@@ -11,7 +11,7 @@
     <AssemblyName>CudaLearn.Examples</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <CodeContractsAssemblyMode>0</CodeContractsAssemblyMode>
+    <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -54,7 +54,7 @@
     <CodeContractsInferObjectInvariants>True</CodeContractsInferObjectInvariants>
     <CodeContractsSuggestAssumptions>True</CodeContractsSuggestAssumptions>
     <CodeContractsSuggestRequires>True</CodeContractsSuggestRequires>
-    <CodeContractsSuggestObjectInvariants>False</CodeContractsSuggestObjectInvariants>
+    <CodeContractsSuggestObjectInvariants>True</CodeContractsSuggestObjectInvariants>
     <CodeContractsSuggestReadonly>True</CodeContractsSuggestReadonly>
     <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
     <CodeContractsShowSquigglies>True</CodeContractsShowSquigglies>
@@ -69,7 +69,7 @@
     <CodeContractsBaseLineFile />
     <CodeContractsCacheAnalysisResults>True</CodeContractsCacheAnalysisResults>
     <CodeContractsFailBuildOnWarnings>False</CodeContractsFailBuildOnWarnings>
-    <CodeContractsBeingOptimisticOnExternal>True</CodeContractsBeingOptimisticOnExternal>
+    <CodeContractsBeingOptimisticOnExternal>False</CodeContractsBeingOptimisticOnExternal>
     <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
     <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
@@ -120,7 +120,7 @@
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>CudaLearn.Examples.Performance.GpuMemoryAccessExample</StartupObject>
+    <StartupObject>CudaLearn.Examples.Rbm.CpuRbmExample</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CudaBitmapSource">

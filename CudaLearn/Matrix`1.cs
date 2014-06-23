@@ -537,6 +537,7 @@ namespace CudaLearn
         public static Matrix<T> operator +(Matrix<T> m1, Matrix<T> m2)
         {
             Contract.Requires<ArgumentNullException>(m1 != null && m2 != null);
+            Contract.Requires(m1.Rows == m2.Rows && m1.Columns == m2.Columns);
 
             if (typeof(T) == typeof(int))
             {
@@ -563,6 +564,7 @@ namespace CudaLearn
         public static Matrix<T> operator -(Matrix<T> m1, Matrix<T> m2)
         {
             Contract.Requires<ArgumentNullException>(m1 != null && m2 != null);
+            Contract.Requires(m1.Rows == m2.Rows && m1.Columns == m2.Columns);
 
             if (typeof(T) == typeof(int))
             {
@@ -662,6 +664,7 @@ namespace CudaLearn
         {
             Contract.Requires<ArgumentNullException>(m1 != null);
             Contract.Requires<ArgumentNullException>(m2 != null);
+            Contract.Requires(m1.Rows == m2.Rows && m1.Columns == m2.Columns);
 
             throw new NotImplementedException();
         }
@@ -670,6 +673,7 @@ namespace CudaLearn
         {
             Contract.Requires<ArgumentNullException>(m1 != null);
             Contract.Requires<ArgumentNullException>(m2 != null);
+            Contract.Requires(m1.Rows == m2.Rows && m1.Columns == m2.Columns);
 
             throw new NotImplementedException();
         }
@@ -678,6 +682,7 @@ namespace CudaLearn
         {
             Contract.Requires<ArgumentNullException>(m1 != null);
             Contract.Requires<ArgumentNullException>(m2 != null);
+            Contract.Requires(m1.Rows == m2.Rows && m1.Columns == m2.Columns);
 
             throw new NotImplementedException();
         }
@@ -686,6 +691,7 @@ namespace CudaLearn
         {
             Contract.Requires<ArgumentNullException>(m1 != null);
             Contract.Requires<ArgumentNullException>(m2 != null);
+            Contract.Requires(m1.Rows == m2.Rows && m1.Columns == m2.Columns);
 
             throw new NotImplementedException();
         }
