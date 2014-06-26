@@ -16,12 +16,11 @@ namespace CudaLearn.Examples.Rbm
             var trainingSet = database.GetTrainingSet();
 
             // Training parameters
-
             float epsilon = 0.01f;
             float momentum = 0.9f;
 
             int num_epochs = 10;
-            int batch_size = 64;
+            int batch_size = 100;
 
             int num_batches = trainingSet.Samples / batch_size;
 
@@ -47,6 +46,7 @@ namespace CudaLearn.Examples.Rbm
             {
                 Console.WriteLine(string.Format("Epoch {0}", epoch + 1));
 
+                int batch = 0;
                 foreach (var v_true in trainingSet.Batches(batch_size))
                 {
                     Matrix<float> v = v_true.Item1;
@@ -56,35 +56,39 @@ namespace CudaLearn.Examples.Rbm
                     wu_v *= momentum;
                     wu_h *= momentum;
 
-                    // Positive phase
-                    var h = 1.0f / (1 + Functions.Exp(-(Functions.Dot(w_vh.Transpose(), v) + w_h)));
+                    // Positive phase                    
+                    var h = 1.0f / (1 + Functions.Exp(-w_vh.Transpose() * v + w_h));
 
-                    wu_vh += Functions.Dot(v, h.Transpose());
-                    wu_v += Functions.Sum(v, Axis.Columns);
-                    wu_h += Functions.Sum(h, Axis.Columns);
+                    wu_vh += v * h.Transpose();
+                    wu_v += Functions.Sum(v, Axis.Rows);
+                    wu_h += Functions.Sum(h, Axis.Rows);
 
                     // Sample hiddens
-                    h = 1.0f * (h > Matrix<float>.Uniform(num_hid, batch_size));
+                    h = Functions.BinaryLess(h, Matrix<float>.Uniform(num_hid, batch_size));
 
                     // Negative phase
-                    v = 1.0f / (1 + Functions.Exp(-(Functions.Dot(w_vh, h) + w_v)));
-                    h = 1.0f / (1 + Functions.Exp(-(Functions.Dot(w_vh.Transpose(), v) + w_h)));
+                    v = 1.0f / (1 + Functions.Exp(-(w_vh * h + w_v)));
+                    h = 1.0f / (1 + Functions.Exp(-(w_vh.Transpose() * v + w_h)));
 
-                    wu_vh -= Functions.Dot(v, h.Transpose());
-                    wu_v -= Functions.Sum(v, Axis.Columns);
-                    wu_h -= Functions.Sum(h, Axis.Columns);
+                    wu_vh -= v * h.Transpose();
+                    wu_v -= Functions.Sum(v, Axis.Rows);
+                    wu_h -= Functions.Sum(h, Axis.Rows);
 
                     // Update weights
                     w_vh += epsilon / batch_size * wu_vh;
                     w_v += epsilon / batch_size * wu_v;
                     w_h += epsilon / batch_size * wu_h;
 
-                    error[epoch] = Functions.Mean((v - v_true.Item1) ^ 2, Axis.None);
+                    error[epoch] = Functions.Mean((v - v_true.Item1) ^ 2);
+                    batch++;
+
+                    Console.WriteLine(string.Format("Batch {0}/{1} | Error: {2}", batch, num_batches, error[epoch]));
                 }
             }
 
-            Console.WriteLine(string.Format("Mean squared error: {0}", Functions.Mean(error.AsMatrix(), Axis.None)));
+            Console.WriteLine(string.Format("Mean squared error: {0}", Functions.Mean(error.AsMatrix())));
             Console.WriteLine(string.Format("Time: {0}", watch.Elapsed));
+            Console.ReadLine();
         }
     }
 }

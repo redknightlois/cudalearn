@@ -183,33 +183,6 @@ namespace CudaLearn
             return matrix;
         }
 
-        /// <summary>
-        /// Creates a zero matrix
-        /// </summary>
-        /// <param name="iRows"></param>
-        /// <param name="iCols"></param>
-        /// <returns></returns>
-        public static Matrix<T> Zeroes(int iRows, int iCols)
-        {
-            Contract.Requires<ArgumentException>(iRows > 0 && iCols > 0);
-
-            return new Matrix<T>(iRows, iCols);
-        }
-
-        /// <summary>
-        /// Creates an identity matrix.
-        /// </summary>
-        public static Matrix<T> Identity(int iRows)
-        {
-            Contract.Requires<ArgumentException>(iRows > 0);
-
-            var matrix = new Matrix<T>(iRows, iRows);
-
-            for (int i = 0; i < iRows; i++)
-                matrix[i, i] = Matrix<T>.One;
-            return matrix;
-        }
-
         public string ToString(string format, IFormatProvider formatProvider)
         {
             string s = "";
@@ -509,7 +482,36 @@ namespace CudaLearn
 
         public static Matrix<T> operator /(T c, Matrix<T> m )
         {
-            return m / c;
+            Contract.Requires<ArgumentNullException>(m != null);
+
+            var target = new Matrix<T>(m.Rows, m.Columns);
+            int lenght = m.Rows * m.Columns;
+
+            if (typeof(T) == typeof(int))
+            {
+                throw new NotImplementedException();
+            }
+            else if (typeof(T) == typeof(float))
+            {
+                var mt1 = ((IHostMatrixStorage<float>)m).GetHostMemory();
+                var t = ((IHostMatrixStorage<float>)target).GetHostMemory();
+                var c1 = (float)(object)c;
+
+                for (int i = 0; i < lenght; i++)
+                    t[i] = c1 / mt1[i];
+            }
+            else if (typeof(T) == typeof(double))
+            {
+                var mt1 = ((IHostMatrixStorage<double>)m).GetHostMemory();
+                var t = ((IHostMatrixStorage<double>)target).GetHostMemory();
+                var c1 = (double)(object)c;
+
+                for (int i = 0; i < lenght; i++)
+                    t[i] = c1 / mt1[i];
+            }
+            else throw new NotSupportedException("Type: {0} is not supported by the Matrix<T> class.");
+
+            return target;
         }
 
         public static Matrix<T> operator -(Matrix<T> m)
@@ -537,9 +539,20 @@ namespace CudaLearn
         public static Matrix<T> operator +(Matrix<T> m1, Matrix<T> m2)
         {
             Contract.Requires<ArgumentNullException>(m1 != null && m2 != null);
-            Contract.Requires(m1.Rows == m2.Rows && m1.Columns == m2.Columns);
+            Contract.Requires<ArgumentException>((m1.Rows == m2.Rows && m1.Columns == m2.Columns) // Usual sum of 2 matrix of equal size. 
+                                              || (m2.Rows == 1 && m1.Columns == m2.Columns) // Sum every column of the matrix m1 by the vector m2
+                                              || (m2.Columns == 1 && m1.Rows == m2.Rows)); // Sum every row of the matrix m1 by the vector m2
 
-            if (typeof(T) == typeof(int))
+
+            if ( m2.Columns == 1 )
+            {
+                return AddVectorOnColumns(m1, m2);
+            }
+            else if ( m2.Rows == 1 )
+            {
+                return AddVectorOnRows(m1, m2);
+            }
+            else if (typeof(T) == typeof(int))
             {
                 var t1 = m1 as Matrix<int>;
                 var t2 = m2 as Matrix<int>;
@@ -564,7 +577,7 @@ namespace CudaLearn
         public static Matrix<T> operator -(Matrix<T> m1, Matrix<T> m2)
         {
             Contract.Requires<ArgumentNullException>(m1 != null && m2 != null);
-            Contract.Requires(m1.Rows == m2.Rows && m1.Columns == m2.Columns);
+            Contract.Requires<ArgumentException>(m1.Rows == m2.Rows && m1.Columns == m2.Columns);
 
             if (typeof(T) == typeof(int))
             {
@@ -664,36 +677,188 @@ namespace CudaLearn
         {
             Contract.Requires<ArgumentNullException>(m1 != null);
             Contract.Requires<ArgumentNullException>(m2 != null);
-            Contract.Requires(m1.Rows == m2.Rows && m1.Columns == m2.Columns);
+            Contract.Requires<ArgumentException>(m1.Rows == m2.Rows && m1.Columns == m2.Columns);
 
-            throw new NotImplementedException();
+            int lenght = m1.Rows * m1.Columns;
+            var target = new Matrix<T>(m1.Rows, m1.Columns);
+
+            if (typeof(T) == typeof(int))
+            {
+                var mt1 = ((IHostMatrixStorage<int>)m1).GetHostMemory();
+                var mt2 = ((IHostMatrixStorage<int>)m2).GetHostMemory();
+                var t = ((IHostMatrixStorage<int>)target).GetHostMemory();
+
+                for (int i = 0; i < lenght; i++)
+                {
+                    t[i] = mt1[i] > mt2[i] ? mt1[i] : mt2[i];
+                }
+            }
+            else if (typeof(T) == typeof(float))
+            {
+                var mt1 = ((IHostMatrixStorage<float>)m1).GetHostMemory();
+                var mt2 = ((IHostMatrixStorage<float>)m2).GetHostMemory();
+                var t = ((IHostMatrixStorage<float>)target).GetHostMemory();
+
+                for (int i = 0; i < lenght; i++)
+                {
+                    t[i] = mt1[i] > mt2[i] ? mt1[i] : mt2[i];
+                }
+            }
+            else if (typeof(T) == typeof(double))
+            {
+                var mt1 = ((IHostMatrixStorage<double>)m1).GetHostMemory();
+                var mt2 = ((IHostMatrixStorage<double>)m2).GetHostMemory();
+                var t = ((IHostMatrixStorage<double>)target).GetHostMemory();
+
+                for (int i = 0; i < lenght; i++)
+                {
+                    t[i] = mt1[i] > mt2[i] ? mt1[i] : mt2[i];
+                }
+            }
+            else throw new NotSupportedException("Type: {0} is not supported by the Matrix<T> class.");
+
+            return target;
         }
 
         public static Matrix<T> operator >=(Matrix<T> m1, Matrix<T> m2)
         {
             Contract.Requires<ArgumentNullException>(m1 != null);
             Contract.Requires<ArgumentNullException>(m2 != null);
-            Contract.Requires(m1.Rows == m2.Rows && m1.Columns == m2.Columns);
+            Contract.Requires<ArgumentException>(m1.Rows == m2.Rows && m1.Columns == m2.Columns);
 
-            throw new NotImplementedException();
+            int lenght = m1.Rows * m1.Columns;
+            var target = new Matrix<T>(m1.Rows, m1.Columns);
+
+            if (typeof(T) == typeof(int))
+            {
+                var mt1 = ((IHostMatrixStorage<int>)m1).GetHostMemory();
+                var mt2 = ((IHostMatrixStorage<int>)m2).GetHostMemory();
+                var t = ((IHostMatrixStorage<int>)target).GetHostMemory();
+
+                for (int i = 0; i < lenght; i++)
+                {
+                    t[i] = mt1[i] >= mt2[i] ? mt1[i] : mt2[i];
+                }
+            }
+            else if (typeof(T) == typeof(float))
+            {
+                var mt1 = ((IHostMatrixStorage<float>)m1).GetHostMemory();
+                var mt2 = ((IHostMatrixStorage<float>)m2).GetHostMemory();
+                var t = ((IHostMatrixStorage<float>)target).GetHostMemory();
+
+                for (int i = 0; i < lenght; i++)
+                {
+                    t[i] = mt1[i] >= mt2[i] ? mt1[i] : mt2[i];
+                }
+            }
+            else if (typeof(T) == typeof(double))
+            {
+                var mt1 = ((IHostMatrixStorage<double>)m1).GetHostMemory();
+                var mt2 = ((IHostMatrixStorage<double>)m2).GetHostMemory();
+                var t = ((IHostMatrixStorage<double>)target).GetHostMemory();
+
+                for (int i = 0; i < lenght; i++)
+                {
+                    t[i] = mt1[i] >= mt2[i] ? mt1[i] : mt2[i];
+                }
+            }
+            else throw new NotSupportedException("Type: {0} is not supported by the Matrix<T> class.");
+
+            return target;
         }
 
         public static Matrix<T> operator <(Matrix<T> m1, Matrix<T> m2)
         {
             Contract.Requires<ArgumentNullException>(m1 != null);
             Contract.Requires<ArgumentNullException>(m2 != null);
-            Contract.Requires(m1.Rows == m2.Rows && m1.Columns == m2.Columns);
+            Contract.Requires<ArgumentException>(m1.Rows == m2.Rows && m1.Columns == m2.Columns);
 
-            throw new NotImplementedException();
+            int lenght = m1.Rows * m1.Columns;
+            var target = new Matrix<T>(m1.Rows, m1.Columns);
+
+            if (typeof(T) == typeof(int))
+            {
+                var mt1 = ((IHostMatrixStorage<int>)m1).GetHostMemory();
+                var mt2 = ((IHostMatrixStorage<int>)m2).GetHostMemory();
+                var t = ((IHostMatrixStorage<int>)target).GetHostMemory();
+
+                for (int i = 0; i < lenght; i++)
+                {
+                    t[i] = mt1[i] < mt2[i] ? mt1[i] : mt2[i];
+                }
+            }
+            else if (typeof(T) == typeof(float))
+            {
+                var mt1 = ((IHostMatrixStorage<float>)m1).GetHostMemory();
+                var mt2 = ((IHostMatrixStorage<float>)m2).GetHostMemory();
+                var t = ((IHostMatrixStorage<float>)target).GetHostMemory();
+
+                for (int i = 0; i < lenght; i++)
+                {
+                    t[i] = mt1[i] < mt2[i] ? mt1[i] : mt2[i];
+                }
+            }
+            else if (typeof(T) == typeof(double))
+            {
+                var mt1 = ((IHostMatrixStorage<double>)m1).GetHostMemory();
+                var mt2 = ((IHostMatrixStorage<double>)m2).GetHostMemory();
+                var t = ((IHostMatrixStorage<double>)target).GetHostMemory();
+
+                for (int i = 0; i < lenght; i++)
+                {
+                    t[i] = mt1[i] < mt2[i] ? mt1[i] : mt2[i];
+                }
+            }
+            else throw new NotSupportedException("Type: {0} is not supported by the Matrix<T> class.");
+
+            return target;
         }
 
         public static Matrix<T> operator <=(Matrix<T> m1, Matrix<T> m2)
         {
             Contract.Requires<ArgumentNullException>(m1 != null);
             Contract.Requires<ArgumentNullException>(m2 != null);
-            Contract.Requires(m1.Rows == m2.Rows && m1.Columns == m2.Columns);
+            Contract.Requires<ArgumentException>(m1.Rows == m2.Rows && m1.Columns == m2.Columns);
 
-            throw new NotImplementedException();
+            int lenght = m1.Rows * m1.Columns;
+            var target = new Matrix<T>(m1.Rows, m1.Columns);
+
+            if (typeof(T) == typeof(int))
+            {
+                var mt1 = ((IHostMatrixStorage<int>)m1).GetHostMemory();
+                var mt2 = ((IHostMatrixStorage<int>)m2).GetHostMemory();
+                var t = ((IHostMatrixStorage<int>)target).GetHostMemory();
+
+                for (int i = 0; i < lenght; i++)
+                {
+                    t[i] = mt1[i] <= mt2[i] ? mt1[i] : mt2[i];
+                }
+            }
+            else if (typeof(T) == typeof(float))
+            {
+                var mt1 = ((IHostMatrixStorage<float>)m1).GetHostMemory();
+                var mt2 = ((IHostMatrixStorage<float>)m2).GetHostMemory();
+                var t = ((IHostMatrixStorage<float>)target).GetHostMemory();
+
+                for (int i = 0; i < lenght; i++)
+                {
+                    t[i] = mt1[i] <= mt2[i] ? mt1[i] : mt2[i];
+                }
+            }
+            else if (typeof(T) == typeof(double))
+            {
+                var mt1 = ((IHostMatrixStorage<double>)m1).GetHostMemory();
+                var mt2 = ((IHostMatrixStorage<double>)m2).GetHostMemory();
+                var t = ((IHostMatrixStorage<double>)target).GetHostMemory();
+
+                for (int i = 0; i < lenght; i++)
+                {
+                    t[i] = mt1[i] <= mt2[i] ? mt1[i] : mt2[i];
+                }
+            }
+            else throw new NotSupportedException("Type: {0} is not supported by the Matrix<T> class.");
+
+            return target;
         }
 
         public static implicit operator Matrix<T>(T[] m)

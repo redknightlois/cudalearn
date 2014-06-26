@@ -337,5 +337,71 @@ namespace CudaLearn.Tests
             Assert.Equal(identity, m * mInverse);
             Assert.Equal(identity, mInverse * m);
         }
+
+        [Fact]
+        public void SumOverAxis()
+        {
+            var m1 = new Matrix<int>(2, 3);
+
+            // 1 2 3
+            // 2 3 4            
+            m1[0, 0] = 1;
+            m1[0, 1] = 2;
+            m1[0, 2] = 3;
+            m1[1, 0] = 4;
+            m1[1, 1] = 5;
+            m1[1, 2] = 6;
+
+            var sumCols = Functions.Sum(m1, Axis.Columns);
+            Assert.Equal(1, sumCols.Rows);
+            Assert.Equal(3, sumCols.Columns);
+
+            var resultColumnSum = new Matrix<int>(1, 3);
+            resultColumnSum[0, 0] = 5;
+            resultColumnSum[0, 1] = 7;
+            resultColumnSum[0, 2] = 9;
+            Assert.Equal(resultColumnSum, sumCols);
+
+            var sumRows = Functions.Sum(m1, Axis.Rows);
+            Assert.Equal(2, sumRows.Rows);
+            Assert.Equal(1, sumRows.Columns);
+
+            var resultRowSum = new Matrix<int>(2, 1);
+            resultRowSum[0, 0] = 6;
+            resultRowSum[1, 0] = 15;
+            Assert.Equal(resultRowSum, sumRows);
+        }
+
+        [Fact]
+        public void SumVectorOverAxis()
+        {
+            var m1 = new Matrix<int>(2, 3);
+
+            // 1 0 1
+            // 0 1 0            
+            m1[0, 0] = 1;
+            m1[0, 1] = 0;
+            m1[0, 2] = 1;
+            m1[1, 0] = 0;
+            m1[1, 1] = 1;
+            m1[1, 2] = 0;
+
+            var result = new Matrix<int>(2, 3);
+            result[0, 0] = 2;
+            result[0, 1] = 1;
+            result[0, 2] = 2;
+            result[1, 0] = 1;
+            result[1, 1] = 2;
+            result[1, 2] = 1;
+
+            var columnVector = new Matrix<int>(1, 3, 1);
+            var sumCols = m1 + columnVector;
+
+            var rowsVector = new Matrix<int>(2, 1, 1);
+            var sumRows = m1 + rowsVector;
+
+            Assert.Equal(result, sumCols);
+            Assert.Equal(result, sumRows);
+        }
     }
 }

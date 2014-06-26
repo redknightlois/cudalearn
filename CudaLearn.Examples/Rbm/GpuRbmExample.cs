@@ -81,11 +81,11 @@ namespace CudaLearn.Examples.Rbm
                     w_v += epsilon / batch_size * wu_v;
                     w_h += epsilon / batch_size * wu_h;
 
-                    error[epoch] = Functions.Mean((v - v_true.Item1)^2, Axis.None);
+                    error[epoch] = Functions.Mean((v - v_true.Item1)^2);
                 }
             }
 
-            Console.WriteLine(string.Format("Mean squared error: {0}", Functions.Mean(error.AsMatrix(), Axis.None)));
+            Console.WriteLine(string.Format("Mean squared error: {0}", Functions.Mean(error.AsMatrix())));
             Console.WriteLine(string.Format("Time: {0}", watch.Elapsed));
 
             CudaLearnModule.Release();

@@ -61,19 +61,19 @@ namespace CudaLearn.Examples.Rbm
                 int totalBatches = Samples / batchSize;                
                 for (int batches = 0; batches < totalBatches; batches++)
                 {
-                    var images = new Matrix<float>(batchSize, SampleSize);
-                    var labels = new Matrix<int>(batchSize, 1);
+                    var images = new Matrix<float>(SampleSize, batchSize);
+                    var labels = new Matrix<int>(1, batchSize);
 
                     for (int current = 0; current < batchSize; current++ )
                     {
                         for (int i = 0; i < SampleSize; i++)
                         {
-                            int v = imagesStream.ReadByte();
-                            images[current, i] = v;
+                            float v = (float) imagesStream.ReadByte();
+                            images[i, current] = v / 255.0f;
                         }
                             
 
-                        labels[current, 0] = (int)labelsStream.ReadByte();
+                        labels[0, current] = (int)labelsStream.ReadByte();
                     }
 
                     yield return new Tuple<Matrix<float>, Matrix<int>>(images, labels);

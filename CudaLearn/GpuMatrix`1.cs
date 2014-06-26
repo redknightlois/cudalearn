@@ -161,32 +161,6 @@ namespace CudaLearn
         }
 
         /// <summary>
-        /// Creates a zero matrix
-        /// </summary>
-        /// <param name="iRows"></param>
-        /// <param name="iCols"></param>
-        /// <returns></returns>
-        public static GpuMatrix<T> Zeroes(int iRows, int iCols)
-        {
-            Contract.Requires<ArgumentException>(iRows > 0 && iCols > 0);
-
-            return new GpuMatrix<T>(iRows, iCols, GpuMatrix<T>.Zero);
-        }
-
-        /// <summary>
-        /// Creates an identity matrix.
-        /// </summary>
-        public static GpuMatrix<T> Identity(int iRows)
-        {
-            Contract.Requires<ArgumentException>(iRows > 0);
-
-            var m = new GpuMatrix<T>(iRows, iRows);
-            BlasMath.SetIdentity(ref m);
-
-            return m;
-        }
-
-        /// <summary>
         /// Matrix transpose, for any rectangular matrix
         /// </summary>
         public static GpuMatrix<T> Transpose(GpuMatrix<T> m)
@@ -330,22 +304,45 @@ namespace CudaLearn
         {
             Contract.Requires<NotSupportedException>(typeof(T) == typeof(float) || typeof(T) == typeof(double) || typeof(T) == typeof(int));
             Contract.Requires<ArgumentNullException>(m1 != null && m2 != null);
+            Contract.Requires<ArgumentException>((m1.Rows == m2.Rows && m1.Columns == m2.Columns) // Usual sum of 2 matrix of equal size. 
+                                                || (m2.Rows == 1 && m1.Columns == m2.Columns) // Operation over every column of the matrix m1 by the vector m2
+                                                || (m2.Columns == 1 && m1.Rows == m2.Rows)); // Operation over every row of the matrix m1 by the vector m2
 
             if (m1.isLocked || m2.isLocked)
                 throw new InvalidOperationException("The matrix storage is in locked mode.");
 
-            return BlasMath.Axpy(m1, GpuMatrix<T>.One, m2) as GpuMatrix<T>;
+            if (m2.Rows == 1)
+            {
+                return AddColumns(m1, m2);
+            }
+            else if (m2.Columns == 1)
+            {
+                return AddRows(m1, m2);
+            }
+            else return BlasMath.Axpy(m1, GpuMatrix<T>.One, m2) as GpuMatrix<T>;
         }
 
         public static GpuMatrix<T> operator -(GpuMatrix<T> m1, GpuMatrix<T> m2)
         {
             Contract.Requires<NotSupportedException>(typeof(T) == typeof(float) || typeof(T) == typeof(double) || typeof(T) == typeof(int));
             Contract.Requires<ArgumentNullException>(m1 != null && m2 != null);
+            Contract.Requires<ArgumentException>((m1.Rows == m2.Rows && m1.Columns == m2.Columns) // Usual sum of 2 matrix of equal size. 
+                                                || (m2.Rows == 1 && m1.Columns == m2.Columns) // Operation over every column of the matrix m1 by the vector m2
+                                                || (m2.Columns == 1 && m1.Rows == m2.Rows)); // Operation over every row of the matrix m1 by the vector m2
 
+           
             if (m1.isLocked || m2.isLocked)
                 throw new InvalidOperationException("The matrix storage is in locked mode.");
 
-            return BlasMath.Axpy(m2, GpuMatrix<T>.NegativeOne, m1);
+            if (m2.Rows == 1)
+            {
+                return AddColumns(m1, m2);
+            }
+            else if (m2.Columns == 1)
+            {
+                return AddRows(m1, m2);
+            }
+            else return BlasMath.Axpy(m2, GpuMatrix<T>.NegativeOne, m1);
         }
 
         public static GpuMatrix<T> operator +(T c, GpuMatrix<T> m)
