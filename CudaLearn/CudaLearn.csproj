@@ -156,7 +156,6 @@
     <Compile Include="IHostMatrixStorage.cs" />
     <Compile Include="BlasOperation.cs" />
     <Compile Include="Matrix`1.Operations.cs" />
-    <Compile Include="Matrix`1.Operators.cs" />
     <Compile Include="MemoryAccessScope.cs" />
     <Compile Include="Matrix`1.cs" />
     <Compile Include="MatrixHelper.cs">
