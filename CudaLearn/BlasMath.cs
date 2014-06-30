@@ -170,7 +170,7 @@ namespace CudaLearn
             int threadsPerBlock = context.GetDeviceInfo().MaxThreadsPerBlock;
             int blocksPerGrid = (numElements + threadsPerBlock - 1) / threadsPerBlock;
 
-            CudaKernel kernel = context.LoadKernelPTX("vectorOperations.ptx", GetCudaOperationWithSuffix<T>("vectorSet"));
+            CudaKernel kernel = context.LoadKernelPTX("arrayOperations.ptx", GetCudaOperationWithSuffix<T>("arraySet"));
             // TODO Minimize the tail effect. http://devblogs.nvidia.com/parallelforall/cuda-pro-tip-minimize-the-tail-effect/
             kernel.BlockDimensions = new dim3(threadsPerBlock);
             kernel.GridDimensions = new dim3(blocksPerGrid);
@@ -294,10 +294,35 @@ namespace CudaLearn
         #endregion 
 
         #region alpha * x * y + beta * z ,
+
+        public static GpuMatrix<T> Gemm<T>(T alpha, GpuMatrix<T> x, GpuMatrix<T> y, BlasOperation opx = BlasOperation.NonTranspose, BlasOperation opy = BlasOperation.NonTranspose) where T : struct
+        {
+            var o = new GpuMatrix<T>(opx == BlasOperation.NonTranspose ? x.Rows : x.Columns, opy == BlasOperation.NonTranspose ? y.Columns : y.Rows);
+            var o1 = ((IGpuMatrixStorage<T>)o).GetDeviceMemory();
+
+            GemmInPlace(alpha, x, y, GpuMatrix<T>.Zero, ref o, opx, opy);
+
+            return o;
+        }
+
         public static GpuMatrix<T> Gemm<T>(T alpha, GpuMatrix<T> x, GpuMatrix<T> y, T beta, GpuMatrix<T> z, BlasOperation opx = BlasOperation.NonTranspose, BlasOperation opy = BlasOperation.NonTranspose) where T : struct
         {
-            Contract.Requires<ArgumentException>(opx == BlasOperation.NonTranspose ? x.Rows == z.Rows : x.Columns == z.Rows);
-            Contract.Requires<ArgumentException>(opy == BlasOperation.NonTranspose ? y.Columns == z.Columns : y.Rows == z.Columns);
+            if ((opx == BlasOperation.NonTranspose && opy == BlasOperation.NonTranspose) || (opx != BlasOperation.NonTranspose && opy != BlasOperation.NonTranspose))
+            {
+                if (opx == BlasOperation.NonTranspose ? x.Columns != y.Rows : x.Rows != y.Columns)
+                    throw new ArgumentException("opx == BlasOperation.NonTranspose ? x.Columns != y.Rows : x.Rows != y.Columns");
+                if (opx == BlasOperation.NonTranspose ? x.Rows != z.Rows : x.Columns != z.Rows)
+                    throw new ArgumentException("opx == BlasOperation.NonTranspose ? x.Rows != z.Rows : x.Columns != z.Rows");
+                if (opx == BlasOperation.NonTranspose ? y.Columns != z.Columns : y.Rows != z.Columns)
+                    throw new ArgumentException("opx == BlasOperation.NonTranspose ? y.Columns != z.Columns : y.Rows != z.Columns");
+            }
+            else
+            {
+                if (opx == BlasOperation.NonTranspose ? x.Rows != z.Rows : x.Columns != z.Rows)
+                    throw new ArgumentException("opx == BlasOperation.NonTranspose ? x.Rows != z.Rows : x.Columns != z.Rows");
+                if (opy == BlasOperation.NonTranspose ? y.Columns != z.Columns : y.Rows != z.Columns)
+                    throw new ArgumentException("opy == BlasOperation.NonTranspose ? y.Columns != z.Columns : y.Rows != z.Columns");
+            }
 
             var blas = CudaLearnModule.BlasContext;
             var x1 = ((IGpuMatrixStorage<T>)x).GetDeviceMemory();
@@ -335,8 +360,22 @@ namespace CudaLearn
 
         public static void GemmInPlace<T>(T alpha, GpuMatrix<T> x, GpuMatrix<T> y, T beta, ref GpuMatrix<T> z, BlasOperation opx = BlasOperation.NonTranspose, BlasOperation opy = BlasOperation.NonTranspose) where T : struct
         {
-            Contract.Requires<ArgumentException>(opx == BlasOperation.NonTranspose ? x.Rows == z.Rows : x.Columns == z.Rows);
-            Contract.Requires<ArgumentException>(opy == BlasOperation.NonTranspose ? y.Columns == z.Columns : y.Rows == z.Columns);
+            if ((opx == BlasOperation.NonTranspose && opy == BlasOperation.NonTranspose) || (opx != BlasOperation.NonTranspose && opy != BlasOperation.NonTranspose))
+            {
+                if (opx == BlasOperation.NonTranspose ? x.Columns != y.Rows : x.Rows != y.Columns)
+                    throw new ArgumentException("opx == BlasOperation.NonTranspose ? x.Columns != y.Rows : x.Rows != y.Columns");
+                if (opx == BlasOperation.NonTranspose ? x.Rows != z.Rows : x.Columns != z.Rows)
+                    throw new ArgumentException("opx == BlasOperation.NonTranspose ? x.Rows != z.Rows : x.Columns != z.Rows");
+                if (opx == BlasOperation.NonTranspose ? y.Columns != z.Columns : y.Rows != z.Columns)
+                    throw new ArgumentException("opx == BlasOperation.NonTranspose ? y.Columns != z.Columns : y.Rows != z.Columns");
+            }
+            else
+            {
+                if (opx == BlasOperation.NonTranspose ? x.Rows != z.Rows : x.Columns != z.Rows)
+                    throw new ArgumentException("opx == BlasOperation.NonTranspose ? x.Rows != z.Rows : x.Columns != z.Rows");
+                if (opy == BlasOperation.NonTranspose ? y.Columns != z.Columns : y.Rows != z.Columns)
+                    throw new ArgumentException("opy == BlasOperation.NonTranspose ? y.Columns != z.Columns : y.Rows != z.Columns");
+            }
 
             var blas = CudaLearnModule.BlasContext;
             var x1 = ((IGpuMatrixStorage<T>)x).GetDeviceMemory();
@@ -360,9 +399,8 @@ namespace CudaLearn
                 double b = (double)(object)beta;
 
                 blas.Gemm((Operation)opx, (Operation)opy, m, n, k, a, x1 as CudaDeviceVariable<double>, x.Rows, y2 as CudaDeviceVariable<double>, y.Rows, b, z3 as CudaDeviceVariable<double>, z.Rows);
-            }
-
-            throw new NotSupportedException("Type: {0} is not supported by the BLAS library.");
+            } 
+            else throw new NotSupportedException("Type: {0} is not supported by the BLAS library.");            
         }
 
         #endregion
@@ -430,7 +468,7 @@ namespace CudaLearn
             int threadsPerBlock = context.GetDeviceInfo().MaxThreadsPerBlock;
             int blocksPerGrid = (numElements + threadsPerBlock - 1) / threadsPerBlock;
 
-            CudaKernel kernel = context.LoadKernelPTX("vectorOperations.ptx", GetCudaOperationWithSuffix<T>("vectorEquals"));
+            CudaKernel kernel = context.LoadKernelPTX("arrayOperations.ptx", GetCudaOperationWithSuffix<T>("arrayEquals"));
             // TODO Minimize the tail effect. http://devblogs.nvidia.com/parallelforall/cuda-pro-tip-minimize-the-tail-effect/
             kernel.BlockDimensions = new dim3(threadsPerBlock);
             kernel.GridDimensions = new dim3(blocksPerGrid);

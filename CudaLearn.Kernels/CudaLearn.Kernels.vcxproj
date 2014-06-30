@@ -37,11 +37,11 @@
     <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -74,6 +74,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)CudaLearn\</OutDir>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -94,6 +97,8 @@
     </CudaCompile>
     <CudaCompile>
       <NvccCompilation>ptx</NvccCompilation>
+      <CodeGeneration>compute_30,sm_30</CodeGeneration>
+      <CudaRuntime>None</CudaRuntime>
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -134,6 +139,12 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
       <Command>echo copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"
 copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     </PostBuildEvent>
+    <CudaCompile>
+      <CompileOut>$(OutDir)%(Filename).ptx</CompileOut>
+      <NvccCompilation>ptx</NvccCompilation>
+      <CodeGeneration>compute_30,sm_30</CodeGeneration>
+      <CudaRuntime>None</CudaRuntime>
+    </CudaCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -159,8 +170,12 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <CudaCompile Include="arrayOperations.cu" />
+    <CudaCompile Include="math.cu" />
     <CudaCompile Include="matrixOperations.cu" />
-    <CudaCompile Include="vectorOperations.cu" />
+    <CudaCompile Include="vectorOperations.cu">
+      <CudaRuntime Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">None</CudaRuntime>
+    </CudaCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />

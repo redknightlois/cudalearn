@@ -169,6 +169,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="arrayOperations.ptx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="math.ptx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="MatrixHelper.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>MatrixHelper.cs</LastGenOutput>

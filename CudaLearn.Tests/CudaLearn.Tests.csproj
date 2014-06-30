@@ -22,10 +22,10 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
-    <CodeContractsEnableRuntimeChecking>False</CodeContractsEnableRuntimeChecking>
+    <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
     <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
     <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
-    <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
+    <CodeContractsRuntimeCallSiteRequires>True</CodeContractsRuntimeCallSiteRequires>
     <CodeContractsRuntimeSkipQuantifiers>False</CodeContractsRuntimeSkipQuantifiers>
     <CodeContractsRunCodeAnalysis>True</CodeContractsRunCodeAnalysis>
     <CodeContractsNonNullObligations>True</CodeContractsNonNullObligations>
@@ -55,7 +55,7 @@
     <CodeContractsCacheAnalysisResults>True</CodeContractsCacheAnalysisResults>
     <CodeContractsFailBuildOnWarnings>False</CodeContractsFailBuildOnWarnings>
     <CodeContractsBeingOptimisticOnExternal>True</CodeContractsBeingOptimisticOnExternal>
-    <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
+    <CodeContractsRuntimeCheckingLevel>Preconditions</CodeContractsRuntimeCheckingLevel>
     <CodeContractsReferenceAssembly>%28none%29</CodeContractsReferenceAssembly>
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
   </PropertyGroup>

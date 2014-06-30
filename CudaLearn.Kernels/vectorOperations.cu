@@ -1,28 +1,5 @@
 #include "common.h"
 
-template< typename T >
-__device__ void vectorEquals(const T *A, const T *B, bool *C, int numElements, T epsilon)
-{
-	int i = blockDim.x * blockIdx.x + threadIdx.x;
-
-	// A global result.
-	if (i == 0)
-		C[0] = true;
-
-	__syncthreads();
-
-	if (i < numElements)
-	{
-		// Calculate the difference. 
-		T result = A[i] - B[i];
-		result = result >= 0 ? result : -result;
-
-		// We dont care who wins. We will only signal C[0] when this value changes. So there is no need for atomics or handling the race condition.
-		if (result >= epsilon)
-			C[0] = false;
-	}
-}
-
 /**
 * Vector addition: C = A + B.
 *
@@ -62,18 +39,6 @@ __device__ void vectorAxpb(const T *x, const T a, const T b, T *C, int numElemen
 		C[i] = a * x[i] + b;
 	}
 }
-
-template< typename T >
-__device__ void vectorSet(T *x, const T a, int numElements)
-{
-	int i = blockDim.x * blockIdx.x + threadIdx.x;
-
-	if (i < numElements)
-	{
-		x[i] = a;
-	}
-}
-
 
 
 extern "C"
@@ -124,38 +89,6 @@ extern "C"
 	__global__ void vectorAxpb1i(const int *x, const int a, const int b, int *C, int numElements)
 	{
 		vectorAxpb<int>(x, a, b, C, numElements);
-	}
-
-
-	__global__ void vectorSet1f(float *x, const float a, int numElements)
-	{
-		vectorSet<float>(x, a, numElements);
-	}
-
-	__global__ void vectorSet1d(double *x, const double a, int numElements)
-	{
-		vectorSet<double>(x, a, numElements);
-	}
-
-	__global__ void vectorSet1i(int *x, const int a, int numElements)
-	{
-		vectorSet<int>(x, a, numElements);
-	}
-
-
-	__global__ void vectorEquals1f(const float *A, const float *B, bool *C, int numElements, float epsilon)
-	{
-		vectorEquals<float>(A, B, C, numElements, epsilon);
-	}
-
-	__global__ void vectorEquals1d(const double *A, const double *B, bool *C, int numElements, double epsilon)
-	{
-		vectorEquals<double>(A, B, C, numElements, epsilon);
-	}
-
-	__global__ void vectorEquals1i(const int *A, const int *B, bool *C, int numElements, int epsilon)
-	{
-		vectorEquals<int>(A, B, C, numElements, epsilon);
 	}
 }
 

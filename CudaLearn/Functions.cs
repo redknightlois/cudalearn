@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ManagedCuda;
+using ManagedCuda.VectorTypes;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
@@ -9,6 +11,75 @@ namespace CudaLearn
 {
     public static class Functions
     {
+        public static Matrix<T> ElementwisePow<T>(this Matrix<T> m, T pow) where T : struct
+        {
+            Contract.Requires<ArgumentNullException>(m != null);
+
+            int lenght = m.Rows * m.Columns;
+            var target = new Matrix<T>(m.Rows, m.Columns);
+
+            if (typeof(T) == typeof(int))
+            {
+                var mt1 = ((IHostMatrixStorage<int>)m).GetHostMemory();
+                var t = ((IHostMatrixStorage<int>)target).GetHostMemory();
+                var power = (int)(object)pow;
+
+                for (int i = 0; i < lenght; i++)
+                {
+                    t[i] = (int)Math.Pow(mt1[i], power);
+                }
+            }
+            else if (typeof(T) == typeof(float))
+            {
+                var mt1 = ((IHostMatrixStorage<float>)m).GetHostMemory();
+                var t = ((IHostMatrixStorage<float>)target).GetHostMemory();
+                var power = (float)(object)pow;
+
+                for (int i = 0; i < lenght; i++)
+                {
+                    t[i] = (float)Math.Pow(mt1[i], power);
+                }
+            }
+            else if (typeof(T) == typeof(double))
+            {
+                var mt1 = ((IHostMatrixStorage<double>)m).GetHostMemory();
+                var t = ((IHostMatrixStorage<double>)target).GetHostMemory();
+                var power = (double)(object)pow;
+
+                for (int i = 0; i < lenght; i++)
+                {
+                    t[i] = Math.Pow(mt1[i], power);
+                }
+            }
+            else throw new NotSupportedException("Type: {0} is not supported by the ElementWisePow<T> method.");
+
+            return target;
+        }
+
+        public static GpuMatrix<T> ElementwisePow<T>(this GpuMatrix<T> m, T pow ) where T : struct
+        {
+            Contract.Requires<ArgumentNullException>(m != null);
+
+            int numElements = m.Rows * m.Columns;
+            var target = new GpuMatrix<T>(m.Rows, m.Columns);
+
+            // arrayBinaryLess
+            var mt = ((IGpuMatrixStorage<T>)m).GetDeviceMemory();            
+            var t = ((IGpuMatrixStorage<T>)target).GetDeviceMemory();
+
+            var context = CudaLearnModule.Context;
+            int threadsPerBlock = context.GetDeviceInfo().MaxThreadsPerBlock;
+            int blocksPerGrid = (numElements + threadsPerBlock - 1) / threadsPerBlock;
+
+            CudaKernel kernel = context.LoadKernelPTX("math.ptx", GetCudaOperationWithSuffix<T>("mPow"));
+            kernel.BlockDimensions = new dim3(threadsPerBlock);
+            kernel.GridDimensions = new dim3(blocksPerGrid);
+
+            kernel.Run(mt.DevicePointer, pow, t.DevicePointer, numElements);
+
+            return target;
+        }
+
         public static T Mean<T>(this Matrix<T> m) where T : struct
         {
             Contract.Requires<ArgumentNullException>(m != null);
@@ -29,15 +100,44 @@ namespace CudaLearn
                 var m1 = m as Matrix<double>;
                 return (T)(object)(m1.Sum() / (m.Rows * m.Columns));
             }
-
-            throw new NotSupportedException("Type: {0} is not supported by the Matrix<T> class.");
+            else throw new NotSupportedException("Type: {0} is not supported by the Mean<T> method.");
         }
 
         public static T Mean<T>(this GpuMatrix<T> m) where T : struct
         {
             Contract.Requires<ArgumentNullException>(m != null);
 
-            throw new NotImplementedException();
+            T summation = Sum(m);
+
+            if (typeof(T) == typeof(int))
+            {
+                var value = (int)(object)summation;
+                return (T)(object)(value / (m.Rows * m.Columns));
+            }
+            else if (typeof(T) == typeof(float))
+            {
+                var value = (float)(object)summation;
+                return (T)(object)(value / (m.Rows * m.Columns));
+            }
+            else if (typeof(T) == typeof(double))
+            {
+                var value = (double)(object)summation;
+                return (T)(object)(value / (m.Rows * m.Columns));
+            }
+            else throw new NotSupportedException("Type: {0} is not supported by the Mean<T> method.");
+        }
+
+        public static T Sum<T> ( this GpuMatrix<T> m ) where T : struct
+        {
+            Contract.Requires<ArgumentNullException>(m != null);
+
+            var sumRows = Sum(m, Axis.Rows);
+            var sum = Sum(sumRows, Axis.Columns);
+
+            using (var scope = new MemoryAccessScope<T>(sum))
+            {
+                return scope[0, 0];
+            }
         }
 
         public static T Sum<T>(this Matrix<T> m) where T : struct
@@ -72,8 +172,7 @@ namespace CudaLearn
                     result += mt[i];
                 return (T)(object)result;
             }
-
-            throw new NotSupportedException("Type: {0} is not supported by the Matrix<T> class.");
+            else throw new NotSupportedException("Type: {0} is not supported by the Sum<T> method.");
         }
 
         public static Matrix<T> Sum<T>(this Matrix<T> m, Axis axis) where T : struct
@@ -128,7 +227,7 @@ namespace CudaLearn
                     ptr += majorStride;
                 }               
             }
-            else throw new NotSupportedException("Type: {0} is not supported by the Matrix<T> class.");
+            else throw new NotSupportedException("Type: {0} is not supported by the Sum<T> method.");
 
             return target;
         }
@@ -138,7 +237,28 @@ namespace CudaLearn
             Contract.Requires<ArgumentNullException>(m != null);
             Contract.Requires<ArgumentException>(axis != Axis.None);
 
-            throw new NotImplementedException();
+            if ( axis == Axis.Rows )
+            {
+                var target = new GpuMatrix<T>(m.Columns, 1, GpuMatrix<T>.One);
+                return m * target;
+            }
+            else
+            {
+                var target = new GpuMatrix<T>(1, m.Rows, GpuMatrix<T>.One);
+                return target * m;
+            }
+        }
+
+        private static string GetCudaOperationWithSuffix<T>(string name)
+        {
+            if (typeof(T) == typeof(float))
+                return name + "1f";
+            else if (typeof(T) == typeof(double))
+                return name + "1d";
+            else if (typeof(T) == typeof(int))
+                return name + "1i";
+
+            throw new NotSupportedException("Type: {0} is not supported by the BLAS library.");
         }
 
         public static T Dot<T>(this Matrix<T> m1, Matrix<T> m2) where T : struct
@@ -226,7 +346,23 @@ namespace CudaLearn
         {
             Contract.Requires<ArgumentNullException>(m != null);
 
-            throw new NotImplementedException();
+            var mt = ((IGpuMatrixStorage<T>)m).GetDeviceMemory();
+            var target = new GpuMatrix<T>(m.Rows, m.Columns);
+            var t = ((IGpuMatrixStorage<T>)target).GetDeviceMemory();
+
+            int numElements = m.Rows * m.Columns;
+
+            var context = CudaLearnModule.Context;
+            int threadsPerBlock = context.GetDeviceInfo().MaxThreadsPerBlock;
+            int blocksPerGrid = (numElements + threadsPerBlock - 1) / threadsPerBlock;
+
+            CudaKernel kernel = context.LoadKernelPTX("math.ptx", GetCudaOperationWithSuffix<T>("mExp"));
+            kernel.BlockDimensions = new dim3(threadsPerBlock);
+            kernel.GridDimensions = new dim3(blocksPerGrid);
+
+            kernel.Run(mt.DevicePointer, t.DevicePointer, numElements);
+
+            return target;
         }
 
         public static Matrix<T> BinaryLess<T>(this Matrix<T> m1, Matrix<T> m2) where T : struct
@@ -272,6 +408,33 @@ namespace CudaLearn
                 }
             }
             else throw new NotSupportedException("Type: {0} is not supported by the Matrix<T> class.");
+
+            return target;
+        }
+
+        public static GpuMatrix<T> BinaryLess<T>(this GpuMatrix<T> m1, GpuMatrix<T> m2) where T : struct
+        {
+            Contract.Requires<ArgumentNullException>(m1 != null);
+            Contract.Requires<ArgumentNullException>(m2 != null);
+            Contract.Requires<ArgumentException>(m1.Rows == m2.Rows && m1.Columns == m2.Columns);
+
+            int numElements = m1.Rows * m1.Columns;
+            var target = new GpuMatrix<T>(m1.Rows, m1.Columns);
+
+            // arrayBinaryLess
+            var m1t = ((IGpuMatrixStorage<T>)m1).GetDeviceMemory();
+            var m2t = ((IGpuMatrixStorage<T>)m2).GetDeviceMemory();
+            var t = ((IGpuMatrixStorage<T>)target).GetDeviceMemory();
+
+            var context = CudaLearnModule.Context;
+            int threadsPerBlock = context.GetDeviceInfo().MaxThreadsPerBlock;
+            int blocksPerGrid = (numElements + threadsPerBlock - 1) / threadsPerBlock;
+
+            CudaKernel kernel = context.LoadKernelPTX("arrayOperations.ptx", GetCudaOperationWithSuffix<T>("arrayBinaryLess"));
+            kernel.BlockDimensions = new dim3(threadsPerBlock);
+            kernel.GridDimensions = new dim3(blocksPerGrid);
+
+            kernel.Run(m1t.DevicePointer, m2t.DevicePointer, t.DevicePointer, numElements);
 
             return target;
         }

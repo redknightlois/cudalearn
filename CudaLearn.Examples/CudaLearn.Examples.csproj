@@ -70,7 +70,7 @@
     <CodeContractsCacheAnalysisResults>True</CodeContractsCacheAnalysisResults>
     <CodeContractsFailBuildOnWarnings>False</CodeContractsFailBuildOnWarnings>
     <CodeContractsBeingOptimisticOnExternal>False</CodeContractsBeingOptimisticOnExternal>
-    <CodeContractsRuntimeCheckingLevel>None</CodeContractsRuntimeCheckingLevel>
+    <CodeContractsRuntimeCheckingLevel>Pre and Post</CodeContractsRuntimeCheckingLevel>
     <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
   </PropertyGroup>
@@ -120,7 +120,7 @@
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>CudaLearn.Examples.Rbm.CpuRbmExample</StartupObject>
+    <StartupObject>CudaLearn.Examples.Rbm.GpuRbmExample</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CudaBitmapSource">

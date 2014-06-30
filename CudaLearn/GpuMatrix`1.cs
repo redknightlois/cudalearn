@@ -313,11 +313,11 @@ namespace CudaLearn
 
             if (m2.Rows == 1)
             {
-                return AddColumns(m1, m2);
+                return AddVectorOnColumns(m1, GpuMatrix<T>.One, m2);
             }
             else if (m2.Columns == 1)
             {
-                return AddRows(m1, m2);
+                return AddVectorOnRows(m1, GpuMatrix<T>.One, m2);
             }
             else return BlasMath.Axpy(m1, GpuMatrix<T>.One, m2) as GpuMatrix<T>;
         }
@@ -336,11 +336,11 @@ namespace CudaLearn
 
             if (m2.Rows == 1)
             {
-                return AddColumns(m1, m2);
+                return AddVectorOnColumns(m1, GpuMatrix<T>.NegativeOne, m2);
             }
             else if (m2.Columns == 1)
             {
-                return AddRows(m1, m2);
+                return AddVectorOnRows(m1, GpuMatrix<T>.NegativeOne, m2);
             }
             else return BlasMath.Axpy(m2, GpuMatrix<T>.NegativeOne, m1);
         }
@@ -400,7 +400,7 @@ namespace CudaLearn
                 double c1 = (double)(object)c;
                 return t * (1.0f / c1) as GpuMatrix<T>;
             }
-            throw new NotSupportedException("Type: {0} is not supported by the Matrix<T> class.");
+            throw new NotSupportedException("Type: {0} is not supported by the GpuMatrix<T> class.");
         }
 
         public static GpuMatrix<T> operator /(T c, GpuMatrix<T> m)
@@ -412,7 +412,10 @@ namespace CudaLearn
         {
             Contract.Requires<ArgumentNullException>(m != null);
 
-            throw new NotImplementedException();
+            // TODO Implement properly.
+
+            var cpu = (Matrix<T>)m;
+            return cpu ^ x;
         }
 
         public static GpuMatrix<T> operator >(GpuMatrix<T> m1, GpuMatrix<T> m2)
@@ -488,6 +491,7 @@ namespace CudaLearn
             var rt = ((IGpuMatrixStorage<T>)r).GetDeviceMemory();
 
             rt.CopyToDevice(mt);
+            CudaLearnModule.Context.Synchronize();
 
             return r;
         }
@@ -502,6 +506,7 @@ namespace CudaLearn
             var mt = ((IGpuMatrixStorage<T>)m).GetDeviceMemory();            
             var rt = ((IHostMatrixStorage<T>)r).GetHostMemory();
 
+            CudaLearnModule.Context.Synchronize();
             mt.CopyToHost(rt);
             
             return r;

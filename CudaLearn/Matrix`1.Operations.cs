@@ -246,6 +246,7 @@ namespace CudaLearn
 
         private static Matrix<T> AddVectorOnColumns(Matrix<T> m, Matrix<T> v)
         {
+            Contract.Requires(m != null);
             Contract.Requires(v.Columns == 1);
             Contract.Requires(v.Rows == m.Rows);
 
@@ -294,6 +295,7 @@ namespace CudaLearn
 
         private static Matrix<T> AddVectorOnRows(Matrix<T> m, Matrix<T> v)
         {
+            Contract.Requires(m != null);
             Contract.Requires(v.Rows == 1);
             Contract.Requires(v.Columns == m.Columns);
 

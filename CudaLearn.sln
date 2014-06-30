@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CudaLearn", "CudaLearn\CudaLearn.csproj", "{5EF2A1B7-88F4-414B-B903-2E030D02485D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7A4616ED-BE52-4363-8C36-11B053475259} = {7A4616ED-BE52-4363-8C36-11B053475259}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CudaLearn.Kernels", "CudaLearn.Kernels\CudaLearn.Kernels.vcxproj", "{7A4616ED-BE52-4363-8C36-11B053475259}"
 EndProject

@@ -20,14 +20,14 @@ namespace CudaLearn.Examples.Rbm
             float momentum = 0.9f;
 
             int num_epochs = 10;
-            int batch_size = 100;
+            int batch_size = 3;
 
             int num_batches = trainingSet.Samples / batch_size;
 
             // Training parameters
 
             int num_vis = trainingSet.SampleSize;
-            int num_hid = 1024;
+            int num_hid = 124; // 1024;
 
             // Initialize Weights
             var w_vh = 0.1f * Matrix<float>.Normal(num_vis, num_hid);
@@ -79,9 +79,9 @@ namespace CudaLearn.Examples.Rbm
                     w_v += epsilon / batch_size * wu_v;
                     w_h += epsilon / batch_size * wu_h;
 
-                    error[epoch] = Functions.Mean((v - v_true.Item1) ^ 2);
+                    error[epoch] = Functions.Mean((v - v_true.Item1).ElementwisePow(2));
                     batch++;
-
+                
                     Console.WriteLine(string.Format("Batch {0}/{1} | Error: {2}", batch, num_batches, error[epoch]));
                 }
             }
