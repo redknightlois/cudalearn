@@ -160,54 +160,6 @@ namespace CudaLearn
             return new GpuMatrix<T>(this);
         }
 
-        /// <summary>
-        /// Matrix transpose, for any rectangular matrix
-        /// </summary>
-        public static GpuMatrix<T> Transpose(GpuMatrix<T> m)
-        {
-            Contract.Requires<ArgumentNullException>(m != null);
-
-            if (m.isLocked)
-                throw new InvalidOperationException("The matrix storage is in locked mode.");
-
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Matrix transpose, for any rectangular matrix
-        /// </summary>
-        public GpuMatrix<T> Transpose()
-        {
-            return GpuMatrix<T>.Transpose(this);
-        }
-
-        public GpuMatrix<T> Invert()
-        {
-            return GpuMatrix<T>.Invert(this);
-        }
-
-        public static GpuMatrix<T> Invert(GpuMatrix<T> m)
-        {
-            if (m.isLocked)
-                throw new InvalidOperationException("The matrix storage is in locked mode.");
-
-            if (typeof(T) == typeof(float))
-            {
-                var t = m as GpuMatrix<float>;
-                throw new NotImplementedException();
-                //return MatrixHelper.Invert(t) as GpuMatrix<T>;
-            }
-            else if (typeof(T) == typeof(double))
-            {
-                var t = m as GpuMatrix<double>;
-                throw new NotImplementedException();
-                //return MatrixHelper.Invert(t) as GpuMatrix<T>;
-            }
-
-            throw new NotSupportedException("Type: {0} is not supported by the GpuMatrix<T> class.");
-        }
-
-
         public bool Equals(GpuMatrix<T> other)
         {
             if (isLocked)

@@ -25,7 +25,7 @@ __device__ void matrixAddColVector(const T* mat, const T* vec, T alpha, T* targe
 
 	for (unsigned int i = idx; i < width * height; i += numThreads) 
 	{
-		target[i] = mat[i] + alpha * vec[i % height];
+		target[i] = mat[i] + alpha * vec[i / height];
 	}
 }
 
@@ -37,7 +37,7 @@ __device__ void matrixAddRowVector(const T* mat, const T* vec, T alpha, T* targe
 
 	for (unsigned int i = idx; i < width * height; i += numThreads) 
 	{
-		target[i] = mat[i] + alpha * vec[i / height];
+		target[i] = mat[i] + alpha * vec[i % height];
 	}
 }
 

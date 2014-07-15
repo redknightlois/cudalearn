@@ -11,12 +11,17 @@ namespace CudaLearn
 {
     public static class Functions
     {
-        public static Matrix<T> ElementwisePow<T>(this Matrix<T> m, T pow) where T : struct
+        public static Matrix<T> ElementwisePow<T>(this Matrix<T> m, T pow, Matrix<T> target = null) where T : struct
         {
             Contract.Requires<ArgumentNullException>(m != null);
 
             int lenght = m.Rows * m.Columns;
-            var target = new Matrix<T>(m.Rows, m.Columns);
+
+            if (target == null)
+                target = new Matrix<T>(m.Rows, m.Columns);
+
+            if (target.Rows != m.Rows || target.Columns != m.Columns)
+                throw new ArgumentException("Target size does not match.", "target");
 
             if (typeof(T) == typeof(int))
             {
@@ -56,14 +61,18 @@ namespace CudaLearn
             return target;
         }
 
-        public static GpuMatrix<T> ElementwisePow<T>(this GpuMatrix<T> m, T pow ) where T : struct
+        public static GpuMatrix<T> ElementwisePow<T>(this GpuMatrix<T> m, T pow, GpuMatrix<T> target = null) where T : struct
         {
             Contract.Requires<ArgumentNullException>(m != null);
 
             int numElements = m.Rows * m.Columns;
-            var target = new GpuMatrix<T>(m.Rows, m.Columns);
 
-            // arrayBinaryLess
+            if (target == null)
+                target = new GpuMatrix<T>(m.Rows, m.Columns);
+
+            if (target.Rows != m.Rows || target.Columns != m.Columns)
+                throw new ArgumentException("Target size does not match.", "target");
+
             var mt = ((IGpuMatrixStorage<T>)m).GetDeviceMemory();            
             var t = ((IGpuMatrixStorage<T>)target).GetDeviceMemory();
 
@@ -175,7 +184,7 @@ namespace CudaLearn
             else throw new NotSupportedException("Type: {0} is not supported by the Sum<T> method.");
         }
 
-        public static Matrix<T> Sum<T>(this Matrix<T> m, Axis axis) where T : struct
+        public static Matrix<T> Sum<T>(this Matrix<T> m, Axis axis, Matrix<T> target = null ) where T : struct
         {
             Contract.Requires<ArgumentNullException>(m != null);
             Contract.Requires<ArgumentException>(axis != Axis.None);
@@ -183,7 +192,15 @@ namespace CudaLearn
             int items = axis == Axis.Columns ? m.Rows : m.Columns;
             int majorStride = axis == Axis.Columns ? m.Rows : 1;
             int minorStride = axis == Axis.Columns ? 1 : m.Rows;
-            Matrix<T> target = new Matrix<T>(axis == Axis.Columns ? 1 : m.Rows, axis == Axis.Columns ? m.Columns : 1, Matrix<T>.Zero);
+
+            int rows = axis == Axis.Columns ? 1 : m.Rows;
+            int columns = axis == Axis.Columns ? m.Columns : 1;
+
+            if (target == null)
+                target = new Matrix<T>(rows, columns, Matrix<T>.Zero);
+
+            if (target.Rows != rows || target.Columns != columns)
+                throw new ArgumentException("Target size does not match.", "target");
 
             if (typeof(T) == typeof(int))
             {
@@ -232,19 +249,26 @@ namespace CudaLearn
             return target;
         }
 
-        public static GpuMatrix<T> Sum<T>(this GpuMatrix<T> m, Axis axis) where T : struct
+        public static GpuMatrix<T> Sum<T>(this GpuMatrix<T> m, Axis axis, GpuMatrix<T> target = null) where T : struct
         {
             Contract.Requires<ArgumentNullException>(m != null);
             Contract.Requires<ArgumentException>(axis != Axis.None);
 
+            if (target != null)
+                throw new NotImplementedException();
+
             if ( axis == Axis.Rows )
             {
-                var target = new GpuMatrix<T>(m.Columns, 1, GpuMatrix<T>.One);
+                if (target == null)
+                    target = new GpuMatrix<T>(m.Columns, 1, GpuMatrix<T>.One);
+
                 return m * target;
             }
             else
             {
-                var target = new GpuMatrix<T>(1, m.Rows, GpuMatrix<T>.One);
+                if (target == null)
+                    target = new GpuMatrix<T>(1, m.Rows, GpuMatrix<T>.One);
+
                 return target * m;
             }
         }

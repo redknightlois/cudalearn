@@ -387,35 +387,52 @@ namespace CudaLearn.Tests
         {
             var m1 = new Matrix<float>(2, 3);
 
-            // 1 0 1
-            // 0 1 0            
+            // 1 0 2
+            // 0 3 0            
             m1[0, 0] = 1;
             m1[0, 1] = 0;
-            m1[0, 2] = 1;
+            m1[0, 2] = 2;
             m1[1, 0] = 0;
-            m1[1, 1] = 1;
+            m1[1, 1] = 3;
             m1[1, 2] = 0;
 
             var gm1 = (GpuMatrix<float>)m1;
 
+            // 1 0 2             2 2 5
+            // 0 3 0  + 1 2 3 =  1 5 3
+
             var result = new Matrix<float>(2, 3);
             result[0, 0] = 2;
-            result[0, 1] = 1;
-            result[0, 2] = 2;
+            result[0, 1] = 2;
+            result[0, 2] = 5;
             result[1, 0] = 1;
-            result[1, 1] = 2;
-            result[1, 2] = 1;
+            result[1, 1] = 5;
+            result[1, 2] = 3;
 
             var columnVector = new Matrix<float>(1, 3, 1);
-            var sumCols = m1 + columnVector;
-            var gpuSumCols = gm1 + columnVector;
+            columnVector[0, 1] = 2;
+            columnVector[0, 2] = 3;
 
-            var rowsVector = new Matrix<float>(2, 1, 1);
-            var sumRows = m1 + rowsVector;
-            var gpuSumRows = gm1 + rowsVector;
+            var sumCols = m1 + columnVector;
+            var gpuSumCols = (Matrix<float>)(gm1 + columnVector);
 
             Assert.Equal(result, sumCols);
             Assert.Equal(result, gpuSumCols);
+
+            // 1 0 2    1    2 1 3
+            // 0 3 0  + 1 =  1 4 1
+
+            result[0, 0] = 2;
+            result[0, 1] = 1;
+            result[0, 2] = 3;
+            result[1, 0] = 1;
+            result[1, 1] = 4;
+            result[1, 2] = 1;
+
+            var rowsVector = new Matrix<float>(2, 1, 1);
+            var sumRows = m1 + rowsVector;
+            var gpuSumRows = (Matrix<float>)(gm1 + rowsVector);
+
 
             Assert.Equal(result, sumRows);
             Assert.Equal(result, gpuSumRows);

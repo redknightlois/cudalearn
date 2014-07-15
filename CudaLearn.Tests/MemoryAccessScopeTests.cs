@@ -18,8 +18,6 @@ namespace CudaLearn.Tests
             using (var s = new MemoryAccessScope<float>(m))
             {
                 Assert.Throws<InvalidOperationException>(() => m.Clone());
-                Assert.Throws<InvalidOperationException>(() => m.Invert());
-                Assert.Throws<InvalidOperationException>(() => m.Transpose());
                 Assert.Throws<InvalidOperationException>(() => m + m);
                 Assert.Throws<InvalidOperationException>(() => m * m);
                 Assert.Throws<InvalidOperationException>(() => m - m);

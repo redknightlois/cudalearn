@@ -8,7 +8,7 @@
 .target sm_30, debug
 .address_size 32
 
-	.file	1 "S:/Repositories/Corvalius-git/cudalearn.git/CudaLearn.Kernels/matrixOperations.cu", 1404096583, 3006
+	.file	1 "S:/Repositories/Corvalius-git/cudalearn.git/CudaLearn.Kernels/matrixOperations.cu", 1405467154, 3006
 
 .visible .func _Z17matrixSetIdentityIfEvPT_j(
 	.param .b32 _Z17matrixSetIdentityIfEvPT_j_param_0,
@@ -337,7 +337,7 @@ tmp32:
 	shl.b32 	%r17, %r3, 2;
 	add.s32 	%r18, %r5, %r17;
 	ld.f32 	%f2, [%r18];
-	rem.u32 	%r19, %r3, %r9;
+	div.u32 	%r19, %r3, %r9;
 	shl.b32 	%r20, %r19, 2;
 	add.s32 	%r21, %r6, %r20;
 	ld.f32 	%f3, [%r21];
@@ -422,7 +422,7 @@ tmp43:
 	shl.b32 	%r17, %r3, 3;
 	add.s32 	%r18, %r5, %r17;
 	ld.f64 	%fd2, [%r18];
-	rem.u32 	%r19, %r3, %r9;
+	div.u32 	%r19, %r3, %r9;
 	shl.b32 	%r20, %r19, 3;
 	add.s32 	%r21, %r6, %r20;
 	ld.f64 	%fd3, [%r21];
@@ -506,7 +506,7 @@ tmp54:
 	shl.b32 	%r18, %r3, 2;
 	add.s32 	%r19, %r5, %r18;
 	ld.u32 	%r20, [%r19];
-	rem.u32 	%r21, %r3, %r10;
+	div.u32 	%r21, %r3, %r10;
 	shl.b32 	%r22, %r21, 2;
 	add.s32 	%r23, %r6, %r22;
 	ld.u32 	%r24, [%r23];
@@ -591,7 +591,7 @@ tmp65:
 	shl.b32 	%r17, %r3, 2;
 	add.s32 	%r18, %r5, %r17;
 	ld.f32 	%f2, [%r18];
-	div.u32 	%r19, %r3, %r9;
+	rem.u32 	%r19, %r3, %r9;
 	shl.b32 	%r20, %r19, 2;
 	add.s32 	%r21, %r6, %r20;
 	ld.f32 	%f3, [%r21];
@@ -676,7 +676,7 @@ tmp76:
 	shl.b32 	%r17, %r3, 3;
 	add.s32 	%r18, %r5, %r17;
 	ld.f64 	%fd2, [%r18];
-	div.u32 	%r19, %r3, %r9;
+	rem.u32 	%r19, %r3, %r9;
 	shl.b32 	%r20, %r19, 3;
 	add.s32 	%r21, %r6, %r20;
 	ld.f64 	%fd3, [%r21];
@@ -760,7 +760,7 @@ tmp87:
 	shl.b32 	%r18, %r3, 2;
 	add.s32 	%r19, %r5, %r18;
 	ld.u32 	%r20, [%r19];
-	div.u32 	%r21, %r3, %r10;
+	rem.u32 	%r21, %r3, %r10;
 	shl.b32 	%r22, %r21, 2;
 	add.s32 	%r23, %r6, %r22;
 	ld.u32 	%r24, [%r23];
