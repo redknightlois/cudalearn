@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MathNet.Numerics.LinearAlgebra;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.IO;
@@ -9,7 +10,6 @@ using System.Threading.Tasks;
 
 namespace CudaLearn.Examples.Rbm
 {
-
     public class MnistDataset
     {
         private readonly FileInfo imagesFile;
@@ -18,10 +18,17 @@ namespace CudaLearn.Examples.Rbm
         public MnistDataset( FileInfo images, FileInfo labels )
         {
             // Uses the files from http://yann.lecun.com/exdb/mnist/
-            Contract.Requires<ArgumentNullException>(images != null);
-            Contract.Requires<FileNotFoundException>(images.Exists);
-            Contract.Requires<ArgumentNullException>(labels != null);
-            Contract.Requires<FileNotFoundException>(labels.Exists);
+            if (images == null)
+                throw new ArgumentNullException("images");
+
+            if (!images.Exists)
+                throw new FileNotFoundException();
+
+            if (labels == null)
+                throw new ArgumentNullException("labels");
+
+            if (!labels.Exists)
+                throw new FileNotFoundException();
 
             this.imagesFile = images;
             this.labelsFile = labels;
@@ -45,7 +52,7 @@ namespace CudaLearn.Examples.Rbm
 
         public int SampleSize { get; private set; }
 
-        public IEnumerable<Tuple<Matrix<float>, Matrix<int>>> Batches(int batchSize)
+        public IEnumerable<Tuple<Matrix<float>, Matrix<float>>> Batches(int batchSize)
         {
             using (var imagesStream = new BinaryReader(imagesFile.OpenRead(), Encoding.BigEndianUnicode))
             using (var labelsStream = new BinaryReader(labelsFile.OpenRead(), Encoding.BigEndianUnicode))
@@ -58,25 +65,25 @@ namespace CudaLearn.Examples.Rbm
                 int magic2 = labelsStream.ReadInt32();
                 int numLabels = labelsStream.ReadInt32();
 
-                int totalBatches = Samples / batchSize;                
+                int totalBatches = Samples / batchSize;
                 for (int batches = 0; batches < totalBatches; batches++)
                 {
-                    var images = new Matrix<float>(SampleSize, batchSize);
-                    var labels = new Matrix<int>(1, batchSize);
+                    var images = Matrix<float>.Build.Dense(SampleSize, batchSize);
+                    var labels = Matrix<float>.Build.Dense(1, batchSize);
 
-                    for (int current = 0; current < batchSize; current++ )
+                    for (int current = 0; current < batchSize; current++)
                     {
                         for (int i = 0; i < SampleSize; i++)
                         {
-                            float v = (float) imagesStream.ReadByte();
+                            float v = (float)imagesStream.ReadByte();
                             images[i, current] = v / 255.0f;
                         }
-                            
 
-                        labels[0, current] = (int)labelsStream.ReadByte();
+
+                        labels[0, current] = (float)labelsStream.ReadByte();
                     }
 
-                    yield return new Tuple<Matrix<float>, Matrix<int>>(images, labels);
+                    yield return new Tuple<Matrix<float>, Matrix<float>>(images, labels);
                 }
             }
         }
@@ -97,8 +104,11 @@ namespace CudaLearn.Examples.Rbm
 
         public MnistDatabase( DirectoryInfo directory )
         {
-            Contract.Requires<ArgumentNullException>(directory != null);
-            Contract.Requires<DirectoryNotFoundException>( directory.Exists );
+            if (directory == null)
+                throw new ArgumentNullException("directory");
+
+            if (!directory.Exists)
+                throw new DirectoryNotFoundException();
 
             this.directory = directory;
         }

@@ -22,7 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
+    <CodeContractsEnableRuntimeChecking>False</CodeContractsEnableRuntimeChecking>
     <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
     <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
     <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
@@ -108,36 +108,12 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CudaBitmapSource, Version=6.0.23.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\ManagedCuda-60-x86-unofficial.6.0.23\lib\net45\x86\CudaBitmapSource.dll</HintPath>
-    </Reference>
-    <Reference Include="CudaBlas, Version=6.0.23.0, Culture=neutral, PublicKeyToken=539d54d12e99fedb, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\ManagedCuda-60-x86-unofficial.6.0.23\lib\net45\x86\CudaBlas.dll</HintPath>
-    </Reference>
-    <Reference Include="CudaFFT, Version=6.0.23.0, Culture=neutral, PublicKeyToken=f066edfa1acb2f23, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\ManagedCuda-60-x86-unofficial.6.0.23\lib\net45\x86\CudaFFT.dll</HintPath>
-    </Reference>
-    <Reference Include="CudaRand, Version=6.0.23.0, Culture=neutral, PublicKeyToken=fe981579f4e9a066, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\ManagedCuda-60-x86-unofficial.6.0.23\lib\net45\x86\CudaRand.dll</HintPath>
-    </Reference>
-    <Reference Include="CudaSparse, Version=6.0.23.0, Culture=neutral, PublicKeyToken=f65ee2ae6b331585, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\ManagedCuda-60-x86-unofficial.6.0.23\lib\net45\x86\CudaSparse.dll</HintPath>
-    </Reference>
-    <Reference Include="ManagedCuda, Version=6.0.23.0, Culture=neutral, PublicKeyToken=242d898828717aa0, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\ManagedCuda-60-x86-unofficial.6.0.23\lib\net45\x86\ManagedCuda.dll</HintPath>
-    </Reference>
-    <Reference Include="NPP, Version=6.0.23.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\ManagedCuda-60-x86-unofficial.6.0.23\lib\net45\x86\NPP.dll</HintPath>
+    <Reference Include="MathNet.Numerics">
+      <HintPath>..\packages\MathNet.Numerics.3.0.2\lib\net40\MathNet.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -145,50 +121,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Axis.cs" />
-    <Compile Include="CudaLearnModule.cs" />
-    <Compile Include="Decomposition.cs" />
     <Compile Include="Functions.cs" />
-    <Compile Include="GpuMatrix`1.cs" />
-    <Compile Include="GpuMatrix`1.Operations.cs" />
     <Compile Include="IFluentInterface.cs" />
-    <Compile Include="IGpuMatrixStorage.cs" />
-    <Compile Include="IHostMatrixStorage.cs" />
-    <Compile Include="BlasOperation.cs" />
-    <Compile Include="Matrix`1.Operations.cs" />
-    <Compile Include="MemoryAccessScope.cs" />
-    <Compile Include="Matrix`1.cs" />
-    <Compile Include="MatrixHelper.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>MatrixHelper.tt</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="BlasMath.cs" />
-    <Compile Include="ThreadLocalRandom.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="arrayOperations.ptx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="math.ptx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="MatrixHelper.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>MatrixHelper.cs</LastGenOutput>
-    </None>
-    <None Include="matrixOperations.ptx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="packages.config" />
-    <None Include="vectorOperations.ptx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="libiomp5md.dll" />
+    <Content Include="MathNet.Numerics.MKL.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

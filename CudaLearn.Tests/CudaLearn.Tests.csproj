@@ -22,7 +22,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
-    <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
+    <CodeContractsEnableRuntimeChecking>False</CodeContractsEnableRuntimeChecking>
     <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
     <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
     <CodeContractsRuntimeCallSiteRequires>True</CodeContractsRuntimeCallSiteRequires>
@@ -69,36 +69,12 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CudaBitmapSource, Version=6.0.23.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\ManagedCuda-60-x86-unofficial.6.0.23\lib\net45\x86\CudaBitmapSource.dll</HintPath>
-    </Reference>
-    <Reference Include="CudaBlas, Version=6.0.23.0, Culture=neutral, PublicKeyToken=539d54d12e99fedb, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\ManagedCuda-60-x86-unofficial.6.0.23\lib\net45\x86\CudaBlas.dll</HintPath>
-    </Reference>
-    <Reference Include="CudaFFT, Version=6.0.23.0, Culture=neutral, PublicKeyToken=f066edfa1acb2f23, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\ManagedCuda-60-x86-unofficial.6.0.23\lib\net45\x86\CudaFFT.dll</HintPath>
-    </Reference>
-    <Reference Include="CudaRand, Version=6.0.23.0, Culture=neutral, PublicKeyToken=fe981579f4e9a066, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\ManagedCuda-60-x86-unofficial.6.0.23\lib\net45\x86\CudaRand.dll</HintPath>
-    </Reference>
-    <Reference Include="CudaSparse, Version=6.0.23.0, Culture=neutral, PublicKeyToken=f65ee2ae6b331585, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\ManagedCuda-60-x86-unofficial.6.0.23\lib\net45\x86\CudaSparse.dll</HintPath>
-    </Reference>
-    <Reference Include="ManagedCuda, Version=6.0.23.0, Culture=neutral, PublicKeyToken=242d898828717aa0, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\ManagedCuda-60-x86-unofficial.6.0.23\lib\net45\x86\ManagedCuda.dll</HintPath>
-    </Reference>
-    <Reference Include="NPP, Version=6.0.23.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\ManagedCuda-60-x86-unofficial.6.0.23\lib\net45\x86\NPP.dll</HintPath>
+    <Reference Include="MathNet.Numerics">
+      <HintPath>..\packages\MathNet.Numerics.3.0.2\lib\net40\MathNet.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -112,12 +88,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BlasMathTests.cs" />
-    <Compile Include="GpuMatrixTests.cs" />
-    <Compile Include="MathTestsBase.cs" />
-    <Compile Include="MemoryAccessScopeTests.cs" />
     <Compile Include="MatrixTests.cs" />
-    <Compile Include="MixedMatrixOperationsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -131,6 +102,14 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="libiomp5md.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="MathNet.Numerics.MKL.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

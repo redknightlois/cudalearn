@@ -37,7 +37,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
+    <CodeContractsEnableRuntimeChecking>False</CodeContractsEnableRuntimeChecking>
     <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
     <CodeContractsRuntimeThrowOnFailure>False</CodeContractsRuntimeThrowOnFailure>
     <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
@@ -120,32 +120,15 @@
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>CudaLearn.Examples.Rbm.GpuRbmExample</StartupObject>
+    <StartupObject>CudaLearn.Examples.Rbm.CpuRbmExample</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CudaBitmapSource">
-      <HintPath>..\packages\ManagedCuda-60-x86-unofficial.6.0.23\lib\net45\x86\CudaBitmapSource.dll</HintPath>
-    </Reference>
-    <Reference Include="CudaBlas">
-      <HintPath>..\packages\ManagedCuda-60-x86-unofficial.6.0.23\lib\net45\x86\CudaBlas.dll</HintPath>
-    </Reference>
-    <Reference Include="CudaFFT">
-      <HintPath>..\packages\ManagedCuda-60-x86-unofficial.6.0.23\lib\net45\x86\CudaFFT.dll</HintPath>
-    </Reference>
-    <Reference Include="CudaRand">
-      <HintPath>..\packages\ManagedCuda-60-x86-unofficial.6.0.23\lib\net45\x86\CudaRand.dll</HintPath>
-    </Reference>
-    <Reference Include="CudaSparse">
-      <HintPath>..\packages\ManagedCuda-60-x86-unofficial.6.0.23\lib\net45\x86\CudaSparse.dll</HintPath>
-    </Reference>
-    <Reference Include="ManagedCuda">
-      <HintPath>..\packages\ManagedCuda-60-x86-unofficial.6.0.23\lib\net45\x86\ManagedCuda.dll</HintPath>
-    </Reference>
-    <Reference Include="NPP">
-      <HintPath>..\packages\ManagedCuda-60-x86-unofficial.6.0.23\lib\net45\x86\NPP.dll</HintPath>
+    <Reference Include="MathNet.Numerics">
+      <HintPath>..\packages\MathNet.Numerics.3.0.2\lib\net40\MathNet.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -153,11 +136,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Performance\GpuMemoryAccessExample.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Rbm\GpuRbmExample.cs" />
-    <Compile Include="Rbm\MnistDatabase.cs" />
     <Compile Include="Rbm\CpuRbmExample.cs" />
+    <Compile Include="Rbm\MnistDatabase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -185,6 +166,17 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="libiomp5md.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="MathNet.Numerics.MKL.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Performance\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
