@@ -120,7 +120,7 @@
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>CudaLearn.Examples.Rbm.CpuRbmExample</StartupObject>
+    <StartupObject>CudaLearn.Examples.Tryout</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MathNet.Numerics">
@@ -137,8 +137,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Rbm\CpuRbmExample.cs" />
-    <Compile Include="Rbm\MnistDatabase.cs" />
+    <Compile Include="Tryout.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -175,9 +174,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Performance\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

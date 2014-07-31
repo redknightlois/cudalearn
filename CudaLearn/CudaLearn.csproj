@@ -19,7 +19,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;EXHAUSTIVE_DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeContractsEnableRuntimeChecking>False</CodeContractsEnableRuntimeChecking>
@@ -111,6 +111,9 @@
     <Reference Include="MathNet.Numerics">
       <HintPath>..\packages\MathNet.Numerics.3.0.2\lib\net40\MathNet.Numerics.dll</HintPath>
     </Reference>
+    <Reference Include="Seterlund.CodeGuard">
+      <HintPath>..\packages\Seterlund.CodeGuard.2.3.4\lib\net40\Seterlund.CodeGuard.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
@@ -121,9 +124,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Functions.cs" />
+    <Compile Include="Blob.cs" />
+    <Compile Include="Filler.Constant.cs" />
+    <Compile Include="Filler.cs" />
+    <Compile Include="Filler.Gaussian.cs" />
+    <Compile Include="Filler.PositiveUnitball.cs" />
+    <Compile Include="Filler.Xavier.cs" />
+    <Compile Include="Guards\ComparableValidatorExtensions.cs" />
+    <Compile Include="Guards\IntegerValidatorExtensions.cs" />
     <Compile Include="IFluentInterface.cs" />
+    <Compile Include="Layer.cs" />
+    <Compile Include="NeuronLayer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="NeuronLayer.Threshold.cs" />
+    <Compile Include="Filler.Uniform.cs" />
+    <Compile Include="VectorBuilderExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
