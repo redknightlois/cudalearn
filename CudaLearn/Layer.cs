@@ -34,6 +34,13 @@ namespace CudaLearn
         {
         }
 
+        public void Setup( Blob bottom, Blob top )
+        {
+            var bottomList = new List<Blob> { bottom };
+            var topList = new List<Blob> { top };
+            this.Setup( bottomList, topList );
+        }
+
         public virtual void Setup(IList<Blob> bottom, IList<Blob> top)
         {
             Guard.That(() => bottom).IsNotNull();
@@ -42,10 +49,28 @@ namespace CudaLearn
             CheckBlobCount(bottom, top);
         }
 
+        public float Forward(Blob bottom, Blob top)
+        {
+            Guard.That(() => bottom).IsNotNull();
+            Guard.That(() => top).IsNotNull();
+
+            var bottomList = new List<Blob> { bottom };
+            var topList = new List<Blob> { top };
+
+            return this.Forward(bottomList, topList);
+        }
+
         public float Forward(IList<Blob> bottom, IList<Blob> top)
         {
             Guard.That(() => bottom).IsNotNull();
             Guard.That(() => top).IsNotNull();
+
+#if EXHAUSTIVE_DEBUG
+
+            Guard.That(() => bottom).IsTrue(x => !x.Contains(null), "Cannot contain null.");
+            Guard.That(() => top).IsTrue(x => !x.Contains(null), "Cannot contain null.");
+
+#endif
 
             if (forwardGpuSupported)
             {
@@ -62,10 +87,27 @@ namespace CudaLearn
             return ForwardCpu(bottom, top);
         }
 
+        public void Backward(Blob bottom, Blob top)
+        {
+            Guard.That(() => bottom).IsNotNull();
+            Guard.That(() => top).IsNotNull();
+
+            var bottomList = new List<Blob> { bottom };
+            var topList = new List<Blob> { top };
+
+            this.Backward(bottomList, topList);
+        }
+
         public void Backward(IList<Blob> bottom, IList<Blob> top)
         {
             Guard.That(() => bottom).IsNotNull();
             Guard.That(() => top).IsNotNull();
+
+#if EXHAUSTIVE_DEBUG
+
+            Guard.That(() => bottom).IsTrue(x => !x.Contains(null), "Cannot contain null.");
+            Guard.That(() => top).IsTrue(x => !x.Contains(null), "Cannot contain null.");
+#endif
 
             if (backwardGpuSupported)
             {

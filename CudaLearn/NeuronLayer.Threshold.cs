@@ -10,6 +10,10 @@ namespace CudaLearn
 
     public class ThresholdLayerConfiguration : LayerConfiguration
     {
+        public ThresholdLayerConfiguration()
+            : this(0.0f)
+        { }
+
         public ThresholdLayerConfiguration(float threshold)
             : base(LayerType.Threshold)
         {
@@ -32,6 +36,10 @@ namespace CudaLearn
     /// </summary>
     public class ThresholdLayer : NeuronLayer<ThresholdLayerConfiguration>
     {
+        public ThresholdLayer()
+            : this(new ThresholdLayerConfiguration())
+        {}
+
         public ThresholdLayer(ThresholdLayerConfiguration param)
             : base(param)
         {}
