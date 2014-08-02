@@ -29,8 +29,8 @@ namespace CudaLearn
     ///     The defult threshold = 0, which means positive values would become 1 and 
     ///     negative or 0, would become 0
     ///     
-    /// y = 1 if x > threshold
-    /// y = 0 if x <= threshold
+    /// y = 1 if x greater than Threshold
+    /// y = 0 if x less or equal than Threshold
     /// 
     /// y' = don't differenciable
     /// </summary>
@@ -38,11 +38,11 @@ namespace CudaLearn
     {
         public ThresholdLayer()
             : this(new ThresholdLayerConfiguration())
-        {}
+        { }
 
         public ThresholdLayer(ThresholdLayerConfiguration param)
             : base(param)
-        {}
+        { }
 
         protected override float ForwardCpu(IList<Blob> bottom, IList<Blob> top)
         {

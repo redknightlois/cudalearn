@@ -7,10 +7,16 @@ using Xunit;
 
 namespace CudaLearn.Tests
 {
-    public partial class ThresholdLayerTests
+    public class ThresholdLayerTests
     {
         private readonly Blob bottom = new Blob(2, 3, 6, 5);
         private readonly Blob top = new Blob();
+
+        public ThresholdLayerTests()
+        {
+            var filler = new GaussianFiller();
+            filler.Fill(bottom);
+        }
 
         [Fact]
         public void ThresholdLayer_Setup()
@@ -82,7 +88,7 @@ namespace CudaLearn.Tests
         {
             var layer = new ThresholdLayer();
             layer.Setup(bottom, top);
-            Assert.Throws<NotSupportedException>(() => layer.Backward(bottom, top));
+            Assert.Throws<NotSupportedException>(() => layer.Backward(top, new List<bool> { false }, bottom));
         }
     }
 }

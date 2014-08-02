@@ -47,6 +47,13 @@ namespace CudaLearn
         public Blob() : this(0, 0, 0, 0)
         { }
 
+        public Blob( Blob blob )
+        {
+            Guard.That(() => blob).IsNotNull();
+
+            ReshapeAs(blob);
+        }
+
         public Blob(int num, int channels, int height, int width)
         {
             Reshape(num, channels, height, width);

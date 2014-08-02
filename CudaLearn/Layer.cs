@@ -11,6 +11,7 @@ namespace CudaLearn
     {
         None,
         Threshold,
+        Relu,
     }
 
     public class LayerConfiguration
@@ -87,7 +88,7 @@ namespace CudaLearn
             return ForwardCpu(bottom, top);
         }
 
-        public void Backward(Blob bottom, Blob top)
+        public void Backward(Blob top, IList<bool> propagateDown, Blob bottom)
         {
             Guard.That(() => bottom).IsNotNull();
             Guard.That(() => top).IsNotNull();
@@ -95,13 +96,14 @@ namespace CudaLearn
             var bottomList = new List<Blob> { bottom };
             var topList = new List<Blob> { top };
 
-            this.Backward(bottomList, topList);
+            this.Backward(bottomList, propagateDown, topList);
         }
 
-        public void Backward(IList<Blob> bottom, IList<Blob> top)
+        public void Backward(IList<Blob> top, IList<bool> propagateDown, IList<Blob> bottom)
         {
             Guard.That(() => bottom).IsNotNull();
             Guard.That(() => top).IsNotNull();
+            Guard.That(() => propagateDown).IsNotNull();
 
 #if EXHAUSTIVE_DEBUG
 
@@ -113,7 +115,7 @@ namespace CudaLearn
             {
                 try
                 {
-                    BackwardGpu(bottom, top);
+                    BackwardGpu(top, propagateDown, bottom);
                     return;
                 }
                 catch (NotSupportedException)
@@ -122,21 +124,23 @@ namespace CudaLearn
                 }
             }
 
-            BackwardCpu(bottom, top);
+            BackwardCpu(top, propagateDown, bottom);
         }
 
         protected abstract float ForwardCpu(IList<Blob> bottom, IList<Blob> top);
-        protected virtual void BackwardCpu(IList<Blob> bottom, IList<Blob> top)
-        {
-            throw new NotSupportedException();
-        }
 
         protected virtual float ForwardGpu(IList<Blob> bottom, IList<Blob> top)
         {
             throw new NotSupportedException();
         }
 
-        protected virtual void BackwardGpu(IList<Blob> bottom, IList<Blob> top)
+
+        protected virtual void BackwardCpu(IList<Blob> top, IList<bool> propagateDown, IList<Blob> bottom)
+        {
+            throw new NotSupportedException();
+        }
+
+        protected virtual void BackwardGpu(IList<Blob> top, IList<bool> propagateDown, IList<Blob> bottom)
         {
             throw new NotSupportedException();
         }
