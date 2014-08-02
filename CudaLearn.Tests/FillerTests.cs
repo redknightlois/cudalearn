@@ -11,7 +11,7 @@ namespace CudaLearn.Tests
     public class FillerTests
     {
         [Fact]
-        public void ConstantFiller()
+        public void Filler_Constant()
         {
             var blob = new Blob(2, 3, 4, 5);
 
@@ -39,7 +39,7 @@ namespace CudaLearn.Tests
         }
 
         [Theory, PropertyData("MinMaxParameters")]
-        public void UniformFiller( float min, float max )
+        public void Filler_Uniform(float min, float max)
         {
             var blob = new Blob(2, 3, 4, 5);
             var config = new UniformFillerConfiguration(min, max);
@@ -56,7 +56,7 @@ namespace CudaLearn.Tests
         }
 
         [Fact]
-        public void PositiveUnitballFiller()
+        public void Filler_PositiveUnitball()
         {
             var blob = new Blob(2, 3, 4, 5);
             var filler = new PositiveUnitballFiller();
@@ -99,7 +99,7 @@ namespace CudaLearn.Tests
         }
 
         [Theory, PropertyData("MeanStdParameters")]
-        public void GaussianDenseFiller(float meanParam, float stdParam)
+        public void Filler_GaussianDense(float meanParam, float stdParam)
         {
             var blob = new Blob(2, 3, 4, 5);
             var config = new GaussianFillerConfiguration(meanParam, stdParam);
@@ -129,7 +129,7 @@ namespace CudaLearn.Tests
         }
 
         [Theory, PropertyData("MeanStdParameters")]
-        public void GaussianSparseFiller(float meanParam, float stdParam)
+        public void Filler_GaussianSparse(float meanParam, float stdParam)
         {
             var blob = new Blob(2, 3, 4, 5);
             var config = new GaussianFillerConfiguration(meanParam, stdParam) { IsSparse = true };
@@ -168,7 +168,7 @@ namespace CudaLearn.Tests
         }
 
         [Fact]
-        public void XavierFiller()
+        public void Filler_Xavier()
         {
             var blob = new Blob(2, 3, 4, 5);
             var filler = new XavierFiller();

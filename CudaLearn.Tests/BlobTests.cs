@@ -10,7 +10,7 @@ namespace CudaLearn.Tests
     public class BlobTests
     {
         [Fact]
-        public void Initialization ()
+        public void Blob_Initialization()
         {
             var blob = new Blob();
             Assert.Equal(0, blob.Num);
@@ -36,7 +36,7 @@ namespace CudaLearn.Tests
         }
 
         [Fact]
-        public void Reshape()
+        public void Blob_Reshape()
         {
             var blob = new Blob();
             blob.Reshape(2, 3, 4, 5);
@@ -53,7 +53,7 @@ namespace CudaLearn.Tests
         }
 
         [Fact]
-        public void ReshapeAs()
+        public void Blob_ReshapeAs()
         {
             var blob = new Blob();
             var preshaped = new Blob(2, 3, 4, 5);

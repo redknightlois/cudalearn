@@ -48,7 +48,7 @@ namespace CudaLearn.Tests
         }
 
         [Fact]
-        public void ReluLayer_Gradient()
+        public void ReluLayer_BackwardGradient()
         {
             var layer = new ReluLayer();
 
@@ -85,16 +85,6 @@ namespace CudaLearn.Tests
         }
 
         [Fact]
-        public void ReluLayer_GradientWithLeakyUnits()
-        {
-            var config = new ReluLayerConfiguration(0.01f);
-            var layer = new ReluLayer(config);
-
-            var checker = new GradientChecker(1e-2f, 1e-2f, 1701, 0.0f, 0.01f);
-            checker.CheckEltwise(layer, bottom, top);
-        }
-
-        [Fact]
         public void ReluLayer_ForwardGradientWithLeakyUnits()
         {
             // http://en.wikipedia.org/wiki/Rectifier_(neural_networks)#Leaky_ReLUs
@@ -120,6 +110,16 @@ namespace CudaLearn.Tests
                     Assert.True(top.DataAt(i) == 0.0f || top.DataAt(i) == bottom.DataAt(i));
                 }
             };
+        }
+
+        [Fact]
+        public void ReluLayer_BackwardGradientWithLeakyUnits()
+        {
+            var config = new ReluLayerConfiguration(0.01f);
+            var layer = new ReluLayer(config);
+
+            var checker = new GradientChecker(1e-2f, 1e-2f, 1701, 0.0f, 0.01f);
+            checker.CheckEltwise(layer, bottom, top);
         }
     }
 }
