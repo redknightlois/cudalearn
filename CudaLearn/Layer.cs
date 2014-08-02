@@ -12,6 +12,8 @@ namespace CudaLearn
         None,
         Threshold,
         Relu,
+        Bnll,
+        Sigmoid,
     }
 
     public class LayerConfiguration

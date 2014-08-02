@@ -18,7 +18,7 @@ namespace CudaLearn.Tests
         // kink and kink_range specify an ignored nonsmooth region of the form
         // kink - kink_range <= |feature value| <= kink + kink_range,
         // which accounts for all nonsmoothness in use
-        public GradientChecker(float step, float threshold, int seed, float kink = 0.0f, float kinkRange = -1.0f)
+        public GradientChecker(float step, float threshold, int seed = 1701, float kink = 0.0f, float kinkRange = -1.0f)
         {
             this.step = step;
             this.threshold = threshold;
