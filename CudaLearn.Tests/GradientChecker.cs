@@ -124,7 +124,9 @@ namespace CudaLearn.Tests
                 var currentBlob = blobsToCheck[blobId];
                 computedGradientsBlob[blobId] = new Blob(currentBlob);
 
-                currentBlob.Diff.CopyTo(computedGradientsBlob[blobId].Data);
+                var currentDiff = currentBlob.Diff;
+                var computedGradients = computedGradientsBlob[blobId].Data;                
+                currentDiff.CopyTo(computedGradients);
             }
 
             // Compute derivative of top w.r.t. each bottom and parameter input using
@@ -137,11 +139,10 @@ namespace CudaLearn.Tests
                 for ( int featId = 0; featId < currentBlob.Count; featId++ )
                 {
                     // For an element-wise layer, we only need to do finite differencing to
-                    // compute the derivative of (*top)[top_id][top_data_id] w.r.t.
-                    // (*bottom)[blob_id][i] only for i == top_data_id.  For any other
+                    // compute the derivative of topData[top_id][top_data_id] w.r.t.
+                    // bottomData[blob_id][i] only for i == top_data_id.  For any other
                     // i != top_data_id, we know the derivative is 0 by definition, and simply
                     // check that that's true.
-
                     float estimatedGradient = 0;
                     if ( !elementWise || featId == topDataId )
                     {

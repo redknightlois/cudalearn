@@ -90,8 +90,10 @@
   <ItemGroup>
     <Compile Include="BlobTests.cs" />
     <Compile Include="BnllLayerTests.cs" />
+    <Compile Include="DropoutLayerTests.cs" />
     <Compile Include="FillerTests.cs" />
     <Compile Include="GradientChecker.cs" />
+    <Compile Include="PowerLayerTests.cs" />
     <Compile Include="ReluLayerTests.cs" />
     <Compile Include="SigmoidLayerTests.cs" />
     <Compile Include="ThresholdLayerTests.cs" />

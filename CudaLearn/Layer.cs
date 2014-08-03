@@ -14,6 +14,8 @@ namespace CudaLearn
         Relu,
         Bnll,
         Sigmoid,
+        Dropout,
+        Power,
     }
 
     public class LayerConfiguration
@@ -243,6 +245,8 @@ namespace CudaLearn
         }
 
         public abstract LayerType Type { get; }
+
+        public PhaseType Phase { get { return Context.Instance.Phase; } }
     }
 
     public abstract class Layer<TConfiguration> : Layer
