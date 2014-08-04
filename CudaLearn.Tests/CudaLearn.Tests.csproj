@@ -96,6 +96,7 @@
     <Compile Include="PowerLayerTests.cs" />
     <Compile Include="ReluLayerTests.cs" />
     <Compile Include="SigmoidLayerTests.cs" />
+    <Compile Include="TahnLayerTests.cs" />
     <Compile Include="ThresholdLayerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

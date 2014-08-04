@@ -16,6 +16,7 @@ namespace CudaLearn
         Sigmoid,
         Dropout,
         Power,
+        Tahn,
     }
 
     public class LayerConfiguration

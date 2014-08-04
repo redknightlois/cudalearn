@@ -143,6 +143,7 @@
     <Compile Include="NeuronLayer.Relu.cs" />
     <Compile Include="NeuronLayer.Sigmoid.cs" />
     <Compile Include="Context.cs" />
+    <Compile Include="NeuronLayer.Tanh.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="NeuronLayer.Threshold.cs" />
     <Compile Include="Filler.Uniform.cs" />
