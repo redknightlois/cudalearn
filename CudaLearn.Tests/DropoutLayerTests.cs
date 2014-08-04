@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
+using Xunit.Extensions;
 
 namespace CudaLearn.Tests
 {
@@ -31,12 +32,28 @@ namespace CudaLearn.Tests
             Assert.Equal(bottom.Width, top.Width);
         }
 
-        [Fact]
-        public void DropoutLayer_ForwardTrainPhase()
+        public static IEnumerable<object[]> DropoutParameter
+        {
+            get
+            {
+                return new[]
+                {    
+                    new object[] { 0.10f},
+                    new object[] { 0.25f },
+                    new object[] { 0.5f },                         
+                    new object[] { 0.75f },
+                    new object[] { 0.9f },                                                       
+                };
+            }
+        }
+
+        [Theory, PropertyData("DropoutParameter")]
+        public void DropoutLayer_ForwardTrainPhase(float ratio)
         {
             Context.Instance.Phase = PhaseType.Train;
 
-            var layer = new DropoutLayer();
+            var config = new DropoutLayerConfiguration(ratio);
+            var layer = new DropoutLayer(config);
             layer.Setup(bottom, top);
             layer.Forward(bottom, top);
 
@@ -45,11 +62,20 @@ namespace CudaLearn.Tests
             float scale = 1f / (1f - layer.Parameters.Ratio);
 
             int count = bottom.Count;
+            int kept = 0;
             for (int i = 0; i < count; i++)
             {
                 if (!MathHelpers.Equality(top.DataAt(i), 0))
+                {
+                    kept++;
                     Assert.True(MathHelpers.Equality(top.DataAt(i), bottom.DataAt(i) * scale));
+                }                    
             };
+
+            double stdError = Math.Sqrt(ratio * (1 - ratio) / count);
+            double empiricalDropoutRatio = 1.0d - ((double)kept / count);
+
+            Assert.True(MathHelpers.Equality(ratio, empiricalDropoutRatio, 1.96 * stdError));
         }
 
         [Fact]
