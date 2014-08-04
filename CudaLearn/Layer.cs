@@ -17,6 +17,7 @@ namespace CudaLearn
         Dropout,
         Power,
         Tahn,
+        EuclideanLoss,
     }
 
     public class LayerConfiguration
@@ -240,7 +241,7 @@ namespace CudaLearn
         // if AllowForceBackward(i) == false, we will ignore the force_backward
         // setting and backpropagate to blob i only if it needs gradient information
         // (as is done when force_backward == false).
-        protected virtual bool AllowForceBackward(int bottom_index)
+        protected virtual bool AllowForceBackward(int bottomIndex)
         {
             return true;
         }

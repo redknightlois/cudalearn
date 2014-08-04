@@ -91,6 +91,7 @@
     <Compile Include="BlobTests.cs" />
     <Compile Include="BnllLayerTests.cs" />
     <Compile Include="DropoutLayerTests.cs" />
+    <Compile Include="EuclideanLossLayerTests.cs" />
     <Compile Include="FillerTests.cs" />
     <Compile Include="GradientChecker.cs" />
     <Compile Include="PowerLayerTests.cs" />
