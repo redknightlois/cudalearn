@@ -18,6 +18,8 @@ namespace CudaLearn
         Power,
         Tahn,
         EuclideanLoss,
+        SoftmaxLoss,
+        Softmax,
     }
 
     public class LayerConfiguration

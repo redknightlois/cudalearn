@@ -7,6 +7,7 @@ using Xunit;
 
 namespace CudaLearn.Tests
 {
+    //TODO Implement a tests that will use a known loss and check accordingly. I am not entirely sure that the current gradient based implementation is correct.
     public class EuclideanLossLayerTests
     {
         private readonly Blob blobBottomData;

@@ -73,6 +73,7 @@ namespace CudaLearn
 
             if ( this.Count != 0 )
             {
+                // TODO We can do better here and do not reshape if the size is the same. 
                 this.Data = Vector<float>.Build.Dense(this.Count);
                 this.Diff = Vector<float>.Build.Dense(this.Count);
             }
@@ -169,6 +170,16 @@ namespace CudaLearn
             // If copying differential is needed, we copy it too.
             if (copyDiff)
                 other.Diff.CopyTo(this.Diff);
+        }
+
+        public void ShareData(Blob other)
+        {
+            this.Data = other.Data;
+        }
+
+        public void ShareDiff(Blob other)
+        {
+            this.Diff = other.Diff;
         }
     }
 }

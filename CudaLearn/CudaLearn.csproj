@@ -108,8 +108,9 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MathNet.Numerics">
-      <HintPath>..\packages\MathNet.Numerics.3.0.2\lib\net40\MathNet.Numerics.dll</HintPath>
+    <Reference Include="MathNet.Numerics, Version=3.2.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\MathNet.Numerics.3.2.1\lib\net40\MathNet.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="Seterlund.CodeGuard">
       <HintPath>..\packages\Seterlund.CodeGuard.2.3.4\lib\net40\Seterlund.CodeGuard.dll</HintPath>
@@ -137,6 +138,7 @@
     <Compile Include="Layer.cs" />
     <Compile Include="LossLayer.cs" />
     <Compile Include="LossLayer.Euclidean.cs" />
+    <Compile Include="LossLayer.Softmax.cs" />
     <Compile Include="MathHelpers.cs" />
     <Compile Include="NeuronLayer.Bnll.cs" />
     <Compile Include="NeuronLayer.cs" />
@@ -146,6 +148,7 @@
     <Compile Include="NeuronLayer.Sigmoid.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="NeuronLayer.Tanh.cs" />
+    <Compile Include="NormalizationLayer.Softmax.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="NeuronLayer.Threshold.cs" />
     <Compile Include="Filler.Uniform.cs" />
