@@ -1,5 +1,6 @@
 ﻿using Seterlund.CodeGuard;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -71,6 +72,8 @@ namespace CudaLearn
 
         public float Forward(IList<Blob> bottom, IList<Blob> top)
         {
+            // TODO Fail if not initialized.
+
             Guard.That(() => bottom).IsNotNull();
             Guard.That(() => top).IsNotNull();
 
@@ -109,6 +112,8 @@ namespace CudaLearn
 
         public void Backward(IList<Blob> top, IList<bool> propagateDown, IList<Blob> bottom)
         {
+            // TODO Fail if not initialized.
+
             Guard.That(() => bottom).IsNotNull();
             Guard.That(() => top).IsNotNull();
             Guard.That(() => propagateDown).IsNotNull();
@@ -251,6 +256,23 @@ namespace CudaLearn
         public abstract LayerType Type { get; }
 
         public PhaseType Phase { get { return Context.Instance.Phase; } }
+
+
+        private readonly SortedSet<int> propagateDownList = new SortedSet<int>();
+
+        public void SetPropagateDownForParameter( int parameterId, bool value )
+        {
+            // When true we add it to the list, when false we remove it.
+            if ( value )                 
+                propagateDownList.Add(parameterId);
+            else
+                propagateDownList.Remove(parameterId);
+        }
+
+        public bool GetPropagateDownForParameter( int parameterId )
+        {
+            return propagateDownList.Contains(parameterId);
+        }
     }
 
     public abstract class Layer<TConfiguration> : Layer

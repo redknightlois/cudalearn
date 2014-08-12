@@ -95,6 +95,7 @@
     <Compile Include="EuclideanLossLayerTests.cs" />
     <Compile Include="FillerTests.cs" />
     <Compile Include="GradientChecker.cs" />
+    <Compile Include="InnerProductLayerTests.cs" />
     <Compile Include="PowerLayerTests.cs" />
     <Compile Include="ReluLayerTests.cs" />
     <Compile Include="SigmoidLayerTests.cs" />

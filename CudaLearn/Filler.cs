@@ -54,4 +54,20 @@ namespace CudaLearn
             this.type_ = param.Type;
         }
     }
+
+    public static class FillerFactory
+    {
+        public static Filler Create(FillerConfiguration configuration)
+        {
+            switch ( configuration.Type )
+            {
+                case FillerType.Constant: return new ConstantFiller((ConstantFillerConfiguration)configuration);
+                case FillerType.Gaussian: return new GaussianFiller((GaussianFillerConfiguration)configuration);
+                case FillerType.PositiveUnitball: return new PositiveUnitballFiller((PositiveUnitballFillerConfiguration)configuration);
+                case FillerType.Uniform: return new UniformFiller((UniformFillerConfiguration)configuration);
+                case FillerType.Xavier: return new XavierFiller((XavierFillerConfiguration)configuration);
+                default: throw new NotSupportedException(string.Format("Filler type {0} is not supported by the FillerFactory.", configuration.Type));
+            }
+        }
+    }
 }

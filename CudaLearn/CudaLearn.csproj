@@ -135,6 +135,7 @@
     <Compile Include="Guards\ComparableValidatorExtensions.cs" />
     <Compile Include="Guards\IntegerValidatorExtensions.cs" />
     <Compile Include="IFluentInterface.cs" />
+    <Compile Include="NeuronLayer.InnerProduct.cs" />
     <Compile Include="Layer.cs" />
     <Compile Include="LossLayer.cs" />
     <Compile Include="LossLayer.Euclidean.cs" />

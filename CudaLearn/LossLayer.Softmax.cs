@@ -25,8 +25,8 @@ namespace CudaLearn
     /// </summary>
     public class SoftmaxLossLayer : LossLayer<SoftmaxLossLayerConfiguration>
     {
-        private SoftmaxLayer softmaxLayer = new SoftmaxLayer();
-        private Blob probability = new Blob();
+        private readonly SoftmaxLayer softmaxLayer = new SoftmaxLayer();
+        private readonly Blob probability = new Blob();
 
         public SoftmaxLossLayer()
             : this(new SoftmaxLossLayerConfiguration())
