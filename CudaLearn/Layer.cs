@@ -21,6 +21,8 @@ namespace CudaLearn
         EuclideanLoss,
         SoftmaxLoss,
         Softmax,
+        AveragePooling,
+        MaxPooling,
     }
 
     public class LayerConfiguration
@@ -104,10 +106,7 @@ namespace CudaLearn
             Guard.That(() => bottom).IsNotNull();
             Guard.That(() => top).IsNotNull();
 
-            var bottomList = new List<Blob> { bottom };
-            var topList = new List<Blob> { top };
-
-            this.Backward(bottomList, propagateDown, topList);
+            this.Backward(new[] { top }, propagateDown, new[] {bottom});
         }
 
         public void Backward(IList<Blob> top, IList<bool> propagateDown, IList<Blob> bottom)
@@ -169,13 +168,13 @@ namespace CudaLearn
 
             if (MinBottomBlobs >= 0)
             {
-                if (bottom.Count <= MinBottomBlobs)
+                if (bottom.Count < MinBottomBlobs)
                     throw new ArgumentOutOfRangeException(string.Format("{0} Layer takes at least {1} bottom blob(s) as input.", this.GetType().Name, this.MinBottomBlobs));
             }
 
             if (MaxBottomBlobs >= 0)
             {
-                if (bottom.Count >= MaxBottomBlobs)
+                if (bottom.Count > MaxBottomBlobs)
                     throw new ArgumentOutOfRangeException(string.Format("{0} Layer takes at most {1} bottom blob(s) as input.", this.GetType().Name, this.MaxBottomBlobs));
             }
 
@@ -188,13 +187,13 @@ namespace CudaLearn
 
             if (MinTopBlobs >= 0)
             {
-                if (top.Count <= MinTopBlobs)
+                if (top.Count < MinTopBlobs)
                     throw new ArgumentOutOfRangeException(string.Format("{0} Layer takes at least {1} top blob(s) as input.", this.GetType().Name, this.MinTopBlobs));
             }
 
             if (MaxTopBlobs >= 0)
             {
-                if (top.Count >= MaxTopBlobs)
+                if (top.Count > MaxTopBlobs)
                     throw new ArgumentOutOfRangeException(string.Format("{0} Layer takes at most {1} top blob(s) as input.", this.GetType().Name, this.MaxTopBlobs));
             }
         }

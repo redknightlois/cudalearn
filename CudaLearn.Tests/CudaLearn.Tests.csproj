@@ -89,6 +89,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AveragePoolingLayerTests.cs" />
     <Compile Include="BlobTests.cs" />
     <Compile Include="BnllLayerTests.cs" />
     <Compile Include="DropoutLayerTests.cs" />

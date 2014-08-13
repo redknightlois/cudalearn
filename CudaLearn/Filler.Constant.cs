@@ -22,6 +22,10 @@ namespace CudaLearn
 
     public class ConstantFiller : Filler<ConstantFillerConfiguration>
     {
+        public ConstantFiller(float c)
+            : this(new ConstantFillerConfiguration(c))
+        { }
+
         public ConstantFiller()
             : this(new ConstantFillerConfiguration())
         { }

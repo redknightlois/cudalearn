@@ -66,21 +66,19 @@ namespace CudaLearn.Tests
             Assert.True(top.Count > 0, "Exhaustive mode requires at least one top blob.");
 
             int checkBottom = -1;
-            bool elementwise = true;
             for (int i = 0; i < top.Count; i++)
                 for (int j = 0; j < top[i].Count; j++)
-                    CheckSingle(layer, bottom, top, checkBottom, i, j, elementwise);
-
+                    CheckSingle(layer, bottom, top, checkBottom, i, j, elementwise: true);
         }
         public void CheckSingle( Layer layer,  Blob bottom, Blob top, int checkBottom, int topId, int topDataId, bool elementWise = false)
         {
             this.CheckSingle ( layer, new List<Blob> { bottom }, new List<Blob> { top }, checkBottom, topId, topDataId, elementWise );
         }
 
-        public void CheckSingle( Layer layer,  IList<Blob> bottom, IList<Blob> top, int checkBottom, int topId, int topDataId, bool elementWise = false)
+        public void CheckSingle( Layer layer,  IList<Blob> bottom, IList<Blob> top, int checkBottom, int topId, int topDataId, bool elementwise = false)
         {
             //TODO If implemented at all the ability of the layer to access stored blobs, we need to recheck this.
-            if ( elementWise )
+            if ( elementwise )
             {
                 Assert.True(topId >= 0);
                 Assert.True(topDataId >= 0);
@@ -144,17 +142,17 @@ namespace CudaLearn.Tests
                     // i != top_data_id, we know the derivative is 0 by definition, and simply
                     // check that that's true.
                     float estimatedGradient = 0;
-                    if ( !elementWise || featId == topDataId )
+                    if (!elementwise || featId == topDataId)
                     {
                         //TODO Add a general random generator that layers should use, to ensure we always apply it when layers are non-deterministic.
 
                         // Do finite differencing.
-                        // Compute loss with stepsize_ added to input.
+                        // Compute loss with stepsize added to input.
                         currentBlob.Data[featId] += step;
                         float positiveObjective = layer.Forward(bottom, top);
                         positiveObjective += GetObjectiveAndGradient(top, topId, topDataId);
 
-                        // Compute loss with stepsize_ subtracted from input.
+                        // Compute loss with stepsize subtracted from input.
                         currentBlob.Data[featId] -= step * 2;
 
                         //TODO Add a general random generator that layers should use, to ensure we always apply it when layers are non-deterministic.
