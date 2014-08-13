@@ -11,19 +11,17 @@ Most of the high performance machine learning algorithms are written in C++ or P
 
 CudaLearn follows a hybrid approach. Where high performance is needed we follow the C++/Python route of implementing vertical scalability through GPU accelerated computation and aim to distribute this computation across entire clusters. This approach also exploit algorithms asymmetries in computational complexity, CPU implementations will be available for the less computationally demanded stage.
 
-This release contains: 
+The first release will contain: 
 
-- Generic Matrix< T > with operations for general purpose scientific computing.
+- Deep Learning Algorithms 
+  - Convolutional Neural Networks (CNN)
 - Support for GPU acceleration with CUDA Kernels.
-- C# native matrix operations.
  
 In the future:
 
 - Deep Learning Algorithms 
-  - Convolutional Neural Networks (CNN)
   - Restricted Boltzmann Machines (RBM)
 - Latent Dirichlet Analysis.
-- Roslyn based matrix expressions optimizer with native BLAS and CUDA adapters.
 
 
 Licensing
@@ -40,19 +38,19 @@ CudaLearn is dual licensed.
 
 Commercial editions can be used in closed source environments and are available under a subscription or perpetual pricing model. While the subscription is valid, new major releases are included.
  
-Developers are encouraged to buy a license early on to support the development (we know you will want to build concepts first). Once you are ready to deploy your application you need to buy a license.
+Developers are encouraged to buy a license early on to support the development (we know you will want to build concepts first). Once you are ready to deploy your application you will need to buy a license.
  
 Licenses are available per developer, per site or per company. 
 
 ### Free (as in free beer) licenses. 
 
-Open source projects are eligible to get a free project wide license. Please contact us including a few details about your project (most importantly where is the code published). 
+Open source projects are eligible to get a free project wide license. Please contact us including a few details about your project (most importantly where is the code published) so we can let others know about it. 
  
 Research projects are eligible to get a free project wide license. We encourage you to cite CudaLearn in your papers.
  
-Bizspark and startups are elegible to get a free project wide license if their revenue per year is less than 500000 USD
+Bizspark and startups are elegible for free project wide license if their revenue per year is less than 500000 USD
  
-Personal and demonstration use and non-for-profit are eligible to get a free project wide license.
+Personal, demonstrations and non-for-profit are eligible for free project wide license.
 
 ### Features for hire
 
@@ -62,8 +60,8 @@ Examples like:
 
 - Recommendation engines (orders & customers pattern analysis)
 - Computer Vision problems like realtime camera feed classification and recognition.
-- Support for Hadoop or HDInsights
-- Time series analysis and prediction (faults detection on sensor arrays).
+- Support for Hadoop or Azure HDInsights
+- Time series analysis and prediction (ex. faults detection on sensor arrays).
 
 And many more are a sure pick for our team to tackle.
 
