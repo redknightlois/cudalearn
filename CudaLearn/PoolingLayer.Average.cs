@@ -143,6 +143,9 @@ namespace CudaLearn
             Size stride = this.Parameters.Stride;
             Size kernel = this.Parameters.Kernel;
 
+            // Zero the output
+            bottomDiff.Map(v => 0, result: bottomDiff);
+
             // Main loop            
             int bottomOffset = 0;
             int topOffset = 0;

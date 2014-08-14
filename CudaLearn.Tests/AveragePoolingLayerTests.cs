@@ -100,7 +100,7 @@ namespace CudaLearn.Tests
             var checker = new GradientChecker(1e-2f, 1e-2f);
 
             var layer = new AveragePoolingLayer(kernel, stride, padding);
-            checker.Check(layer, bottom, top);
+            checker.CheckExhaustive(layer, bottom, top);
         }
         
 
