@@ -151,8 +151,10 @@
     <Compile Include="NeuronLayer.Tanh.cs" />
     <Compile Include="NormalizationLayer.Softmax.cs" />
     <Compile Include="PoolingLayer.cs" />
-    <Compile Include="PoolingLayer.Max.cs" />
     <Compile Include="PoolingLayer.Average.cs" />
+    <Compile Include="PoolingLayer.Max.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="NeuronLayer.Threshold.cs" />
     <Compile Include="Filler.Uniform.cs" />
