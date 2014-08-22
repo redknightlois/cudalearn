@@ -24,6 +24,7 @@ namespace CudaLearn
         AveragePooling,
         MaxPooling,
         StocasticPooling,
+        DirectConvolutional,
     }
 
     public class LayerConfiguration
@@ -87,19 +88,28 @@ namespace CudaLearn
 
 #endif
 
-            if (forwardGpuSupported)
+            switch(Context.Instance.Mode)
             {
-                try
-                {
-                    return ForwardGpu(bottom, top);
-                }
-                catch (NotSupportedException)
-                {
-                    forwardGpuSupported = false;
-                }
-            }
+                case ExecutionModeType.Automatic:
+                    {
+                        if (forwardGpuSupported)
+                        {
+                            try
+                            {
+                                return ForwardGpu(bottom, top);
+                            }
+                            catch (NotSupportedException)
+                            {
+                                forwardGpuSupported = false;
+                            }
+                        }
 
-            return ForwardCpu(bottom, top);
+                        return ForwardCpu(bottom, top);
+                    }
+                case ExecutionModeType.Gpu: return ForwardGpu(bottom, top);
+                case ExecutionModeType.Cpu: return ForwardCpu(bottom, top);
+                default: throw new NotSupportedException(string.Format("Mode of operation '{0}' not support", Context.Instance.Mode.ToString()));
+            }
         }
 
         public void Backward(Blob top, IList<bool> propagateDown, Blob bottom)
@@ -124,20 +134,38 @@ namespace CudaLearn
             Guard.That(() => top).IsTrue(x => !x.Contains(null), "Cannot contain null.");
 #endif
 
-            if (backwardGpuSupported)
+            switch (Context.Instance.Mode)
             {
-                try
-                {
-                    BackwardGpu(top, propagateDown, bottom);
-                    return;
-                }
-                catch (NotSupportedException)
-                {
-                    backwardGpuSupported = false;
-                }
-            }
+                case ExecutionModeType.Automatic:
+                    {
+                        if (backwardGpuSupported)
+                        {
+                            try
+                            {
+                                BackwardGpu(top, propagateDown, bottom);
+                                return;
+                            }
+                            catch (NotSupportedException)
+                            {
+                                backwardGpuSupported = false;
+                            }
+                        }
 
-            BackwardCpu(top, propagateDown, bottom);
+                        BackwardCpu(top, propagateDown, bottom);
+                        return;
+                    }
+                case ExecutionModeType.Gpu:
+                    {
+                        BackwardGpu(top, propagateDown, bottom);
+                        return;
+                    }
+                case ExecutionModeType.Cpu:
+                    {
+                        BackwardCpu(top, propagateDown, bottom);
+                        return;
+                    }
+                default: throw new NotSupportedException(string.Format("Mode of operation '{0}' not support", Context.Instance.Mode.ToString()));
+            }
         }
 
         protected abstract float ForwardCpu(IList<Blob> bottom, IList<Blob> top);
