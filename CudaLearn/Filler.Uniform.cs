@@ -33,6 +33,9 @@ namespace CudaLearn
             : base(param)
         { }
 
+        public UniformFiller(float min, float max) : this ( new UniformFillerConfiguration( min, max ))
+        {}
+
         public override void Fill(Blob blob)
         {
             var data = blob.Data;

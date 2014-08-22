@@ -36,7 +36,7 @@ namespace CudaLearn.Tests
         public void MaxPoolingLayer_SetupPadded()
         {
             var layer = new MaxPoolingLayer(3, 2, 1);
-            layer.Setup(bottom, top);
+            layer.Setup(bottom, top);            
 
             Assert.Equal(bottom.Num, top.Num);
             Assert.Equal(bottom.Channels, top.Channels);

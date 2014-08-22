@@ -23,6 +23,7 @@ namespace CudaLearn
         Softmax,
         AveragePooling,
         MaxPooling,
+        StocasticPooling,
     }
 
     public class LayerConfiguration

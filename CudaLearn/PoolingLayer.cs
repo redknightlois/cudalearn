@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -76,6 +77,11 @@ namespace CudaLearn
             get { return 1; }
         }
 
-        protected Size Pooled { get; set; }
+        protected Size Pooled 
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get; 
+            set; 
+        }
     }
 }

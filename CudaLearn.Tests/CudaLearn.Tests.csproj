@@ -103,6 +103,7 @@
     <Compile Include="SigmoidLayerTests.cs" />
     <Compile Include="SoftmaxLayerTests.cs" />
     <Compile Include="SoftmaxLossLayerTests.cs" />
+    <Compile Include="StocasticPoolingLayerTests.cs" />
     <Compile Include="TahnLayerTests.cs" />
     <Compile Include="ThresholdLayerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

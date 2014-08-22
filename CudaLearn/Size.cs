@@ -25,5 +25,10 @@ namespace CudaLearn
             this.Width = other.Width;
             this.Depth = other.Depth;
         }
+
+        public override string ToString()
+        {
+            return base.ToString() + "(" + Height + "," + Width + "," + Depth + ")";
+        }
     }
 }
