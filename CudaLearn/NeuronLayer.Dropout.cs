@@ -81,10 +81,7 @@ namespace CudaLearn
                 var topDiff = top[0].Diff;
 
                 if ( this.Phase == PhaseType.Train )
-                {
-                    var bottomData = bottom[0].Data;
-                 
-                    int count = bottom[0].Count;
+                {                
                     topDiff.PointwiseMultiply(mask, result: bottomDiff);
                 }
                 else

@@ -37,7 +37,6 @@ namespace CudaLearn
         {
             base.Setup(bottom, top);
 
-            int channels = bottom[0].Channels;
             int height = bottom[0].Height;
             int width = bottom[0].Width;
 

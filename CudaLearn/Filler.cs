@@ -66,7 +66,7 @@ namespace CudaLearn
                 case FillerType.PositiveUnitball: return new PositiveUnitballFiller((PositiveUnitballFillerConfiguration)configuration);
                 case FillerType.Uniform: return new UniformFiller((UniformFillerConfiguration)configuration);
                 case FillerType.Xavier: return new XavierFiller((XavierFillerConfiguration)configuration);
-                default: throw new NotSupportedException(string.Format("Filler type {0} is not supported by the FillerFactory.", configuration.Type));
+                default: throw new NotSupportedException(string.Format("Filler type {0} is not supported by the FillerFactory", configuration.Type));
             }
         }
     }

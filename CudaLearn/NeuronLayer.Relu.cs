@@ -58,7 +58,6 @@ namespace CudaLearn
 
             var slope = this.Parameters.NegativeSlope;
 
-            int count = bottom[0].Count;
             bottomData.MapIndexed((i, v) => v > 0 ? v : v * slope, topData, Zeros.Include);
 
             return 0;
@@ -71,8 +70,6 @@ namespace CudaLearn
                 var bottomData = bottom[0].Data;
                 var bottomDiff = bottom[0].Diff;      
                 var topDiff = top[0].Diff;
-
-                int count = bottom[0].Count;
 
                 var slope = this.Parameters.NegativeSlope;
 

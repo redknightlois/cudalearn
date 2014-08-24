@@ -153,12 +153,10 @@ namespace CudaLearn
             var bottomData = bottom[0].Data;
             var topData = top[0].Data;
 
-            int num = bottom[0].Num;
             int channels = bottom[0].Channels;
             int height = bottom[0].Height;
             int width = bottom[0].Width;
 
-            Size padding = this.Parameters.Padding;
             Size stride = this.Parameters.Stride;
             Size kernel = this.Parameters.Kernel;
 
@@ -200,12 +198,10 @@ namespace CudaLearn
             var bottomDiff = bottom[0].Diff;
             var topDiff = top[0].Diff;
 
-            int num = bottom[0].Num;
             int channels = bottom[0].Channels;
             int height = bottom[0].Height;
             int width = bottom[0].Width;
 
-            Size padding = this.Parameters.Padding;
             Size stride = this.Parameters.Stride;
             Size kernel = this.Parameters.Kernel;
 

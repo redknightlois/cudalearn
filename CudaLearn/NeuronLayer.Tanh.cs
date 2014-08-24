@@ -37,7 +37,6 @@ namespace CudaLearn
             var bottomData = bottom[0].Data;
             var topData = top[0].Data;
 
-            int count = bottom[0].Count;
             bottomData.MapIndexed((i, v) => {
                 var exp2x = (float) Math.Exp(2 * v);
                 return (exp2x - 1) / (exp2x + 1);
@@ -55,7 +54,6 @@ namespace CudaLearn
 
                 var bottomDiff = bottom[0].Diff;                      
 
-                int count = bottom[0].Count;
                 topData.MapIndexed((i, v) => topDiff[i] * (1 - v * v ), bottomDiff, Zeros.Include);
             }
         }
