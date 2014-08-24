@@ -7,7 +7,7 @@ using Xunit;
 
 namespace CudaLearn.Tests
 {
-    public class GradientChecker
+    internal class GradientChecker
     {       
         private readonly float step;
         private readonly float threshold;

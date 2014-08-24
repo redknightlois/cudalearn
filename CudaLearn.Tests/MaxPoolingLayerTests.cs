@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -48,6 +49,8 @@ namespace CudaLearn.Tests
         [InlineData(1), InlineData(2)]
         public void MaxPoolingLayer_ForwardRectangularWithSquareKernel(int topLayer)
         {
+            Contract.Requires(topLayer > 0);
+
             const int num = 2;
             const int channels = 2;
             var bottom = new Blob(num, channels, 3, 5);
@@ -134,6 +137,8 @@ namespace CudaLearn.Tests
         [InlineData(1), InlineData(2)]
         public void MaxPoolingLayer_BackwardsRectangularWithSquareKernelConstant(int topLayer)
         {
+            Contract.Requires(topLayer > 0);
+
             const int num = 2;
             const int channels = 2;
             var bottom = new Blob(num, channels, 3, 5);
@@ -198,6 +203,8 @@ namespace CudaLearn.Tests
         [InlineData(1), InlineData(2)]
         public void MaxPoolingLayer_BackwardsRectangularWithSquareKernelConstantStrips(int topLayer)
         {
+            Contract.Requires(topLayer > 0);
+
             const int num = 2;
             const int channels = 2;
             var bottom = new Blob(num, channels, 3, 5);
@@ -270,6 +277,8 @@ namespace CudaLearn.Tests
         [InlineData(1), InlineData(2)]
         public void MaxPoolingLayer_BackwardsRectangularWithSquareKernel(int topLayer)
         {
+            Contract.Requires(topLayer > 0);
+
             const int num = 2;
             const int channels = 2;
             var bottom = new Blob(num, channels, 3, 5);
