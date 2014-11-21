@@ -24,7 +24,7 @@ namespace CudaLearn
         AveragePooling,
         MaxPooling,
         StocasticPooling,
-        DirectConvolutional,
+        DirectConvolutional2d,
     }
 
     public class LayerConfiguration

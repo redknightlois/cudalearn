@@ -181,5 +181,11 @@ namespace CudaLearn
         {
             this.Diff = other.Diff;
         }
+
+        public void InitializeWith(float dataValue, float diffValue)
+        {
+            this.Data.Map(x => dataValue, this.Data, Zeros.Include);
+            this.Diff.Map(x => diffValue, this.Diff, Zeros.Include);
+        }
     }
 }
