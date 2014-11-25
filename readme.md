@@ -44,13 +44,12 @@ Licenses are available per developer, per site or per company.
 
 ### Free (as in free beer) licenses. 
 
-Open source projects are eligible to get a free project wide license. Please contact us including a few details about your project (most importantly where is the code published) so we can let others know about it. 
+Personal, demonstrations, research, open source projects can use it for free. Essentially any non-for-profit activity.
+Please contact us including a few details about your project (most importantly where is the code published) so we can let others know about it. 
  
-Research projects are eligible to get a free project wide license. We encourage you to cite CudaLearn in your papers.
+For research activities we encourage you to cite CudaLearn in your papers.
  
 Bizspark and startups are elegible for free project wide license if their revenue per year is less than 500000 USD
- 
-Personal, demonstrations and non-for-profit are eligible for free project wide license.
 
 ### Features for hire
 
