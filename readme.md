@@ -38,7 +38,7 @@ CudaLearn is dual licensed.
 
 Commercial editions can be used in closed source environments and are available under a subscription or perpetual pricing model. While the subscription is valid, new major releases are included.
  
-Developers are encouraged to buy a license early on to support the development (we know you will want to build concepts first). Once you are ready to deploy your application you will need to buy a license.
+Developers are encouraged (but not required) to buy a license early on to support the development (we know you will want to build concepts first, so go on). Once you are ready to deploy your for-profit application you will need to buy a license.
  
 Licenses are available per developer, per site or per company. 
 
