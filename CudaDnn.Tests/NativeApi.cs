@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CudaDnn.Impl;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,7 +31,7 @@ namespace CudaDnn.Tests
             CudnnHandle handle = default(CudnnHandle);
             Success(() => CudnnNativeMethods.cudnnCreate(ref handle));
 
-            CudnnFilterDescriptor filterDescriptor = default(CudnnFilterDescriptor);
+            CudnnFilterDescriptorHandle filterDescriptor = default(CudnnFilterDescriptorHandle);
             Success(() => CudnnNativeMethods.cudnnCreateFilterDescriptor(ref filterDescriptor));
             Success(() => CudnnNativeMethods.cudnnDestroyFilterDescriptor(filterDescriptor));
             Success(() => CudnnNativeMethods.cudnnDestroy(handle));
@@ -42,7 +43,7 @@ namespace CudaDnn.Tests
             CudnnHandle handle = default(CudnnHandle);
             Success(() => CudnnNativeMethods.cudnnCreate(ref handle));
 
-            CudnnConvolutionDescriptor convolutionDescriptor = default(CudnnConvolutionDescriptor);
+            CudnnConvolutionDescriptorHandle convolutionDescriptor = default(CudnnConvolutionDescriptorHandle);
             Success(() => CudnnNativeMethods.cudnnCreateConvolutionDescriptor(ref convolutionDescriptor));
             Success(() => CudnnNativeMethods.cudnnDestroyConvolutionDescriptor(convolutionDescriptor));
             Success(() => CudnnNativeMethods.cudnnDestroy(handle));
@@ -54,7 +55,7 @@ namespace CudaDnn.Tests
             CudnnHandle handle = default(CudnnHandle);
             Success(() => CudnnNativeMethods.cudnnCreate(ref handle));
 
-            CudnnPoolingDescriptor poolingDescriptor = default(CudnnPoolingDescriptor);
+            CudnnPoolingDescriptorHandle poolingDescriptor = default(CudnnPoolingDescriptorHandle);
             Success(() => CudnnNativeMethods.cudnnCreatePoolingDescriptor(ref poolingDescriptor));
             Success(() => CudnnNativeMethods.cudnnDestroyPoolingDescriptor(poolingDescriptor));
             Success(() => CudnnNativeMethods.cudnnDestroy(handle));
@@ -66,7 +67,7 @@ namespace CudaDnn.Tests
             CudnnHandle handle = default(CudnnHandle);
             Success(() => CudnnNativeMethods.cudnnCreate(ref handle));
 
-            CudnnTensorDescriptor tensorDescriptor = default(CudnnTensorDescriptor);
+            CudnnTensorDescriptorHandle tensorDescriptor = default(CudnnTensorDescriptorHandle);
             Success(() => CudnnNativeMethods.cudnnCreateTensor4dDescriptor(ref tensorDescriptor));
             Success(() => CudnnNativeMethods.cudnnDestroyTensor4dDescriptor(tensorDescriptor));
             Success(() => CudnnNativeMethods.cudnnDestroy(handle));

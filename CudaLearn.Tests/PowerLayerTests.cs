@@ -53,7 +53,7 @@ namespace CudaLearn.Tests
             }
         }
 
-        [Theory, PropertyData("Samples")]
+        [Theory, MemberData("Samples")]
         public void PowerLayer_Forward(float power, float scale, float shift)
         {
             var config = new PowerLayerConfiguration(power, scale, shift);
@@ -81,7 +81,7 @@ namespace CudaLearn.Tests
             }
         }
 
-        [Theory, PropertyData("Samples")]
+        [Theory, MemberData("Samples")]
         public void PowerLayer_Backward(float power, float scale, float shift)
         {
             var config = new PowerLayerConfiguration(power, scale, shift);

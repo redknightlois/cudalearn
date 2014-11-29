@@ -38,7 +38,7 @@ namespace CudaLearn.Tests
             }
         }
 
-        [Theory, PropertyData("MinMaxParameters")]
+        [Theory, MemberData("MinMaxParameters")]
         public void Filler_Uniform(float min, float max)
         {
             var blob = new Blob(2, 3, 4, 5);
@@ -98,7 +98,7 @@ namespace CudaLearn.Tests
             }
         }
 
-        [Theory, PropertyData("MeanStdParameters")]
+        [Theory, MemberData("MeanStdParameters")]
         public void Filler_GaussianDense(float meanParam, float stdParam)
         {
             var blob = new Blob(2, 3, 4, 5);
@@ -128,7 +128,7 @@ namespace CudaLearn.Tests
             Assert.True(var <= (targetVar * 5.0f));
         }
 
-        [Theory, PropertyData("MeanStdParameters")]
+        [Theory, MemberData("MeanStdParameters")]
         public void Filler_GaussianSparse(float meanParam, float stdParam)
         {
             var blob = new Blob(2, 3, 4, 5);

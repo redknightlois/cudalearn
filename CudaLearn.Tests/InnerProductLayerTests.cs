@@ -67,7 +67,7 @@ namespace CudaLearn.Tests
             }
         }
 
-        [Theory, PropertyData("Configurations")]
+        [Theory, MemberData("Configurations")]
         public void InnerProductLayer_BackwardGradient(int output, FillerConfiguration weightsFiller, FillerConfiguration biasFiller)
         {
             bool useBias = biasFiller != null;

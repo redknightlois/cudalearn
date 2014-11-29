@@ -1,31 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace CudaDnn
+namespace CudaDnn.Impl
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct CudnnTensorDescriptor
+    public struct CudnnTensorDescriptorHandle
     {
         public IntPtr Pointer;
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct CudnnConvolutionDescriptor
+    public struct CudnnConvolutionDescriptorHandle
     {
         public IntPtr Pointer;
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct CudnnPoolingDescriptor
+    public struct CudnnPoolingDescriptorHandle
     {
         public IntPtr Pointer;
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct CudnnFilterDescriptor
+    public struct CudnnFilterDescriptorHandle
     {
         public IntPtr Pointer;
     }

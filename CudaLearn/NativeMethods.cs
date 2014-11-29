@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CudaLearn
 {
-    public static unsafe class NativeMethods
+    internal static unsafe class NativeMethods
     {
         [DllImport("msvcrt.dll", EntryPoint = "memcpy", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
         public static extern IntPtr MemoryCopy(byte* dest, byte* src, IntPtr count);

@@ -47,7 +47,7 @@ namespace CudaLearn.Tests
             }
         }
 
-        [Theory, PropertyData("DropoutParameter")]
+        [Theory, MemberData("DropoutParameter")]
         public void DropoutLayer_ForwardTrainPhase(float ratio)
         {
             Context.Instance.Phase = PhaseType.Train;

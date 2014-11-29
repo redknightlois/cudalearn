@@ -13,6 +13,8 @@
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>17bd25c8</NuGetPackageImportStamp>
     <TargetFrameworkProfile />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -48,21 +50,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CudnnConvolutionDescriptor.cs" />
+    <Compile Include="CudnnFilterDescriptor.cs" />
+    <Compile Include="CudnnInstance.cs" />
     <Compile Include="CudnnAccumulateResult.cs" />
     <Compile Include="CudnnActivationMode.cs" />
     <Compile Include="CudnnAdditionMode.cs" />
     <Compile Include="CudnnConvolutionMode.cs" />
     <Compile Include="CudnnConvolutionPath.cs" />
-    <Compile Include="CudnnDescriptors.cs" />
     <Compile Include="CudnnException.cs" />
-    <Compile Include="CudnnHandle.cs" />
-    <Compile Include="CudnnNativeMethods.cs" />
+    <Compile Include="Impl\CudnnHandle.cs" />
+    <Compile Include="CudnnPoolingDescriptor.cs" />
+    <Compile Include="CudnnTensorDescriptor.cs" />
+    <Compile Include="Impl\CudnnNativeMethods.cs" />
     <Compile Include="CudnnPoolingMode.cs" />
     <Compile Include="CudnnSoftmaxAlgorithm.cs" />
     <Compile Include="CudnnSoftmaxMode.cs" />
     <Compile Include="CudnnStatus.cs" />
     <Compile Include="CudnnTensorFormat.cs" />
     <Compile Include="CudnnType.cs" />
+    <Compile Include="Impl\CudnnDescriptorHandles.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -79,6 +86,7 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Fody.1.26.1\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.26.1\build\Fody.targets'))" />
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
   <UsingTask TaskName="CosturaCleanup" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll" TaskFactory="CodeTaskFactory">
     <ParameterGroup>
@@ -116,6 +124,7 @@ foreach (var item in filesToCleanup)
   <Target Name="CleanReferenceCopyLocalPaths" AfterTargets="AfterBuild;NonWinFodyTarget">
     <CosturaCleanup Config="FodyWeavers.xml" Files="@(ReferenceCopyLocalPaths->'$(OutDir)%(DestinationSubDirectory)%(Filename)%(Extension)')" />
   </Target>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

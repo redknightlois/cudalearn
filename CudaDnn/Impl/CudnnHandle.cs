@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace CudaDnn
+namespace CudaDnn.Impl
 {
     [StructLayout(LayoutKind.Sequential)]
     public struct CudnnHandle

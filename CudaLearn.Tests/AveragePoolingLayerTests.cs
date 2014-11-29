@@ -91,7 +91,7 @@ namespace CudaLearn.Tests
             }
         }
 
-        [Theory, PropertyData("Configurations")]
+        [Theory, MemberData("Configurations")]
         public void AveragePoolingLayer_BackwardGradient( Size kernel, Size stride, Size padding )
         {
             var filler = new ConstantFiller(2.0f);
