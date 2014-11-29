@@ -8,13 +8,8 @@ using Xunit;
 
 namespace CudaDnn.Tests
 {
-    public class NativeApi
+    public class NativeApiTests : CudaDnnTestBase
     {
-        public NativeApi ()
-        {
-            Assert.True(Environment.Is64BitProcess, "Tests are being run as 32bits processes. CuDNN is not supported on 32bits. Change the setting in Test->Test Settings->Default Processor Architecture->x64." );
-        }
-
 
         [Fact]
         public void Cudnn_NativeApi_HandleLifecycle()

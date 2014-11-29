@@ -68,7 +68,7 @@
     <Compile Include="CudnnSoftmaxMode.cs" />
     <Compile Include="CudnnStatus.cs" />
     <Compile Include="CudnnTensorFormat.cs" />
-    <Compile Include="CudnnType.cs" />
+    <Compile Include="Impl\CudnnType.cs" />
     <Compile Include="Impl\CudnnDescriptorHandles.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

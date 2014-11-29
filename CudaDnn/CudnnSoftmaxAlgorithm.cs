@@ -5,14 +5,17 @@ using System.Text;
 
 namespace CudaDnn
 {
+    /// <summary>
+    /// CudnnSoftmaxAlgorithm is used to select an implementation of the softmax function used in Forward() and Backward().
+    /// </summary>
     public enum CudnnSoftmaxAlgorithm
     {
         /// <summary>
-        /// straightforward implementation
+        /// This implementation applies the straightforward softmax operation.
         /// </summary>
         Fast = 0,
         /// <summary>
-        /// subtract max from every point to avoid overflow
+        /// This implementation subtract max from every point to avoid any potential overflow.
         /// </summary>
         Accurate = 1
     }

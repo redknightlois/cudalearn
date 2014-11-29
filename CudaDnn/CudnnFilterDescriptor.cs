@@ -65,7 +65,7 @@ namespace CudaDnn
             Contract.Ensures(this.Value.Pointer == IntPtr.Zero);
             Contract.EndContractBlock();
 
-            CudnnInstance.Invoke(() => CudnnNativeMethods.cudnnDestroyFilterDescriptor(this.Value));
+            CudnnContext.Invoke(() => CudnnNativeMethods.cudnnDestroyFilterDescriptor(this.Value));
             this.Value.Pointer = IntPtr.Zero;
         }
 

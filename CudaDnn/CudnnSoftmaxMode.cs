@@ -5,14 +5,17 @@ using System.Text;
 
 namespace CudaDnn
 {
+    /// <summary>
+    /// CudnnSoftmaxMode is used to select over which data the Forward() and Backward() are computing their results.
+    /// </summary>
     public enum CudnnSoftmaxMode
     {
         /// <summary>
-        /// compute the softmax over all C, H, W for each N 
+        /// The softmax operation is computed per image (N) across the dimensions C,H,W.
         /// </summary>
         Instance = 0,
         /// <summary>
-        /// compute the softmax over all C for each H, W, N 
+        /// The softmax operation is computed per spatial location (H,W) per image (N) across the dimension C.
         /// </summary>
         Channel = 1
     }

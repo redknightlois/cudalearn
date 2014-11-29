@@ -64,7 +64,7 @@ namespace CudaDnn
             Contract.Ensures(this.Value.Pointer == IntPtr.Zero);
             Contract.EndContractBlock();
 
-            CudnnInstance.Invoke(() => CudnnNativeMethods.cudnnDestroyTensor4dDescriptor(this.Value));
+            CudnnContext.Invoke(() => CudnnNativeMethods.cudnnDestroyTensor4dDescriptor(this.Value));
             this.Value.Pointer = IntPtr.Zero;
         }
     }

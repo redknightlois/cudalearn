@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace CudaDnn
 {
-    public class CudnnInstance : CriticalFinalizerObject, IDisposable
+    public class CudnnContext : CriticalFinalizerObject, IDisposable
     {
         #region Lifecycle 
 
         private CudnnHandle handle;
 
-        protected CudnnInstance( CudnnHandle handle )
+        protected CudnnContext( CudnnHandle handle )
         {
             if (handle.Pointer == IntPtr.Zero)
                 throw new ArgumentException("handle");
@@ -26,14 +26,14 @@ namespace CudaDnn
             this.handle = handle;
         }
 
-        public static CudnnInstance Create()
+        public static CudnnContext Create()
         {         
             CudnnHandle handle = default(CudnnHandle);            
             Invoke(() => CudnnNativeMethods.cudnnCreate(ref handle));
-            return new CudnnInstance(handle);
+            return new CudnnContext(handle);
         }
 
-        ~CudnnInstance()
+        ~CudnnContext()
         {
             // Finalizer calls Dispose(false)
             Dispose(false);
