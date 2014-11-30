@@ -51,7 +51,7 @@ namespace CudaDnn.Impl
                                                                       int wStride);
 
         [DllImport(ApiDllName)]
-        public static extern CudnnStatus cudnnGetTensor4dDescriptorEx(CudnnTensorDescriptorHandle tensorDesc,
+        public static extern CudnnStatus cudnnGetTensor4dDescriptor(CudnnTensorDescriptorHandle tensorDesc,
                                                                       ref CudnnType dataType,    // image data type
                                                                       ref int n,                 // number of inputs (batch size)
                                                                       ref int c,                 // number of input feature maps
@@ -103,7 +103,7 @@ namespace CudaDnn.Impl
                                                                   int k,                 // number of output feature maps
                                                                   int c,                 // number of input feature maps
                                                                   int h,                 // height of each input filter
-                                                                  int w                 // width of  each input fitler
+                                                                  int w                 // width of  each input filter
                                                                  );
 
         [DllImport(ApiDllName)]
@@ -112,7 +112,7 @@ namespace CudaDnn.Impl
                                                                   ref int k,                 // number of output feature maps
                                                                   ref int c,                 // number of input feature maps
                                                                   ref int h,                 // height of each input filter
-                                                                  ref int w                 // width of  each input fitler
+                                                                  ref int w                 // width of  each input filter
                                                                  );
 
 
@@ -157,7 +157,7 @@ namespace CudaDnn.Impl
         [DllImport(ApiDllName)]
         public static extern CudnnStatus cudnnGetOutputTensor4dDim(
                                             CudnnConvolutionDescriptorHandle convolutionDescriptor,
-                                            ref CudnnConvolutionPath path,
+                                            CudnnConvolutionPath path,
                                             ref int n,                 
                                             ref int c,                
                                             ref int h,                

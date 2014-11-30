@@ -81,6 +81,70 @@ namespace CudaDnn
         #endregion
 
 
+        public static CudnnTensorDescriptor CreateTensor()
+        {
+            CudnnTensorDescriptorHandle handle = default(CudnnTensorDescriptorHandle);
+            Invoke(() => CudnnNativeMethods.cudnnCreateTensor4dDescriptor(ref handle));
+            return new CudnnTensorDescriptor(handle);
+        }
+
+        public static CudnnTensorDescriptor CreateTensor(CudnnTensorDescriptorParameters parameters)
+        {
+            var tensor = CreateTensor();
+            tensor.SetParameters(parameters);
+            return tensor;
+        }
+
+        public static CudnnFilterDescriptor CreateFilter()
+        {
+            CudnnFilterDescriptorHandle handle = default(CudnnFilterDescriptorHandle);
+            Invoke(() => CudnnNativeMethods.cudnnCreateFilterDescriptor(ref handle));
+            return new CudnnFilterDescriptor(handle);
+        }
+
+        public static CudnnFilterDescriptor CreateFilter(CudnnFilterDescriptorParameters parameters)
+        {
+            var filter = CreateFilter();
+            filter.SetParameters(parameters);
+            return filter;
+        }
+
+        public static CudnnPoolingDescriptor CreatePooling()
+        {
+            CudnnPoolingDescriptorHandle handle = default(CudnnPoolingDescriptorHandle);
+            Invoke(() => CudnnNativeMethods.cudnnCreatePoolingDescriptor(ref handle));
+            return new CudnnPoolingDescriptor(handle);
+        }
+
+        public static CudnnPoolingDescriptor CreatePooling(CudnnPoolingDescriptorParameters parameters)
+        {
+            var pooling = CreatePooling();
+            pooling.SetParameters(parameters);
+            return pooling;
+        }
+
+        public static CudnnConvolutionDescriptor CreateConvolution()
+        {
+            CudnnConvolutionDescriptorHandle handle = default(CudnnConvolutionDescriptorHandle);
+            Invoke(() => CudnnNativeMethods.cudnnCreateConvolutionDescriptor(ref handle));
+            return new CudnnConvolutionDescriptor(handle);
+        }
+
+        public static CudnnConvolutionDescriptor CreateConvolution(CudnnConvolutionDescriptorParameters parameters)
+        {
+            var Convolution = CreateConvolution();
+            Convolution.SetParameters(parameters);
+            return Convolution;
+        }
+
+        public static CudnnConvolutionDescriptor CreateConvolution(CudnnConvolutionDescriptorParametersEx parameters)
+        {
+            var Convolution = CreateConvolution();
+            Convolution.SetParameters(parameters);
+            return Convolution;
+        }
+
+
         internal static void Invoke ( Func<CudnnStatus> action )
         {
             var result = action();

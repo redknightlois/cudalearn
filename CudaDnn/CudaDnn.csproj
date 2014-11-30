@@ -52,13 +52,14 @@
   <ItemGroup>
     <Compile Include="CudnnConvolutionDescriptor.cs" />
     <Compile Include="CudnnFilterDescriptor.cs" />
-    <Compile Include="CudnnInstance.cs" />
+    <Compile Include="CudnnContext.cs" />
     <Compile Include="CudnnAccumulateResult.cs" />
     <Compile Include="CudnnActivationMode.cs" />
     <Compile Include="CudnnAdditionMode.cs" />
     <Compile Include="CudnnConvolutionMode.cs" />
     <Compile Include="CudnnConvolutionPath.cs" />
     <Compile Include="CudnnException.cs" />
+    <Compile Include="CudnnConvolutionTensorDim.cs" />
     <Compile Include="Impl\CudnnHandle.cs" />
     <Compile Include="CudnnPoolingDescriptor.cs" />
     <Compile Include="CudnnTensorDescriptor.cs" />
@@ -68,7 +69,7 @@
     <Compile Include="CudnnSoftmaxMode.cs" />
     <Compile Include="CudnnStatus.cs" />
     <Compile Include="CudnnTensorFormat.cs" />
-    <Compile Include="Impl\CudnnType.cs" />
+    <Compile Include="CudnnType.cs" />
     <Compile Include="Impl\CudnnDescriptorHandles.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

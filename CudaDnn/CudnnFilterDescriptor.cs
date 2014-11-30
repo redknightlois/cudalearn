@@ -11,12 +11,7 @@ namespace CudaDnn
 {
     public sealed class CudnnFilterDescriptor : CriticalFinalizerObject, IDisposable
     {
-        internal CudnnFilterDescriptorHandle Value;
-
-        public bool IsValid
-        {
-            get { return this.Value.Pointer != IntPtr.Zero; }
-        }
+        internal CudnnFilterDescriptorHandle Handle;
 
         internal CudnnFilterDescriptor(CudnnFilterDescriptorHandle handle)
         {
@@ -25,7 +20,7 @@ namespace CudaDnn
 
             Contract.EndContractBlock();
 
-            this.Value = handle;
+            this.Handle = handle;
         }
 
         ~CudnnFilterDescriptor()
@@ -59,16 +54,76 @@ namespace CudaDnn
 
         private void DisposeNative()
         {
-            if (this.Value.Pointer == IntPtr.Zero)
+            if (this.Handle.Pointer == IntPtr.Zero)
                 throw new InvalidOperationException("The handle pointer is null.");
 
-            Contract.Ensures(this.Value.Pointer == IntPtr.Zero);
+            Contract.Ensures(this.Handle.Pointer == IntPtr.Zero);
             Contract.EndContractBlock();
 
-            CudnnContext.Invoke(() => CudnnNativeMethods.cudnnDestroyFilterDescriptor(this.Value));
-            this.Value.Pointer = IntPtr.Zero;
+            CudnnContext.Invoke(() => CudnnNativeMethods.cudnnDestroyFilterDescriptor(this.Handle));
+            this.Handle.Pointer = IntPtr.Zero;
         }
 
+        private CudnnFilterDescriptorParameters descriptorParams;
+
+        public CudnnFilterDescriptorParameters Parameters
+        {
+            get
+            {
+                ThrowIfNotInitialized();
+                return this.descriptorParams;
+            }
+        }
+
+        private void ThrowIfNotInitialized()
+        {
+            if (!IsInitialized)
+                throw new InvalidOperationException("Not initialized.");
+        }
+
+        public bool IsInitialized
+        {
+            get { return this.Handle.Pointer != IntPtr.Zero && this.descriptorParams != null; }
+        }
+
+        public void SetParameters(CudnnFilterDescriptorParameters param)
+        {
+            if (param == null)
+                throw new ArgumentNullException("param");
+
+            Contract.EndContractBlock();
+
+            CudnnContext.Invoke(() => CudnnNativeMethods.cudnnSetFilterDescriptor(
+                                this.Handle, param.Type,
+                                param.Output, param.Input, param.Height, param.Width));
+
+            this.descriptorParams = param;
+        }
+    }
+
+    public class CudnnFilterDescriptorParameters
+    {
+        public readonly CudnnType Type;
+
+        public readonly int Output;
+        public readonly int Input;
+        public readonly int Height;
+        public readonly int Width;
+
+        public CudnnFilterDescriptorParameters ( CudnnType type, int k, int c, int h, int w )
+        {
+            if (k < 1 || c < 1 || h < 1 || w < 1)
+                throw new ArgumentException("At least one of the parameters k, c, h, w was negative.");
+
+            Contract.EndContractBlock();
+
+            this.Type = type;
+
+            this.Output = k;
+            this.Input = c;
+            this.Height = h;
+            this.Width = w;
+        }
     }
 
 }

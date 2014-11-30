@@ -11,12 +11,7 @@ namespace CudaDnn
 {
     public sealed class CudnnPoolingDescriptor : CriticalFinalizerObject, IDisposable
     {
-        internal CudnnPoolingDescriptorHandle Value;
-
-        public bool IsValid
-        {
-            get { return this.Value.Pointer != IntPtr.Zero; }
-        }
+        internal CudnnPoolingDescriptorHandle Handle;  
 
         internal CudnnPoolingDescriptor(CudnnPoolingDescriptorHandle handle)
         {
@@ -25,7 +20,7 @@ namespace CudaDnn
 
             Contract.EndContractBlock();
 
-            this.Value = handle;
+            this.Handle = handle;
         }
 
         ~CudnnPoolingDescriptor()
@@ -59,15 +54,79 @@ namespace CudaDnn
 
         private void DisposeNative()
         {
-            if (this.Value.Pointer == IntPtr.Zero)
+            if (this.Handle.Pointer == IntPtr.Zero)
                 throw new InvalidOperationException("The handle pointer is null.");
 
-            Contract.Ensures(this.Value.Pointer == IntPtr.Zero);
+            Contract.Ensures(this.Handle.Pointer == IntPtr.Zero);
             Contract.EndContractBlock();
 
-            CudnnContext.Invoke(() => CudnnNativeMethods.cudnnDestroyPoolingDescriptor(this.Value));
-            this.Value.Pointer = IntPtr.Zero;
+            CudnnContext.Invoke(() => CudnnNativeMethods.cudnnDestroyPoolingDescriptor(this.Handle));
+            this.Handle.Pointer = IntPtr.Zero;
         }
 
+        private CudnnPoolingDescriptorParameters descriptorParams;
+
+        public CudnnPoolingDescriptorParameters Parameters
+        {
+            get
+            {
+                ThrowIfNotInitialized();
+                return this.descriptorParams;
+            }
+        }
+
+        private void ThrowIfNotInitialized()
+        {
+            if (!IsInitialized)
+                throw new InvalidOperationException("Not initialized.");
+        }
+
+        public bool IsInitialized
+        {
+            get { return this.Handle.Pointer != IntPtr.Zero && this.descriptorParams != null; }
+        }
+
+        public void SetParameters(CudnnPoolingDescriptorParameters param)
+        {
+            if (param == null)
+                throw new ArgumentNullException("param");
+
+            Contract.EndContractBlock();
+
+            CudnnContext.Invoke(() => CudnnNativeMethods.cudnnSetPoolingDescriptor(
+                    this.Handle, param.Mode,
+                    param.Height, param.Width, 
+                    param.HeightStride, param.WidthStride));
+
+            this.descriptorParams = param;
+        }
+    }
+
+    public class CudnnPoolingDescriptorParameters
+    {
+        public readonly CudnnPoolingMode Mode;
+
+        public readonly int Height;
+        public readonly int Width;
+        public readonly int HeightStride;
+        public readonly int WidthStride;
+
+        public CudnnPoolingDescriptorParameters(CudnnPoolingMode mode, int windowHeight, int windowWidth, int verticalStride, int horizontalStride)
+        {
+            if (windowHeight < 1 || windowWidth < 1)
+                throw new ArgumentException("At least one of the parameters windowHeight or windowWidth is negative");
+
+            if (verticalStride < 1 || horizontalStride < 1)
+                throw new ArgumentException("At least one of the parameters verticalStride or horizontalStride is negative");
+
+            Contract.EndContractBlock();
+
+            this.Mode = mode;
+
+            this.Height = windowHeight;
+            this.Width = windowWidth;
+            this.HeightStride = verticalStride;
+            this.WidthStride = horizontalStride;
+        }
     }
 }
