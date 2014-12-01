@@ -15,8 +15,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CudaLearn.Examples", "CudaLearn.Examples\CudaLearn.Examples.csproj", "{C3FB8D8C-55C4-4598-B3D4-4CCFFFEF351D}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CudaLearn.Kernels", "CudaLearn.Kernels\CudaLearn.Kernels.vcxproj", "{6AAAE874-8912-4EBF-B333-B9A5C3127935}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CudaDnn", "CudaDnn\CudaDnn.csproj", "{68914540-2E9F-4346-ABE6-12FC4786CCC5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CudaDnn.Tests", "CudaDnn.Tests\CudaDnn.Tests.csproj", "{8525FC02-E582-48BA-B16F-8265AD4D028A}"
@@ -76,20 +74,6 @@ Global
 		{C3FB8D8C-55C4-4598-B3D4-4CCFFFEF351D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{C3FB8D8C-55C4-4598-B3D4-4CCFFFEF351D}.Release|Win32.ActiveCfg = Release|Any CPU
 		{C3FB8D8C-55C4-4598-B3D4-4CCFFFEF351D}.Release|x64.ActiveCfg = Release|Any CPU
-		{6AAAE874-8912-4EBF-B333-B9A5C3127935}.Debug|Any CPU.ActiveCfg = Debug|Win32
-		{6AAAE874-8912-4EBF-B333-B9A5C3127935}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
-		{6AAAE874-8912-4EBF-B333-B9A5C3127935}.Debug|Mixed Platforms.Build.0 = Debug|Win32
-		{6AAAE874-8912-4EBF-B333-B9A5C3127935}.Debug|Win32.ActiveCfg = Debug|Win32
-		{6AAAE874-8912-4EBF-B333-B9A5C3127935}.Debug|Win32.Build.0 = Debug|Win32
-		{6AAAE874-8912-4EBF-B333-B9A5C3127935}.Debug|x64.ActiveCfg = Debug|x64
-		{6AAAE874-8912-4EBF-B333-B9A5C3127935}.Debug|x64.Build.0 = Debug|x64
-		{6AAAE874-8912-4EBF-B333-B9A5C3127935}.Release|Any CPU.ActiveCfg = Release|Win32
-		{6AAAE874-8912-4EBF-B333-B9A5C3127935}.Release|Mixed Platforms.ActiveCfg = Release|Win32
-		{6AAAE874-8912-4EBF-B333-B9A5C3127935}.Release|Mixed Platforms.Build.0 = Release|Win32
-		{6AAAE874-8912-4EBF-B333-B9A5C3127935}.Release|Win32.ActiveCfg = Release|Win32
-		{6AAAE874-8912-4EBF-B333-B9A5C3127935}.Release|Win32.Build.0 = Release|Win32
-		{6AAAE874-8912-4EBF-B333-B9A5C3127935}.Release|x64.ActiveCfg = Release|x64
-		{6AAAE874-8912-4EBF-B333-B9A5C3127935}.Release|x64.Build.0 = Release|x64
 		{68914540-2E9F-4346-ABE6-12FC4786CCC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{68914540-2E9F-4346-ABE6-12FC4786CCC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68914540-2E9F-4346-ABE6-12FC4786CCC5}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
