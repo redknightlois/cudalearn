@@ -53,9 +53,6 @@ namespace CudaDnn
 
         private void DisposeNative()
         {
-            if (this.Handle.Pointer == IntPtr.Zero)
-                throw new InvalidOperationException("The handle pointer is null.");
-
             Contract.Ensures(this.Handle.Pointer == IntPtr.Zero);
             Contract.EndContractBlock();
 
@@ -149,7 +146,7 @@ namespace CudaDnn
             
             this.NumStride = h * w * c;
 
-            if ( format == CudnnTensorFormat.MajorRow || format == CudnnTensorFormat.NCHW )
+            if ( format == CudnnTensorFormat.MajorRow )
             {
                 this.ChannelsStride = h * w;
                 this.HeightStride = w;

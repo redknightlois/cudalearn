@@ -18,6 +18,7 @@ namespace CudaDnn
             if (handle.Pointer == IntPtr.Zero)
                 throw new ArgumentException("The handle pointer is null.", "handle");
 
+            Contract.Ensures(handle.Pointer != IntPtr.Zero);
             Contract.EndContractBlock();
 
             this.Handle = handle;
@@ -54,11 +55,7 @@ namespace CudaDnn
 
         private void DisposeNative()
         {
-            if (this.Handle.Pointer == IntPtr.Zero)
-                throw new InvalidOperationException("The handle pointer is null.");
-
             Contract.Ensures(this.Handle.Pointer == IntPtr.Zero);
-            Contract.EndContractBlock();
 
             CudnnContext.Invoke(() => CudnnNativeMethods.cudnnDestroyPoolingDescriptor(this.Handle));
             this.Handle.Pointer = IntPtr.Zero;

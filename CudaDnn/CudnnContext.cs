@@ -15,12 +15,11 @@ namespace CudaDnn
 
         private CudnnHandle handle;
 
-        protected CudnnContext( CudnnHandle handle )
+        private CudnnContext( CudnnHandle handle )
         {
             if (handle.Pointer == IntPtr.Zero)
                 throw new ArgumentException("handle");
 
-            Contract.Ensures(this.handle.Pointer != IntPtr.Zero);
             Contract.EndContractBlock();
 
             this.handle = handle;
@@ -29,7 +28,9 @@ namespace CudaDnn
         public static CudnnContext Create()
         {         
             CudnnHandle handle = default(CudnnHandle);            
-            Invoke(() => CudnnNativeMethods.cudnnCreate(ref handle));
+            Invoke(() => CudnnNativeMethods.cudnnCreate(out handle));
+            Contract.Assume(handle.Pointer != IntPtr.Zero);
+
             return new CudnnContext(handle);
         }
 
@@ -84,7 +85,9 @@ namespace CudaDnn
         public static CudnnTensorDescriptor CreateTensor()
         {
             CudnnTensorDescriptorHandle handle = default(CudnnTensorDescriptorHandle);
-            Invoke(() => CudnnNativeMethods.cudnnCreateTensor4dDescriptor(ref handle));
+            Invoke(() => CudnnNativeMethods.cudnnCreateTensor4dDescriptor(out handle));
+            Contract.Assume(handle.Pointer != IntPtr.Zero);
+
             return new CudnnTensorDescriptor(handle);
         }
 
@@ -98,7 +101,9 @@ namespace CudaDnn
         public static CudnnFilterDescriptor CreateFilter()
         {
             CudnnFilterDescriptorHandle handle = default(CudnnFilterDescriptorHandle);
-            Invoke(() => CudnnNativeMethods.cudnnCreateFilterDescriptor(ref handle));
+            Invoke(() => CudnnNativeMethods.cudnnCreateFilterDescriptor(out handle));
+            Contract.Assume(handle.Pointer != IntPtr.Zero);
+
             return new CudnnFilterDescriptor(handle);
         }
 
@@ -112,7 +117,9 @@ namespace CudaDnn
         public static CudnnPoolingDescriptor CreatePooling()
         {
             CudnnPoolingDescriptorHandle handle = default(CudnnPoolingDescriptorHandle);
-            Invoke(() => CudnnNativeMethods.cudnnCreatePoolingDescriptor(ref handle));
+            Invoke(() => CudnnNativeMethods.cudnnCreatePoolingDescriptor(out handle));
+            Contract.Assume(handle.Pointer != IntPtr.Zero);
+
             return new CudnnPoolingDescriptor(handle);
         }
 
@@ -126,22 +133,24 @@ namespace CudaDnn
         public static CudnnConvolutionDescriptor CreateConvolution()
         {
             CudnnConvolutionDescriptorHandle handle = default(CudnnConvolutionDescriptorHandle);
-            Invoke(() => CudnnNativeMethods.cudnnCreateConvolutionDescriptor(ref handle));
+            Invoke(() => CudnnNativeMethods.cudnnCreateConvolutionDescriptor(out handle));
+            Contract.Assume(handle.Pointer != IntPtr.Zero);
+
             return new CudnnConvolutionDescriptor(handle);
         }
 
         public static CudnnConvolutionDescriptor CreateConvolution(CudnnConvolutionDescriptorParameters parameters)
         {
-            var Convolution = CreateConvolution();
-            Convolution.SetParameters(parameters);
-            return Convolution;
+            var convolution = CreateConvolution();
+            convolution.SetParameters(parameters);
+            return convolution;
         }
 
         public static CudnnConvolutionDescriptor CreateConvolution(CudnnConvolutionDescriptorParametersEx parameters)
         {
-            var Convolution = CreateConvolution();
-            Convolution.SetParameters(parameters);
-            return Convolution;
+            var convolution = CreateConvolution();
+            convolution.SetParameters(parameters);
+            return convolution;
         }
 
 

@@ -13,7 +13,7 @@ namespace CudaDnn.Impl
 
 
         [DllImport(ApiDllName)]
-        public static extern CudnnStatus cudnnCreate(ref CudnnHandle handle);
+        public static extern CudnnStatus cudnnCreate(out CudnnHandle handle);
 
         [DllImport(ApiDllName)]
         public static extern CudnnStatus cudnnDestroy(CudnnHandle handle);
@@ -22,11 +22,11 @@ namespace CudaDnn.Impl
         public static extern CudnnStatus cudnnSetStream(CudnnHandle handle, CUstream streamId);
 
         [DllImport(ApiDllName)]
-        public static extern CudnnStatus cudnnGetStream(CudnnHandle handle, ref CUstream streamId);
+        public static extern CudnnStatus cudnnGetStream(CudnnHandle handle, out CUstream streamId);
 
 
         [DllImport(ApiDllName)]
-        public static extern CudnnStatus cudnnCreateTensor4dDescriptor(ref CudnnTensorDescriptorHandle tensorDesc);
+        public static extern CudnnStatus cudnnCreateTensor4dDescriptor(out CudnnTensorDescriptorHandle tensorDesc);
 
 
         [DllImport(ApiDllName)]
@@ -52,15 +52,15 @@ namespace CudaDnn.Impl
 
         [DllImport(ApiDllName)]
         public static extern CudnnStatus cudnnGetTensor4dDescriptor(CudnnTensorDescriptorHandle tensorDesc,
-                                                                      ref CudnnType dataType,    // image data type
-                                                                      ref int n,                 // number of inputs (batch size)
-                                                                      ref int c,                 // number of input feature maps
-                                                                      ref int h,                 // height of input section
-                                                                      ref int w,
-                                                                      ref int nStride,
-                                                                      ref int cStride,
-                                                                      ref int hStride,
-                                                                      ref int wStride);
+                                                                      out CudnnType dataType,    // image data type
+                                                                      out int n,                 // number of inputs (batch size)
+                                                                      out int c,                 // number of input feature maps
+                                                                      out int h,                 // height of input section
+                                                                      out int w,
+                                                                      out int nStride,
+                                                                      out int cStride,
+                                                                      out int hStride,
+                                                                      out int wStride);
 
 
 
@@ -91,7 +91,7 @@ namespace CudaDnn.Impl
 
 
         [DllImport(ApiDllName)]
-        public static extern CudnnStatus cudnnCreateFilterDescriptor(ref CudnnFilterDescriptorHandle filterDescriptor);
+        public static extern CudnnStatus cudnnCreateFilterDescriptor(out CudnnFilterDescriptorHandle filterDescriptor);
 
         [DllImport(ApiDllName)]
         public static extern CudnnStatus cudnnDestroyFilterDescriptor(CudnnFilterDescriptorHandle filterDescriptor);
@@ -108,16 +108,16 @@ namespace CudaDnn.Impl
 
         [DllImport(ApiDllName)]
         public static extern CudnnStatus cudnnGetFilterDescriptor(CudnnFilterDescriptorHandle filterDescriptor,
-                                                                  ref CudnnType dataType,    // image data type
-                                                                  ref int k,                 // number of output feature maps
-                                                                  ref int c,                 // number of input feature maps
-                                                                  ref int h,                 // height of each input filter
-                                                                  ref int w                 // width of  each input filter
+                                                                  out CudnnType dataType,    // image data type
+                                                                  out int k,                 // number of output feature maps
+                                                                  out int c,                 // number of input feature maps
+                                                                  out int h,                 // height of each input filter
+                                                                  out int w                 // width of  each input filter
                                                                  );
 
 
         [DllImport(ApiDllName)]
-        public static extern CudnnStatus cudnnCreateConvolutionDescriptor(ref CudnnConvolutionDescriptorHandle convolutionDescriptor);
+        public static extern CudnnStatus cudnnCreateConvolutionDescriptor(out CudnnConvolutionDescriptorHandle convolutionDescriptor);
 
         [DllImport(ApiDllName)]
         public static extern CudnnStatus cudnnDestroyConvolutionDescriptor(CudnnConvolutionDescriptorHandle convolutionDescriptor);
@@ -158,10 +158,10 @@ namespace CudaDnn.Impl
         public static extern CudnnStatus cudnnGetOutputTensor4dDim(
                                             CudnnConvolutionDescriptorHandle convolutionDescriptor,
                                             CudnnConvolutionPath path,
-                                            ref int n,                 
-                                            ref int c,                
-                                            ref int h,                
-                                            ref int w);
+                                            out int n,
+                                            out int c,
+                                            out int h,
+                                            out int w);
 
 
         [DllImport(ApiDllName)]
@@ -240,7 +240,7 @@ namespace CudaDnn.Impl
 
 
         [DllImport(ApiDllName)]
-        public static extern CudnnStatus cudnnCreatePoolingDescriptor(ref CudnnPoolingDescriptorHandle poolingDescriptor);
+        public static extern CudnnStatus cudnnCreatePoolingDescriptor(out CudnnPoolingDescriptorHandle poolingDescriptor);
 
         [DllImport(ApiDllName)]
         public static extern CudnnStatus cudnnDestroyPoolingDescriptor(CudnnPoolingDescriptorHandle poolingDescriptor);
@@ -257,11 +257,11 @@ namespace CudaDnn.Impl
         [DllImport(ApiDllName)]
         public static extern CudnnStatus cudnnGetPoolingDescriptor(
                                             CudnnPoolingDescriptorHandle poolingDescriptor,
-                                            ref CudnnPoolingMode mode,
-                                            ref int windowHeight,
-                                            ref int windowWidth,
-                                            ref int verticalStride,
-                                            ref int horizontalStride);
+                                            out CudnnPoolingMode mode,
+                                            out int windowHeight,
+                                            out int windowWidth,
+                                            out int verticalStride,
+                                            out int horizontalStride);
 
 
         [DllImport(ApiDllName)]

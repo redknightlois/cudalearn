@@ -46,7 +46,7 @@ namespace CudaDnn.Tests
                 CudnnType dataType = default(CudnnType);
                 int n = 0, c = 0, h = 0, w = 0;
                 int nStride = 0, cStride = 0, hStride = 0, wStride = 0;
-                CudnnContext.Invoke(() => CudnnNativeMethods.cudnnGetTensor4dDescriptor(tensor.Handle, ref dataType, ref n, ref c, ref h, ref w, ref nStride, ref cStride, ref hStride, ref wStride));
+                CudnnContext.Invoke(() => CudnnNativeMethods.cudnnGetTensor4dDescriptor(tensor.Handle, out dataType, out n, out c, out h, out w, out nStride, out cStride, out hStride, out wStride));
 
                 Assert.Equal(tensor.Parameters.Num, n);
                 Assert.Equal(tensor.Parameters.Channels, c);
@@ -76,11 +76,11 @@ namespace CudaDnn.Tests
                 CudnnType dataType = default(CudnnType);
                 int n1 = 0, c1 = 0, h1 = 0, w1 = 0;
                 int nStride1 = 0, cStride1 = 0, hStride1 = 0, wStride1 = 0;
-                CudnnContext.Invoke(() => CudnnNativeMethods.cudnnGetTensor4dDescriptor(tensor.Handle, ref dataType, ref n1, ref c1, ref h1, ref w1, ref nStride1, ref cStride1, ref hStride1, ref wStride1));
+                CudnnContext.Invoke(() => CudnnNativeMethods.cudnnGetTensor4dDescriptor(tensor.Handle, out dataType, out n1, out c1, out h1, out w1, out nStride1, out cStride1, out hStride1, out wStride1));
 
                 int n2 = 0, c2 = 0, h2 = 0, w2 = 0;
                 int nStride2 = 0, cStride2 = 0, hStride2 = 0, wStride2 = 0;
-                CudnnContext.Invoke(() => CudnnNativeMethods.cudnnGetTensor4dDescriptor(tensor2.Handle, ref dataType, ref n2, ref c2, ref h2, ref w2, ref nStride2, ref cStride2, ref hStride2, ref wStride2));
+                CudnnContext.Invoke(() => CudnnNativeMethods.cudnnGetTensor4dDescriptor(tensor2.Handle, out dataType, out n2, out c2, out h2, out w2, out nStride2, out cStride2, out hStride2, out wStride2));
 
                 Assert.Equal(n2, n1);
                 Assert.Equal(c2, c1);
@@ -121,11 +121,11 @@ namespace CudaDnn.Tests
                 CudnnType dataType = default(CudnnType);
                 int n1 = 0, c1 = 0, h1 = 0, w1 = 0;
                 int nStride1 = 0, cStride1 = 0, hStride1 = 0, wStride1 = 0;
-                CudnnContext.Invoke(() => CudnnNativeMethods.cudnnGetTensor4dDescriptor(tensor.Handle, ref dataType, ref n1, ref c1, ref h1, ref w1, ref nStride1, ref cStride1, ref hStride1, ref wStride1));
+                CudnnContext.Invoke(() => CudnnNativeMethods.cudnnGetTensor4dDescriptor(tensor.Handle, out dataType, out n1, out c1, out h1, out w1, out nStride1, out cStride1, out hStride1, out wStride1));
 
                 int n2 = 0, c2 = 0, h2 = 0, w2 = 0;
                 int nStride2 = 0, cStride2 = 0, hStride2 = 0, wStride2 = 0;
-                CudnnContext.Invoke(() => CudnnNativeMethods.cudnnGetTensor4dDescriptor(tensor2.Handle, ref dataType, ref n2, ref c2, ref h2, ref w2, ref nStride2, ref cStride2, ref hStride2, ref wStride2));
+                CudnnContext.Invoke(() => CudnnNativeMethods.cudnnGetTensor4dDescriptor(tensor2.Handle, out dataType, out n2, out c2, out h2, out w2, out nStride2, out cStride2, out hStride2, out wStride2));
 
                 Assert.Equal(n2, n1);
                 Assert.Equal(c2, c1);
@@ -212,7 +212,7 @@ namespace CudaDnn.Tests
                 int windowHeight = 0, windowWidth = 0;
                 int verticalStride = 0, horizontalStride = 0;
 
-                CudnnContext.Invoke(() => CudnnNativeMethods.cudnnGetPoolingDescriptor(pooling.Handle, ref mode, ref windowHeight, ref windowWidth, ref verticalStride, ref horizontalStride));
+                CudnnContext.Invoke(() => CudnnNativeMethods.cudnnGetPoolingDescriptor(pooling.Handle, out mode, out windowHeight, out windowWidth, out verticalStride, out horizontalStride));
 
                 Assert.Equal(pooling.Parameters.Mode, mode);
                 Assert.Equal(pooling.Parameters.Height, windowHeight);
@@ -243,7 +243,7 @@ namespace CudaDnn.Tests
 
                 CudnnType dataType = default(CudnnType);
                 int k = 0, c = 0, h = 0, w = 0;
-                CudnnContext.Invoke(() => CudnnNativeMethods.cudnnGetFilterDescriptor(filter.Handle, ref dataType, ref k, ref c, ref h, ref w));
+                CudnnContext.Invoke(() => CudnnNativeMethods.cudnnGetFilterDescriptor(filter.Handle, out dataType, out k, out c, out h, out w));
 
                 Assert.Equal(filter.Parameters.Type, dataType);
                 Assert.Equal(filter.Parameters.Output, k);

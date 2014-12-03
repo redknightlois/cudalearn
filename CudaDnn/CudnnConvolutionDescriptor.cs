@@ -16,11 +16,6 @@ namespace CudaDnn
 
         internal CudnnConvolutionDescriptor(CudnnConvolutionDescriptorHandle handle)
         {
-            if (handle.Pointer == IntPtr.Zero)
-                throw new ArgumentException("The handle pointer is null.", "handle");
-
-            Contract.EndContractBlock();
-
             this.Handle = handle;
         }
 
@@ -54,11 +49,7 @@ namespace CudaDnn
 
         private void DisposeNative()
         {
-            if (this.Handle.Pointer == IntPtr.Zero)
-                throw new InvalidOperationException("The handle pointer is null.");
-
             Contract.Ensures(this.Handle.Pointer == IntPtr.Zero);
-            Contract.EndContractBlock();
 
             CudnnContext.Invoke(() => CudnnNativeMethods.cudnnDestroyConvolutionDescriptor(this.Handle));
             this.Handle.Pointer = IntPtr.Zero;
@@ -113,7 +104,7 @@ namespace CudaDnn
             ThrowIfNotInitialized();
 
             int n = 0, c = 0, h = 0, w = 0;
-            CudnnContext.Invoke(() => CudnnNativeMethods.cudnnGetOutputTensor4dDim(this.Handle, path, ref n, ref c, ref h, ref w));
+            CudnnContext.Invoke(() => CudnnNativeMethods.cudnnGetOutputTensor4dDim(this.Handle, path, out n, out c, out h, out w));
 
             return new CudnnConvolutionTensorDim(path, n, c, h, w);
         }
@@ -140,6 +131,12 @@ namespace CudaDnn
                                                     int verticalStride, int horizontalStride,
                                                     int upscaleVertical = 1, int upscaleHorizontal = 1)
         {
+            if (tensor == null)
+                throw new ArgumentNullException("tensor");
+
+            if (filter == null)
+                throw new ArgumentNullException("tensor");
+
             if (upscaleVertical != 1 || upscaleHorizontal != 1)
                 throw new NotSupportedException("The parameter upscaleVertical or upscaleHorizontal is not 1");
 
