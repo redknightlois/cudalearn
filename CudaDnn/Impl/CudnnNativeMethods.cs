@@ -71,23 +71,23 @@ namespace CudaDnn.Impl
         [DllImport(ApiDllName)]
         public static extern CudnnStatus cudnnTransformTensor4d(CudnnHandle handle,
                                                                 CudnnTensorDescriptorHandle srcDescriptor,
-                                                                [In] IntPtr srcData,
+                                                                [In] CUdeviceptr srcData,
                                                                 CudnnTensorDescriptorHandle destDescriptor,
-                                                                [In] IntPtr destData);
+                                                                [In] CUdeviceptr destData);
 
         [DllImport(ApiDllName)]
         public static extern CudnnStatus cudnnAddTensor4d(CudnnHandle handle,
                                                           CudnnAdditionMode mode,
                                                           CudnnTensorDescriptorHandle biasDescriptor,
-                                                          [In] IntPtr biasData,
+                                                          [In] CUdeviceptr biasData,
                                                           CudnnTensorDescriptorHandle srcDestDescriptor,
-                                                          [In, Out] IntPtr srcDestData);
+                                                          [In, Out] CUdeviceptr srcDestData);
 
         [DllImport(ApiDllName)]
         public static extern CudnnStatus cudnnSetTensor4d(CudnnHandle handle,                                                 
                                                           CudnnTensorDescriptorHandle tensorDescriptor,
-                                                          [In, Out] IntPtr tensorData,
-                                                          [In] IntPtr value);
+                                                          [In, Out] CUdeviceptr tensorData,
+                                                          [In] CUdeviceptr value);
 
 
         [DllImport(ApiDllName)]
@@ -168,12 +168,12 @@ namespace CudaDnn.Impl
         public static extern CudnnStatus cudnnConvolutionForward(
                                             CudnnHandle handle,
                                             CudnnTensorDescriptorHandle srcDescriptor,
-                                            [In] IntPtr srcData,
+                                            [In] CUdeviceptr srcData,
                                             CudnnFilterDescriptorHandle filterDescriptor,
-                                            [In] IntPtr filterData,
+                                            [In] CUdeviceptr filterData,
                                             CudnnConvolutionDescriptorHandle convolutionDescriptor,
                                             CudnnTensorDescriptorHandle destDescriptor,
-                                            [In, Out] IntPtr destData,
+                                            [In, Out] CUdeviceptr destData,
                                             CudnnAccumulateResult accumulate);
 
 
@@ -181,9 +181,9 @@ namespace CudaDnn.Impl
         public static extern CudnnStatus cudnnConvolutionBackwardBias(
                                             CudnnHandle handle,
                                             CudnnTensorDescriptorHandle srcDescriptor,
-                                            [In] IntPtr srcData,
+                                            [In] CUdeviceptr srcData,
                                             CudnnTensorDescriptorHandle destDescriptor,
-                                            [In, Out] IntPtr destData,
+                                            [In, Out] CUdeviceptr destData,
                                             CudnnAccumulateResult accumulate);
 
 
@@ -191,24 +191,24 @@ namespace CudaDnn.Impl
         public static extern CudnnStatus cudnnConvolutionBackwardFilter(
                                             CudnnHandle handle,
                                             CudnnTensorDescriptorHandle srcDescriptor,
-                                            [In] IntPtr srcData,
+                                            [In] CUdeviceptr srcData,
                                             CudnnTensorDescriptorHandle diffDescriptor,
-                                            [In] IntPtr diffData,
+                                            [In] CUdeviceptr diffData,
                                             CudnnConvolutionDescriptorHandle convolutionDescriptor,
                                             CudnnFilterDescriptorHandle gradientDescriptor,
-                                            [In, Out] IntPtr gradientData,
+                                            [In, Out] CUdeviceptr gradientData,
                                             CudnnAccumulateResult accumulate);
 
         [DllImport(ApiDllName)]
         public static extern CudnnStatus cudnnConvolutionBackwardData(
                                             CudnnHandle handle,
                                             CudnnFilterDescriptorHandle filterDescriptor,
-                                            [In] IntPtr filterData,
+                                            [In] CUdeviceptr filterData,
                                             CudnnTensorDescriptorHandle diffDescriptor,
-                                            [In] IntPtr diffData,
+                                            [In] CUdeviceptr diffData,
                                             CudnnConvolutionDescriptorHandle convolutionDescriptor,
                                             CudnnTensorDescriptorHandle gradientDescriptor,
-                                            [In, Out] IntPtr gradientData,
+                                            [In, Out] CUdeviceptr gradientData,
                                             CudnnAccumulateResult accumulate);
 
 
@@ -219,9 +219,9 @@ namespace CudaDnn.Impl
                                             CudnnSoftmaxAlgorithm algorithm,
                                             CudnnSoftmaxMode mode,
                                             CudnnTensorDescriptorHandle srcDescriptor,
-                                            [In] IntPtr srcData,
+                                            [In] CUdeviceptr srcData,
                                             CudnnTensorDescriptorHandle destDescriptor,
-                                            [In, Out] IntPtr destData);
+                                            [In, Out] CUdeviceptr destData);
 
 
 
@@ -232,11 +232,11 @@ namespace CudaDnn.Impl
                                             CudnnSoftmaxAlgorithm algorithm,
                                             CudnnSoftmaxMode mode,
                                             CudnnTensorDescriptorHandle srcDescriptor,
-                                            [In] IntPtr srcData,
+                                            [In] CUdeviceptr srcData,
                                             CudnnTensorDescriptorHandle srcDiffDescriptor,
-                                            [In] IntPtr srcDiffData,
+                                            [In] CUdeviceptr srcDiffData,
                                             CudnnTensorDescriptorHandle destDiffDescriptor,
-                                            [In, Out] IntPtr destDiffData);
+                                            [In, Out] CUdeviceptr destDiffData);
 
 
         [DllImport(ApiDllName)]
@@ -269,22 +269,22 @@ namespace CudaDnn.Impl
                                             CudnnHandle handle,
                                             CudnnPoolingDescriptorHandle poolingDescriptor,
                                             CudnnTensorDescriptorHandle srcDescriptor,
-                                            [In] IntPtr srcData,
+                                            [In] CUdeviceptr srcData,
                                             CudnnTensorDescriptorHandle destDescriptor,
-                                            [In, Out] IntPtr destData);
+                                            [In, Out] CUdeviceptr destData);
 
         [DllImport(ApiDllName)]
         public static extern CudnnStatus cudnnPoolingBackward(
                                             CudnnHandle handle,
                                             CudnnPoolingDescriptorHandle poolingDescriptor,
                                             CudnnTensorDescriptorHandle srcDescriptor,
-                                            [In] IntPtr srcData,
+                                            [In] CUdeviceptr srcData,
                                             CudnnTensorDescriptorHandle srcDiffDescriptor,
-                                            [In] IntPtr srcDiffData,
+                                            [In] CUdeviceptr srcDiffData,
                                             CudnnTensorDescriptorHandle destDescriptor,
-                                            [In] IntPtr destData,
+                                            [In] CUdeviceptr destData,
                                             CudnnTensorDescriptorHandle destDiffDescriptor,
-                                            [In, Out] IntPtr destDiffData);
+                                            [In, Out] CUdeviceptr destDiffData);
 
 
 
@@ -294,21 +294,21 @@ namespace CudaDnn.Impl
                                             CudnnHandle handle,
                                             CudnnActivationMode mode,
                                             CudnnTensorDescriptorHandle srcDescriptor,
-                                            [In] IntPtr srcData,
+                                            [In] CUdeviceptr srcData,
                                             CudnnTensorDescriptorHandle destDescriptor,
-                                            [In, Out] IntPtr destData);
+                                            [In, Out] CUdeviceptr destData);
 
         [DllImport(ApiDllName)]
         public static extern CudnnStatus cudnnActivationBackward(
                                             CudnnHandle handle,
                                             CudnnActivationMode mode,
                                             CudnnTensorDescriptorHandle srcDescriptor,
-                                            [In] IntPtr srcData,
+                                            [In] CUdeviceptr srcData,
                                             CudnnTensorDescriptorHandle srcDiffDescriptor,
-                                            [In] IntPtr srcDiffData,
+                                            [In] CUdeviceptr srcDiffData,
                                             CudnnTensorDescriptorHandle destDescriptor,
-                                            [In] IntPtr destData,
+                                            [In] CUdeviceptr destData,
                                             CudnnTensorDescriptorHandle destDiffDescriptor,
-                                            [In, Out] IntPtr destDiffData);
+                                            [In, Out] CUdeviceptr destDiffData);
     }
 }

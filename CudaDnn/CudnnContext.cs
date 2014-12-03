@@ -156,6 +156,8 @@ namespace CudaDnn
 
         internal static void Invoke ( Func<CudnnStatus> action )
         {
+            Contract.Requires(action != null);
+
             var result = action();
             switch (result)
             {

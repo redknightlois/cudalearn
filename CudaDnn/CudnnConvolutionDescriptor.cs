@@ -101,6 +101,8 @@ namespace CudaDnn
 
         public CudnnConvolutionTensorDim GetOutputTensor(CudnnConvolutionPath path)
         {
+            Contract.Ensures(Contract.Result<CudnnConvolutionTensorDim>() != null);
+
             ThrowIfNotInitialized();
 
             int n = 0, c = 0, h = 0, w = 0;
