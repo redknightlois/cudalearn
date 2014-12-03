@@ -15,7 +15,7 @@ namespace CudaDnn.Impl
     [StructLayout(LayoutKind.Sequential)]
     public struct CudnnHandle
     {
-        public IntPtr Pointer;
+        internal IntPtr Pointer;
     }
 
 }

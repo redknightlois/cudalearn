@@ -6,6 +6,7 @@ using System.Text;
 
 namespace CudaDnn
 {
+    [Serializable]
     public class CudnnException : Exception, ISerializable  
     {
         public readonly CudnnStatus ErrorCode;

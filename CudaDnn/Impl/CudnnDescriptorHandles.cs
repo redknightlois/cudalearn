@@ -15,7 +15,7 @@ namespace CudaDnn.Impl
     [StructLayout(LayoutKind.Sequential)]
     public struct CudnnTensorDescriptorHandle
     {
-        public IntPtr Pointer;
+        internal IntPtr Pointer;
     }
 
     /// <summary>
@@ -25,7 +25,7 @@ namespace CudaDnn.Impl
     [StructLayout(LayoutKind.Sequential)]
     public struct CudnnConvolutionDescriptorHandle
     {
-        public IntPtr Pointer;
+        internal IntPtr Pointer;
     }
 
     /// <summary>
@@ -35,7 +35,7 @@ namespace CudaDnn.Impl
     [StructLayout(LayoutKind.Sequential)]
     public struct CudnnPoolingDescriptorHandle
     {
-        public IntPtr Pointer;
+        internal IntPtr Pointer;
     }
 
     /// <summary>
@@ -45,6 +45,6 @@ namespace CudaDnn.Impl
     [StructLayout(LayoutKind.Sequential)]
     public struct CudnnFilterDescriptorHandle
     {
-        public IntPtr Pointer;
+        internal IntPtr Pointer;
     }
 }

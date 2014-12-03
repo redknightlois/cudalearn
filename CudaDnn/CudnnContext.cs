@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CudaDnn
 {
-    public class CudnnContext : CriticalFinalizerObject, IDisposable
+    public sealed class CudnnContext : CriticalFinalizerObject, IDisposable
     {
         #region Lifecycle 
 
@@ -47,7 +47,7 @@ namespace CudaDnn
         }
 
         // The bulk of the clean-up code is implemented in Dispose(bool)
-        protected void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (disposing)
             {
@@ -59,11 +59,11 @@ namespace CudaDnn
             DisposeNative();
         }
 
-        protected virtual void DisposeManaged()
+        private void DisposeManaged()
         {
         }
 
-        protected virtual void DisposeNative()
+        private void DisposeNative()
         {
             try
             {
