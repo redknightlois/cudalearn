@@ -20,6 +20,9 @@ namespace CudaDnn.Tests
             using (var filter = CudnnContext.CreateFilter())
             {
                 Assert.False(tensor.IsInitialized);
+                Assert.False(convolution.IsInitialized);
+                Assert.False(pooling.IsInitialized);
+                Assert.False(filter.IsInitialized);
             }
         }
 

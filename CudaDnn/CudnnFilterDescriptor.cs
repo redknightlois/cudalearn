@@ -106,17 +106,22 @@ namespace CudaDnn
         public readonly int Height;
         public readonly int Width;
 
-        public CudnnFilterDescriptorParameters ( CudnnType type, int k, int c, int h, int w )
+        public CudnnFilterDescriptorParameters ( int output, int input, int h, int w ) 
+            : this ( CudnnContext.DefaultType, output, input, h, w )
+        {     
+        }
+
+        public CudnnFilterDescriptorParameters(CudnnType type, int output, int input, int h, int w)
         {
-            if (k < 1 || c < 1 || h < 1 || w < 1)
-                throw new ArgumentException("At least one of the parameters k, c, h, w was negative.");
+            if (output < 1 || input < 1 || h < 1 || w < 1)
+                throw new ArgumentException("At least one of the parameters output, input, h, w was negative.");
 
             Contract.EndContractBlock();
 
             this.Type = type;
 
-            this.Output = k;
-            this.Input = c;
+            this.Output = output;
+            this.Input = input;
             this.Height = h;
             this.Width = w;
         }

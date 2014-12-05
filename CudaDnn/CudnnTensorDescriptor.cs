@@ -111,6 +111,10 @@ namespace CudaDnn
         public readonly int HeightStride;
         public readonly int WidthStride;
 
+        public CudnnTensorDescriptorParameters(int n, int c, int h, int w, int nStride, int cStride, int hStride, int wStride) 
+            : this (CudnnContext.DefaultType, n, c, h, w, nStride, cStride, hStride, wStride)
+        { }
+
         public CudnnTensorDescriptorParameters(CudnnType type, int n, int c, int h, int w, int nStride, int cStride, int hStride, int wStride)
         {
             if (n < 1 || c < 1 || h < 1 || w < 1)
@@ -131,6 +135,10 @@ namespace CudaDnn
             this.HeightStride = hStride;
             this.WidthStride = wStride;
         }
+
+        public CudnnTensorDescriptorParameters(int n, int c, int h, int w) 
+            : this ( CudnnContext.DefaultType, CudnnContext.DefaultTensorFormat, n, c, h, w)
+        { }
 
         public CudnnTensorDescriptorParameters(CudnnType type, CudnnTensorFormat format, int n, int c, int h, int w)
         {

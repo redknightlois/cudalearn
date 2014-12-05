@@ -13,8 +13,17 @@ namespace CudaDnn.Tests
         [Fact]
         public void Lifecycle ()
         {
-            using ( var context = CudnnContext.Create() )
-            {                
+            using (var context = CudnnContext.Create())
+            using (var tensor = CudnnContext.CreateTensor())
+            using (var convolution = CudnnContext.CreateConvolution())
+            using (var pooling = CudnnContext.CreatePooling())
+            using (var filter = CudnnContext.CreateFilter())
+            {
+                Assert.True(context.IsInitialized);
+                Assert.NotNull(tensor);
+                Assert.NotNull(convolution);
+                Assert.NotNull(pooling);
+                Assert.NotNull(filter);
             }
         }
 

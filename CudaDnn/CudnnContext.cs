@@ -1,4 +1,5 @@
 ﻿using CudaDnn.Impl;
+using ManagedCuda;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
@@ -14,6 +15,12 @@ namespace CudaDnn
         #region Lifecycle 
 
         private CudnnHandle handle;
+
+        static CudnnContext ()
+        {
+            DefaultType = CudnnType.Double;
+            DefaultTensorFormat = CudnnTensorFormat.MajorRow;
+        }
 
         private CudnnContext( CudnnHandle handle )
         {
@@ -80,6 +87,21 @@ namespace CudaDnn
         }
 
         #endregion
+
+        public static CudnnType DefaultType { get; set; }
+
+        public static CudnnTensorFormat DefaultTensorFormat { get; set; }
+
+        private void ThrowIfNotInitialized()
+        {
+            if (!IsInitialized)
+                throw new InvalidOperationException("Not initialized.");
+        }
+
+        public bool IsInitialized
+        {
+            get { return this.handle.Pointer != IntPtr.Zero; }
+        }
 
 
         public static CudnnTensorDescriptor CreateTensor()
@@ -173,6 +195,60 @@ namespace CudaDnn
                 case CudnnStatus.LicenseError: throw new CudnnException(result, "The functionality requested requires some license and an error was detected when trying to check the current licensing. This error can happen if the license is not present or is expired or if the environment variable NVIDIA_LICENSE_FILE is not set properly.");
                 case CudnnStatus.MappingError: throw new CudnnException(result, "An access to GPU memory space failed, which is usually caused by a failure to bind a texture.");                                
             }
+        }
+
+        public void Forward(CudnnTensorDescriptor xTensor, float[] xData, CudnnFilterDescriptor filter, float[] filterData, CudnnConvolutionDescriptor convolution, CudnnTensorDescriptor yTensor, float[] yData, CudnnAccumulateResult accumulate)
+        {
+            Contract.Requires(xTensor != null);
+            Contract.Requires(xData != null);
+            Contract.Requires(filter != null);
+            Contract.Requires(filterData != null);
+            Contract.Requires(convolution != null);
+            Contract.Requires(yTensor != null);
+            Contract.Requires(yData != null);
+
+            if (xTensor.Parameters.Type != CudnnType.Float || filter.Parameters.Type != CudnnType.Float || yTensor.Parameters.Type != CudnnType.Float)
+                throw new ArgumentException("The type of one of the descriptors is not CudnnType.Float");
+
+            Contract.EndContractBlock();
+
+            var xDataGpu = new CudaDeviceVariable<float>(xData.Length);
+            xDataGpu.CopyToDevice(xData);
+
+            var filterDataGpu = new CudaDeviceVariable<float>(filterData.Length);
+            filterDataGpu.CopyToDevice(filterData);
+
+            var yDataGpu = new CudaDeviceVariable<float>(yData.Length);
+            Invoke(() => CudnnNativeMethods.cudnnConvolutionForward(handle, xTensor.Handle, xDataGpu.DevicePointer, filter.Handle, filterDataGpu.DevicePointer, convolution.Handle, yTensor.Handle, yDataGpu.DevicePointer, accumulate));
+
+            yDataGpu.CopyToHost(yData);
+        }
+
+        public void Forward(CudnnTensorDescriptor xTensor, double[] xData, CudnnFilterDescriptor filter, double[] filterData, CudnnConvolutionDescriptor convolution, CudnnTensorDescriptor yTensor, double[] yData, CudnnAccumulateResult accumulate)
+        {
+            Contract.Requires(xTensor != null);
+            Contract.Requires(xData != null);
+            Contract.Requires(filter != null);
+            Contract.Requires(filterData != null);
+            Contract.Requires(convolution != null);
+            Contract.Requires(yTensor != null);
+            Contract.Requires(yData != null);
+
+            if (xTensor.Parameters.Type != CudnnType.Double || filter.Parameters.Type != CudnnType.Double || yTensor.Parameters.Type != CudnnType.Double)
+                throw new ArgumentException("The type of one of the descriptors is not CudnnType.Double");            
+
+            Contract.EndContractBlock();
+
+            var xDataGpu = new CudaDeviceVariable<double>(xData.Length);
+            xDataGpu.CopyToDevice(xData);
+
+            var filterDataGpu = new CudaDeviceVariable<double>(filterData.Length);
+            filterDataGpu.CopyToDevice(filterData);
+
+            var yDataGpu = new CudaDeviceVariable<double>(yData.Length);
+            Invoke(() => CudnnNativeMethods.cudnnConvolutionForward(handle, xTensor.Handle, xDataGpu.DevicePointer, filter.Handle, filterDataGpu.DevicePointer, convolution.Handle, yTensor.Handle, yDataGpu.DevicePointer, accumulate));
+
+            yDataGpu.CopyToHost(yData);
         }
     }
 
