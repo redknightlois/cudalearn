@@ -3,6 +3,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -38,7 +39,7 @@ namespace CudaLearn
     }
 
 
-    public abstract class Layer
+    public abstract class Layer : CriticalFinalizerObject, IDisposable
     {
         // We assume we always have GPU.
         private bool forwardGpuSupported = true;
@@ -47,6 +48,38 @@ namespace CudaLearn
         protected Layer()
         {
         }
+
+        ~Layer()
+        {
+            // Finalizer calls Dispose(false)
+            Dispose(false);
+        }
+
+        // Dispose() calls Dispose(true)
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        // The bulk of the clean-up code is implemented in Dispose(bool)
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                // free managed resources
+                DisposeManaged();
+            }
+
+            // free native resources if there are any.
+            DisposeNative();
+        }
+
+        protected virtual void DisposeManaged() { }
+
+        protected virtual void DisposeNative() { }
+
+
 
         public void Setup( Blob bottom, Blob top )
         {

@@ -109,7 +109,7 @@ namespace CudaDnn.Tests
         }
 
         [Fact(Skip = "Not Supported by CuDNN yet.")]
-        public void Cudnn_Descriptors_ConstructTensorWithInterleaved()
+        public void Cudnn_Descriptors_ConstructTensorWithInterleaved_Support()
         {
             var param = new CudnnTensorDescriptorParameters(CudnnType.Double, CudnnTensorFormat.Interleaved, 10, 5, 2, 4);
             using (var tensor = CudnnContext.CreateTensor(param))
