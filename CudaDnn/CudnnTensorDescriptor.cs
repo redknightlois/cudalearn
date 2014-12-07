@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CudaDnn
 {
-    public sealed class CudnnTensorDescriptor : CriticalFinalizerObject, IDisposable
+    public sealed class CudnnTensorDescriptor : CriticalFinalizerObject, IDisposable, ITypeAware
     {
         internal CudnnTensorDescriptorHandle Handle;
 
@@ -95,11 +95,16 @@ namespace CudaDnn
 
             this.descriptorParams = param;
         }
+
+        public CudnnType Type
+        {
+            get { return Parameters.Type; }
+        }
     }
 
-    public class CudnnTensorDescriptorParameters
+    public class CudnnTensorDescriptorParameters : ITypeAware
     {
-        public readonly CudnnType Type;
+        public CudnnType Type { get; private set; }
 
         public readonly int Num;
         public readonly int Channels;

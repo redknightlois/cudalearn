@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CudaDnn
 {
-    public sealed class CudnnContext : CriticalFinalizerObject, IDisposable
+    public sealed partial class CudnnContext : CriticalFinalizerObject, IDisposable
     {
         #region Lifecycle 
 
@@ -197,59 +197,22 @@ namespace CudaDnn
             }
         }
 
-        public void Forward(CudnnTensorDescriptor xTensor, float[] xData, CudnnFilterDescriptor filter, float[] filterData, CudnnConvolutionDescriptor convolution, CudnnTensorDescriptor yTensor, float[] yData, CudnnAccumulateResult accumulate)
+        private static void CheckIfCompatible(CudnnType type, params ITypeAware[] parameters)
+
         {
-            Contract.Requires(xTensor != null);
-            Contract.Requires(xData != null);
-            Contract.Requires(filter != null);
-            Contract.Requires(filterData != null);
-            Contract.Requires(convolution != null);
-            Contract.Requires(yTensor != null);
-            Contract.Requires(yData != null);
+            Contract.Requires(parameters != null);
+            Contract.ForAll<ITypeAware>(parameters, x => x != null && x.Type == type);
+            
+            foreach (var param in parameters)
+            {
+                if (param == null)
+                    throw new ArgumentNullException("Parameter is null");
 
-            if (xTensor.Parameters.Type != CudnnType.Float || filter.Parameters.Type != CudnnType.Float || yTensor.Parameters.Type != CudnnType.Float)
-                throw new ArgumentException("The type of one of the descriptors is not CudnnType.Float");
-
-            Contract.EndContractBlock();
-
-            var xDataGpu = new CudaDeviceVariable<float>(xData.Length);
-            xDataGpu.CopyToDevice(xData);
-
-            var filterDataGpu = new CudaDeviceVariable<float>(filterData.Length);
-            filterDataGpu.CopyToDevice(filterData);
-
-            var yDataGpu = new CudaDeviceVariable<float>(yData.Length);
-            Invoke(() => CudnnNativeMethods.cudnnConvolutionForward(handle, xTensor.Handle, xDataGpu.DevicePointer, filter.Handle, filterDataGpu.DevicePointer, convolution.Handle, yTensor.Handle, yDataGpu.DevicePointer, accumulate));
-
-            yDataGpu.CopyToHost(yData);
+                if (param.Type != type)
+                    throw new ArgumentException(string.Format("One of the descriptors with type {0} is not CudnnType.{1}", param.GetType().Name, type.ToString()));
+            }
         }
 
-        public void Forward(CudnnTensorDescriptor xTensor, double[] xData, CudnnFilterDescriptor filter, double[] filterData, CudnnConvolutionDescriptor convolution, CudnnTensorDescriptor yTensor, double[] yData, CudnnAccumulateResult accumulate)
-        {
-            Contract.Requires(xTensor != null);
-            Contract.Requires(xData != null);
-            Contract.Requires(filter != null);
-            Contract.Requires(filterData != null);
-            Contract.Requires(convolution != null);
-            Contract.Requires(yTensor != null);
-            Contract.Requires(yData != null);
-
-            if (xTensor.Parameters.Type != CudnnType.Double || filter.Parameters.Type != CudnnType.Double || yTensor.Parameters.Type != CudnnType.Double)
-                throw new ArgumentException("The type of one of the descriptors is not CudnnType.Double");            
-
-            Contract.EndContractBlock();
-
-            var xDataGpu = new CudaDeviceVariable<double>(xData.Length);
-            xDataGpu.CopyToDevice(xData);
-
-            var filterDataGpu = new CudaDeviceVariable<double>(filterData.Length);
-            filterDataGpu.CopyToDevice(filterData);
-
-            var yDataGpu = new CudaDeviceVariable<double>(yData.Length);
-            Invoke(() => CudnnNativeMethods.cudnnConvolutionForward(handle, xTensor.Handle, xDataGpu.DevicePointer, filter.Handle, filterDataGpu.DevicePointer, convolution.Handle, yTensor.Handle, yDataGpu.DevicePointer, accumulate));
-
-            yDataGpu.CopyToHost(yData);
-        }
     }
 
 }

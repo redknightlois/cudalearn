@@ -96,6 +96,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CudnnContext.Activation.cs" />
+    <Compile Include="CudnnContext.Convolution.cs" />
+    <Compile Include="CudnnContext.Pooling.cs" />
+    <Compile Include="CudnnContext.Softmax.cs" />
     <Compile Include="CudnnConvolutionDescriptor.cs" />
     <Compile Include="CudnnFilterDescriptor.cs" />
     <Compile Include="CudnnContext.cs" />
@@ -117,6 +121,7 @@
     <Compile Include="CudnnTensorFormat.cs" />
     <Compile Include="CudnnType.cs" />
     <Compile Include="Impl\CudnnDescriptorHandles.cs" />
+    <Compile Include="ITypeAware.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

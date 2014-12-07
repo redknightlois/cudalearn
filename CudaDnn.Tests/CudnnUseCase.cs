@@ -116,7 +116,7 @@ namespace CudaDnn.Tests
                 float[] yData = new float[nInput * filtersOut * output.Height * output.Width];
 
                 // Perform convolution
-                context.Forward(xTensor, xDataVector.ToArray(), filter, filterData.ToArray(), convolution, yTensor, yData, CudnnAccumulateResult.DoNotAccumulate);
+                context.Forward(xTensor, xDataVector.ToArray(), filter, filterData.ToArray(), convolution, yTensor, yData, CudnnAccumulateResult.DoNotAccumulate);                
 
                 // Clean up
                 xTensor.Dispose();

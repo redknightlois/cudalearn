@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CudaDnn
 {
-    public sealed class CudnnFilterDescriptor : CriticalFinalizerObject, IDisposable
+    public sealed class CudnnFilterDescriptor : CriticalFinalizerObject, IDisposable, ITypeAware
     {
         internal CudnnFilterDescriptorHandle Handle;
 
@@ -95,11 +95,16 @@ namespace CudaDnn
 
             this.descriptorParams = param;
         }
+
+        public CudnnType Type
+        {
+            get { return Parameters.Type; }
+        }
     }
 
-    public class CudnnFilterDescriptorParameters
+    public class CudnnFilterDescriptorParameters : ITypeAware
     {
-        public readonly CudnnType Type;
+        public CudnnType Type { get; private set; }
 
         public readonly int Output;
         public readonly int Input;
