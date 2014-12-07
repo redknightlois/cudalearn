@@ -15,14 +15,14 @@ namespace CudaLearn.Tests
         {
             var blob = new Blob(2, 3, 4, 5);
 
-            var config = new ConstantFillerConfiguration(10.0f);
+            var config = new ConstantFillerConfiguration(10.0d);
             var filler = new ConstantFiller(config);
             filler.Fill(blob);
 
             int count = blob.Count;
             var data = blob.Data;
             for (int i = 0; i < count; i++)
-                Assert.Equal(data[i], 10.0f);
+                Assert.Equal(data[i], 10.0d);
         }
 
         public static IEnumerable<object[]> MinMaxParameters
@@ -31,15 +31,15 @@ namespace CudaLearn.Tests
             {
                 return new[]
                 {
-                    new object[] { 0.0f, 1.0f },
-                    new object[] { -1.0f, 1.0f },
-                    new object[] { 1.0f, 10.0f },
+                    new object[] { 0.0d, 1.0d },
+                    new object[] { -1.0d, 1.0d },
+                    new object[] { 1.0d, 10.0d },
                 };
             }
         }
 
         [Theory, MemberData("MinMaxParameters")]
-        public void Filler_Uniform(float min, float max)
+        public void Filler_Uniform(double min, double max)
         {
             var blob = new Blob(2, 3, 4, 5);
             var config = new UniformFillerConfiguration(min, max);
@@ -69,13 +69,13 @@ namespace CudaLearn.Tests
             var data = blob.Data;
             for (int i = 0; i < count; i++)
             {
-                Assert.True(data[i] >= 0.0f);
-                Assert.True(data[i] <= 1.0f);
+                Assert.True(data[i] >= 0.0d);
+                Assert.True(data[i] <= 1.0d);
             } 
 
             for ( int i = 0; i < num; i++ )
             {
-                float sum = 0;
+                double sum = 0;
                 for (int j = 0; j < dim; j++)
                     sum += blob.DataAt(i * dim + j);
 
@@ -91,23 +91,23 @@ namespace CudaLearn.Tests
             {
                 return new[]
                 {
-                    new object[] { 10.0f, 0.1f },
-                    new object[] { -1.0f, 1.0f },
-                    new object[] { 0.0f, 1.0f },
+                    new object[] { 10.0d, 0.1f },
+                    new object[] { -1.0d, 1.0d },
+                    new object[] { 0.0d, 1.0d },
                 };
             }
         }
 
         [Theory, MemberData("MeanStdParameters")]
-        public void Filler_GaussianDense(float meanParam, float stdParam)
+        public void Filler_GaussianDense(double meanParam, double stdParam)
         {
             var blob = new Blob(2, 3, 4, 5);
             var config = new GaussianFillerConfiguration(meanParam, stdParam);
             var filler = new GaussianFiller(config);
             filler.Fill(blob);
 
-            float mean = 0;
-            float var = 0;
+            double mean = 0;
+            double var = 0;
 
             int count = blob.Count;
 
@@ -123,13 +123,13 @@ namespace CudaLearn.Tests
             Assert.True(mean >= config.Mean - config.Std * 5);
             Assert.True(mean <= config.Mean + config.Std * 5);
 
-            float targetVar = config.Std * config.Std;
-            Assert.True(var >= (targetVar / 5.0f));
-            Assert.True(var <= (targetVar * 5.0f));
+            double targetVar = config.Std * config.Std;
+            Assert.True(var >= (targetVar / 5.0d));
+            Assert.True(var <= (targetVar * 5.0d));
         }
 
         [Theory, MemberData("MeanStdParameters")]
-        public void Filler_GaussianSparse(float meanParam, float stdParam)
+        public void Filler_GaussianSparse(double meanParam, double stdParam)
         {
             var blob = new Blob(2, 3, 4, 5);
             var config = new GaussianFillerConfiguration(meanParam, stdParam) { IsSparse = true };
@@ -137,15 +137,15 @@ namespace CudaLearn.Tests
             var filler = new GaussianFiller(config);
             filler.Fill(blob);
 
-            float mean = 0;
-            float var = 0;
+            double mean = 0;
+            double var = 0;
 
             int count = blob.Count;
             int zeroes = 0;
 
             for (int i = 0; i < count; i++)
             {
-                if (blob.DataAt(i) == 0.0f)
+                if (blob.DataAt(i) == 0.0d)
                 {
                     zeroes++;
                 }
@@ -162,9 +162,9 @@ namespace CudaLearn.Tests
             Assert.True(mean >= config.Mean - config.Std * 5);
             Assert.True(mean <= config.Mean + config.Std * 5);
 
-            float targetVar = config.Std * config.Std;
-            Assert.True(var >= (targetVar / 5.0f));
-            Assert.True(var <= (targetVar * 5.0f));
+            double targetVar = config.Std * config.Std;
+            Assert.True(var >= (targetVar / 5.0d));
+            Assert.True(var <= (targetVar * 5.0d));
         }
 
         [Fact]
@@ -175,7 +175,7 @@ namespace CudaLearn.Tests
             filler.Fill(blob);
 
             int fanIn = blob.Count / blob.Num;
-            float scale = (float)Math.Sqrt(3 / fanIn);
+            double scale = Math.Sqrt(3 / fanIn);
 
             int count = blob.Count;
             var data = blob.Data;

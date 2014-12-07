@@ -30,7 +30,7 @@ namespace CudaLearn
     public class SigmoidLayer : NeuronLayer<SigmoidLayerConfiguration>
     {
 
-        private const float Threshold = 50.0f;
+        private const double Threshold = 50.0d;
 
         public SigmoidLayer()
             : this(new SigmoidLayerConfiguration())
@@ -40,12 +40,12 @@ namespace CudaLearn
             : base(param)
         { }
 
-        protected override float ForwardCpu(IList<Blob> bottom, IList<Blob> top)
+        protected override double ForwardCpu(IList<Blob> bottom, IList<Blob> top)
         {
             var bottomData = bottom[0].Data;
             var topData = top[0].Data;
 
-            bottomData.MapIndexed((i, v) => 1.0f / (1.0f + (float)Math.Exp(-v)), topData, Zeros.Include);
+            bottomData.MapIndexed((i, v) => 1.0d / (1.0d + Math.Exp(-v)), topData, Zeros.Include);
 
             return 0;
         }
@@ -58,7 +58,7 @@ namespace CudaLearn
                 var topDiff = top[0].Diff;
                 var bottomDiff = bottom[0].Diff;
 
-                topData.MapIndexed((i, v) => topDiff[i] * v * (1.0f - v), bottomDiff, Zeros.Include);
+                topData.MapIndexed((i, v) => topDiff[i] * v * (1.0d - v), bottomDiff, Zeros.Include);
             }
         }
     }

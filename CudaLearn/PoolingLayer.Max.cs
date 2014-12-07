@@ -29,7 +29,7 @@ namespace CudaLearn
 
     public class MaxPoolingLayer : PoolingLayer<MaxPoolingLayerConfiguration>
     {
-        private Vector<float> maxIndexes;
+        private Vector<double> maxIndexes;
 
         public MaxPoolingLayer(int kernelSize, int stride = 1, int padding = 0)
             : this(new MaxPoolingLayerConfiguration(kernelSize, stride, padding))
@@ -61,7 +61,7 @@ namespace CudaLearn
             foreach( var item in top )
                 item.Reshape(num, channels, Pooled.Height, Pooled.Width);
 
-            this.maxIndexes = Vector<float>.Build.SameAs(top[0].Data);
+            this.maxIndexes = Vector<double>.Build.SameAs(top[0].Data);
         }
 
         private void CheckSizeParameters()
@@ -79,7 +79,7 @@ namespace CudaLearn
             Guard.That(() => this.Parameters.Padding.Depth).IsEqual(0);
         }
 
-        protected override float ForwardCpu(IList<Blob> bottom, IList<Blob> top)
+        protected override double ForwardCpu(IList<Blob> bottom, IList<Blob> top)
         {
             var bottomData = bottom[0].Data;
             var topData = top[0].Data;
@@ -94,7 +94,7 @@ namespace CudaLearn
             Size kernel = this.Parameters.Kernel;
 
             // Initialize 
-            Vector<float> outputMask;
+            Vector<double> outputMask;
 
             bool useTopMask = top.Count > 1;
             if ( useTopMask )
@@ -103,7 +103,7 @@ namespace CudaLearn
                 outputMask = this.maxIndexes;
 
             outputMask.Map(x => -1f, outputMask, Zeros.Include);
-            topData.Map(x => float.MinValue, topData, Zeros.Include);
+            topData.Map(x => double.MinValue, topData, Zeros.Include);
 
             // The main loop
             int bottomOffset = 0;
@@ -176,7 +176,7 @@ namespace CudaLearn
             bottomDiff.Map(v => 0, result: bottomDiff);
 
             // Initialize 
-            Vector<float> inputMask;
+            Vector<double> inputMask;
             bool useTopMask = top.Count > 1;
             if (useTopMask)
                 inputMask = top[1].Data;
@@ -198,9 +198,9 @@ namespace CudaLearn
 
                 int topOffset = (n * channels + c) * Pooled.Height * Pooled.Width;
 
-                float bottomDatum = bottomData[index];
+                double bottomDatum = bottomData[index];
 
-                float gradient = 0;
+                double gradient = 0;
                 for (int ph = phstart; ph < phend; ++ph)
                 {
                     for (int pw = pwstart; pw < pwend; ++pw)

@@ -48,7 +48,7 @@ namespace CudaLearn.Tests
         }
 
         [Theory, MemberData("DropoutParameter")]
-        public void DropoutLayer_ForwardTrainPhase(float ratio)
+        public void DropoutLayer_ForwardTrainPhase(double ratio)
         {
             Context.Instance.Phase = PhaseType.Train;
 
@@ -59,7 +59,7 @@ namespace CudaLearn.Tests
 
             Assert.Equal(bottom.Count, top.Count);
 
-            float scale = 1f / (1f - layer.Parameters.Ratio);
+            double scale = 1f / (1f - layer.Parameters.Ratio);
 
             int count = bottom.Count;
             int kept = 0;

@@ -9,16 +9,16 @@ namespace CudaLearn.Tests
 {
     internal class GradientChecker
     {       
-        private readonly float step;
-        private readonly float threshold;
+        private readonly double step;
+        private readonly double threshold;
         private readonly int seed;
-        private readonly float kink;
-        private readonly float kinkRange;
+        private readonly double kink;
+        private readonly double kinkRange;
 
         // kink and kink_range specify an ignored nonsmooth region of the form
         // kink - kink_range <= |feature value| <= kink + kink_range,
         // which accounts for all nonsmoothness in use
-        public GradientChecker(float step, float threshold, int seed = 1701, float kink = 0.0f, float kinkRange = -1.0f)
+        public GradientChecker(double step, double threshold, int seed = 1701, double kink = 0.0d, double kinkRange = -1.0d)
         {
             this.step = step;
             this.threshold = threshold;
@@ -109,7 +109,7 @@ namespace CudaLearn.Tests
 
             // Compute the gradient analytically using Backward
             // Get any loss from the layer
-            float computedObjective = layer.Forward(bottom, top);
+            double computedObjective = layer.Forward(bottom, top);
 
             // Get additional loss from the objective
             computedObjective += GetObjectiveAndGradient(top, topId, topDataId);
@@ -141,7 +141,7 @@ namespace CudaLearn.Tests
                     // bottomData[blob_id][i] only for i == top_data_id.  For any other
                     // i != top_data_id, we know the derivative is 0 by definition, and simply
                     // check that that's true.
-                    float estimatedGradient = 0;
+                    double estimatedGradient = 0;
                     if (!elementwise || featId == topDataId)
                     {
                         //TODO Add a general random generator that layers should use, to ensure we always apply it when layers are non-deterministic.
@@ -149,7 +149,7 @@ namespace CudaLearn.Tests
                         // Do finite differencing.
                         // Compute loss with stepsize added to input.
                         currentBlob.Data[featId] += step;
-                        float positiveObjective = layer.Forward(bottom, top);
+                        double positiveObjective = layer.Forward(bottom, top);
                         positiveObjective += GetObjectiveAndGradient(top, topId, topDataId);
 
                         // Compute loss with stepsize subtracted from input.
@@ -157,22 +157,22 @@ namespace CudaLearn.Tests
 
                         //TODO Add a general random generator that layers should use, to ensure we always apply it when layers are non-deterministic.
 
-                        float negativeObjective = layer.Forward(bottom, top);
+                        double negativeObjective = layer.Forward(bottom, top);
                         negativeObjective += GetObjectiveAndGradient(top, topId, topDataId);
 
                         // Recover original input value.
                         currentBlob.Data[featId] += step;
-                        estimatedGradient = (positiveObjective - negativeObjective) / step / 2.0f;
+                        estimatedGradient = (positiveObjective - negativeObjective) / step / 2.0d;
                     }
 
-                    float computedGradient = computedGradients[featId];
-                    float feature = currentBlob.Data[featId];
+                    double computedGradient = computedGradients[featId];
+                    double feature = currentBlob.Data[featId];
                     if ( kink - kinkRange > Math.Abs(feature) || Math.Abs(feature) > kink + kinkRange )
                     {
                         // We check relative accuracy, but for too small values, we threshold
                         // the scale factor by 1
 
-                        float scale = Math.Max( Math.Max(Math.Abs(computedGradient), Math.Abs(estimatedGradient)), 1.0f);
+                        double scale = Math.Max( Math.Max(Math.Abs(computedGradient), Math.Abs(estimatedGradient)), 1.0d);
                         Assert.InRange(computedGradient - estimatedGradient, -threshold * scale, threshold * scale);
                     }
                 }
@@ -180,9 +180,9 @@ namespace CudaLearn.Tests
 
         }
 
-        private float GetObjectiveAndGradient(IList<Blob> top, int topId, int topDataId)
+        private double GetObjectiveAndGradient(IList<Blob> top, int topId, int topDataId)
         {
-            float loss = 0;
+            double loss = 0;
             if ( topId < 0 )
             {
                 // the loss will be half of the sum of squares of all outputs
@@ -195,7 +195,7 @@ namespace CudaLearn.Tests
 
                     topBlob.Data.CopyTo(topBlob.Diff);
                 }
-                loss /= 2.0f;
+                loss /= 2.0d;
             }
             else
             {
@@ -204,7 +204,7 @@ namespace CudaLearn.Tests
                     top[i].Diff.Clear();
 
                 loss = top[topId].Data[topDataId];
-                top[topId].Diff[topDataId] = 1.0f;
+                top[topId].Diff[topDataId] = 1.0d;
             }
             return loss;
         }

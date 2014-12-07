@@ -32,13 +32,13 @@ namespace CudaLearn
             : base(param)
         { }
 
-        protected override float ForwardCpu(IList<Blob> bottom, IList<Blob> top)
+        protected override double ForwardCpu(IList<Blob> bottom, IList<Blob> top)
         {
             var bottomData = bottom[0].Data;
             var topData = top[0].Data;
 
             bottomData.MapIndexed((i, v) => {
-                var exp2x = (float) Math.Exp(2 * v);
+                var exp2x =  Math.Exp(2 * v);
                 return (exp2x - 1) / (exp2x + 1);
             }, topData, Zeros.Include);
 

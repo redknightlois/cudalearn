@@ -11,17 +11,17 @@ namespace CudaLearn
 {
     public class GaussianFillerConfiguration : FillerConfiguration
     {
-        public GaussianFillerConfiguration() : this(0.0f, 1.0f) { }
+        public GaussianFillerConfiguration() : this(0.0d, 1.0d) { }
 
-        public GaussianFillerConfiguration(float mean, float stdDev)
+        public GaussianFillerConfiguration(double mean, double stdDev)
             : base(FillerType.Gaussian)
         {
             this.Mean = mean;
             this.Std = stdDev;
         }
 
-        public float Mean { get; set; }
-        public float Std { get; set; }
+        public double Mean { get; set; }
+        public double Std { get; set; }
 
         public bool IsSparse { get; set; }
     }
@@ -41,7 +41,7 @@ namespace CudaLearn
             var data = blob.Data;
 
             var distribution = new Normal(this.Parameters.Mean, this.Parameters.Std);
-            data.MapInplace(x => (float)distribution.Sample(), Zeros.Include);
+            data.MapInplace(x => distribution.Sample(), Zeros.Include);
             
             if ( this.Parameters.IsSparse )
             {
@@ -49,10 +49,10 @@ namespace CudaLearn
                 Guard.That(() => blob.Channels).Equals(1);
 
                 int numberOfInputs = blob.Height;
-                float nonZeroProbability = 1.0f / numberOfInputs;
+                double nonZeroProbability = 1.0d / numberOfInputs;
 
                 var bernoulli = new Bernoulli(nonZeroProbability);
-                var mask = Vector<float>.Build.SameAs(blob.Data, () => (float)bernoulli.Sample());
+                var mask = Vector<double>.Build.SameAs(blob.Data, () => bernoulli.Sample());
 
                 blob.Data.PointwiseMultiply(mask, result: blob.Data);
             }

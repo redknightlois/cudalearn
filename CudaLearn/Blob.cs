@@ -11,10 +11,10 @@ namespace CudaLearn
 {
     public class Blob
     {
-        private Vector<float> _data;
-        private Vector<float> _diff;
+        private Vector<double> _data;
+        private Vector<double> _diff;
 
-        public Vector<float> Data 
+        public Vector<double> Data 
         {
             get
             {
@@ -29,7 +29,7 @@ namespace CudaLearn
             }
         }
 
-        public Vector<float> Diff 
+        public Vector<double> Diff 
         { 
             get
             {
@@ -74,8 +74,8 @@ namespace CudaLearn
             if ( this.Count != 0 )
             {
                 // TODO We can do better here and do not reshape if the size is the same. 
-                this.Data = Vector<float>.Build.Dense(this.Count);
-                this.Diff = Vector<float>.Build.Dense(this.Count);
+                this.Data = Vector<double>.Build.Dense(this.Count);
+                this.Diff = Vector<double>.Build.Dense(this.Count);
             }
             else
             {
@@ -108,28 +108,28 @@ namespace CudaLearn
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float DataAt(int i)
+        public double DataAt(int i)
         {
             ValidateAccessParameters(i);
             return this.Data.At(i);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float DiffAt(int i)
+        public double DiffAt(int i)
         {
             ValidateAccessParameters(i);
             return this.Diff.At(i);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float DataAt(int n, int c, int h, int w)
+        public double DataAt(int n, int c, int h, int w)
         {
             ValidateAccessParameters(n, c, h, w);
             return this.Data.At(Offset(n, c, h, w));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float DiffAt(int n, int c, int h, int w )
+        public double DiffAt(int n, int c, int h, int w)
         {
             ValidateAccessParameters(n, c, h, w);
             return this.Diff.At(Offset(n, c, h, w));
@@ -182,7 +182,7 @@ namespace CudaLearn
             this.Diff = other.Diff;
         }
 
-        public void InitializeWith(float dataValue, float diffValue)
+        public void InitializeWith(double dataValue, double diffValue)
         {
             this.Data.Map(x => dataValue, this.Data, Zeros.Include);
             this.Diff.Map(x => diffValue, this.Diff, Zeros.Include);

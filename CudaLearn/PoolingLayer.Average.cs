@@ -73,7 +73,7 @@ namespace CudaLearn
         }
 
 
-        protected override float ForwardCpu(IList<Blob> bottom, IList<Blob> top)
+        protected override double ForwardCpu(IList<Blob> bottom, IList<Blob> top)
         {
             var bottomData = bottom[0].Data;
             var topData = top[0].Data;

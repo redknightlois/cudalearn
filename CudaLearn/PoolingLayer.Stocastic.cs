@@ -30,7 +30,7 @@ namespace CudaLearn
 
     public class StocasticPoolingLayer : PoolingLayer<StocasticPoolingLayerConfiguration>
     {
-        private Vector<float> randomIndexes;
+        private Vector<double> randomIndexes;
 
         public StocasticPoolingLayer(int kernelSize, int stride = 1, int padding = 0)
             : this(new StocasticPoolingLayerConfiguration(kernelSize, stride, padding))
@@ -61,9 +61,9 @@ namespace CudaLearn
             top[0].Reshape(bottom[0].Num, channels, Pooled.Height, Pooled.Width);
 
 
-            this.randomIndexes = Vector<float>.Build.SameAs(top[0].Data); 
+            this.randomIndexes = Vector<double>.Build.SameAs(top[0].Data); 
             var distribution = new ContinuousUniform(0, 1);
-            randomIndexes.MapInplace(x => (float)distribution.Sample(), Zeros.Include);                       
+            randomIndexes.MapInplace(x => distribution.Sample(), Zeros.Include);                       
         }
 
         private void CheckSizeParameters()
@@ -81,7 +81,7 @@ namespace CudaLearn
             Guard.That(() => this.Parameters.Padding.Depth).IsEqual(0);
         }
 
-        protected override float ForwardCpu(IList<Blob> bottom, IList<Blob> top)
+        protected override double ForwardCpu(IList<Blob> bottom, IList<Blob> top)
         {
             if (this.Phase == PhaseType.Train)
                 return ForwardTrainCpu(bottom, top);
@@ -89,7 +89,7 @@ namespace CudaLearn
                 return ForwardTestCpu(bottom, top);
         }
 
-        protected float ForwardTrainCpu(IList<Blob> bottom, IList<Blob> top)
+        protected double ForwardTrainCpu(IList<Blob> bottom, IList<Blob> top)
         {
             var bottomData = bottom[0].Data;
             var topData = top[0].Data;
@@ -119,12 +119,12 @@ namespace CudaLearn
                     int bottomOffset = (n * channels + c) * height * width;
 
                     // First pass: get sum
-                    float cumulativeSum = 0;
+                    double cumulativeSum = 0;
                     for (int h = hstart; h < hend; h++)
                         for (int w = wstart; w < wend; w++)
                             cumulativeSum += bottomData[bottomOffset + h * width + w];
 
-                    float threshold = this.randomIndexes[index] * cumulativeSum;
+                    double threshold = this.randomIndexes[index] * cumulativeSum;
 
                     // Second pass: get value, and set index.
                     for (int h = hstart; h < hend; ++h)
@@ -148,7 +148,7 @@ namespace CudaLearn
         }
 
 
-        protected float ForwardTestCpu(IList<Blob> bottom, IList<Blob> top)
+        protected double ForwardTestCpu(IList<Blob> bottom, IList<Blob> top)
         {
             var bottomData = bottom[0].Data;
             var topData = top[0].Data;
@@ -175,13 +175,13 @@ namespace CudaLearn
 
                 int bottomOffset = (n * channels + c) * height * width;
 
-                float cumulativeSum = float.Epsilon;
-                float cumulativeValues = 0;
+                double cumulativeSum = double.Epsilon;
+                double cumulativeValues = 0;
                 for (int h = hstart; h < hend; h++)
                 {
                     for (int w = wstart; w < wend; w++)
                     {
-                        float value = bottomData[bottomOffset + h * width + w];
+                        double value = bottomData[bottomOffset + h * width + w];
                         cumulativeSum += value;
                         cumulativeValues += value * value;
                     }
@@ -225,7 +225,7 @@ namespace CudaLearn
 
                 int topOffset = (n * channels + c) * Pooled.Height * Pooled.Width;
 
-                float gradient = 0;
+                double gradient = 0;
 
                 for (int ph = phstart; ph < phend; ++ph)
                 {

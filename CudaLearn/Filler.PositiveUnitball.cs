@@ -32,14 +32,14 @@ namespace CudaLearn
             var data = blob.Data;            
 
             var distribution = new ContinuousUniform(0, 1);
-            data.MapInplace(x => (float)distribution.Sample(), Zeros.Include);
+            data.MapInplace(x => distribution.Sample(), Zeros.Include);
 
             int dim = blob.Count / blob.Num;
             Guard.That(() => dim).IsPositive();
             
             for ( int i = 0; i < blob.Num; i++ )
             {
-                float sum = 0.0f;
+                double sum = 0.0d;
                 for (int j = 0; j < dim; j++)
                     sum += data[i * dim + j];
 

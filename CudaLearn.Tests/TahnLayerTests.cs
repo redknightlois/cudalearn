@@ -49,7 +49,7 @@ namespace CudaLearn.Tests
                     {
                         for ( int l = 0; l < bottom.Width; l++)
                         {
-                            var v = (float)(Math.Exp(2 * bottom.DataAt(i, j, k, l)) - 1) / (Math.Exp(2 * bottom.DataAt(i, j, k, l)) + 1);
+                            var v = (Math.Exp(2 * bottom.DataAt(i, j, k, l)) - 1) / (Math.Exp(2 * bottom.DataAt(i, j, k, l)) + 1);
                             Assert.True(MathHelpers.Equality(top.DataAt(i, j, k, l), v, 1e-4f));
                         }
                     }
@@ -62,7 +62,7 @@ namespace CudaLearn.Tests
         {
             var layer = new TanhLayer();
 
-            var checker = new GradientChecker(1e-2f, 1e-3f, 1701, 0.0f, 0.01f);
+            var checker = new GradientChecker(1e-2f, 1e-3f, 1701, 0.0d, 0.01f);
             checker.CheckEltwise(layer, bottom, top);
         }
     }

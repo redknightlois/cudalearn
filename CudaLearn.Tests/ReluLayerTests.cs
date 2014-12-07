@@ -42,8 +42,8 @@ namespace CudaLearn.Tests
             int count = bottom.Count;
             for (int i = 0; i < count; i++)
             {
-                Assert.True(top.DataAt(i) >= 0.0f);
-                Assert.True(top.DataAt(i) == 0.0f || top.DataAt(i) == bottom.DataAt(i));
+                Assert.True(top.DataAt(i) >= 0.0d);
+                Assert.True(top.DataAt(i) == 0.0d || top.DataAt(i) == bottom.DataAt(i));
             };
         }
 
@@ -52,7 +52,7 @@ namespace CudaLearn.Tests
         {
             var layer = new ReluLayer();
 
-            var checker = new GradientChecker(1e-2f, 1e-3f, 1701, 0.0f, 0.01f);
+            var checker = new GradientChecker(1e-2f, 1e-3f, 1701, 0.0d, 0.01f);
             checker.CheckEltwise(layer, bottom, top);
         }
 
@@ -66,7 +66,7 @@ namespace CudaLearn.Tests
             layer.Setup(bottom, top);
             layer.Forward(bottom, top);
 
-            float slope = layer.Parameters.NegativeSlope;
+            double slope = layer.Parameters.NegativeSlope;
 
             Assert.Equal(bottom.Count, top.Count);
             int count = bottom.Count;
@@ -78,8 +78,8 @@ namespace CudaLearn.Tests
                 }
                 else
                 {
-                    Assert.True(top.DataAt(i) >= 0.0f);
-                    Assert.True(top.DataAt(i) == 0.0f || top.DataAt(i) == bottom.DataAt(i));
+                    Assert.True(top.DataAt(i) >= 0.0d);
+                    Assert.True(top.DataAt(i) == 0.0d || top.DataAt(i) == bottom.DataAt(i));
                 }
             };
         }
@@ -94,7 +94,7 @@ namespace CudaLearn.Tests
             layer.Setup(bottom, top);
             layer.Forward(bottom, top);
 
-            float slope = layer.Parameters.NegativeSlope;
+            double slope = layer.Parameters.NegativeSlope;
 
             Assert.Equal(bottom.Count, top.Count);
             int count = bottom.Count;
@@ -106,8 +106,8 @@ namespace CudaLearn.Tests
                 }
                 else
                 {
-                    Assert.True(top.DataAt(i) >= 0.0f);
-                    Assert.True(top.DataAt(i) == 0.0f || top.DataAt(i) == bottom.DataAt(i));
+                    Assert.True(top.DataAt(i) >= 0.0d);
+                    Assert.True(top.DataAt(i) == 0.0d || top.DataAt(i) == bottom.DataAt(i));
                 }
             };
         }
@@ -118,7 +118,7 @@ namespace CudaLearn.Tests
             var config = new ReluLayerConfiguration(0.01f);
             var layer = new ReluLayer(config);
 
-            var checker = new GradientChecker(1e-2f, 1e-2f, 1701, 0.0f, 0.01f);
+            var checker = new GradientChecker(1e-2f, 1e-2f, 1701, 0.0d, 0.01f);
             checker.CheckEltwise(layer, bottom, top);
         }
     }

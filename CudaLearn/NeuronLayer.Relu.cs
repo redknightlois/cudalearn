@@ -16,17 +16,17 @@ namespace CudaLearn
     public class ReluLayerConfiguration : LayerConfiguration
     {
         public ReluLayerConfiguration()
-            : this(0.0f)
+            : this(0.0d)
         { }
 
-        public ReluLayerConfiguration(float negativeSlope) : base ( LayerType.Relu )
+        public ReluLayerConfiguration(double negativeSlope) : base ( LayerType.Relu )
         {
             Guard.That(() => negativeSlope).IsGreaterOrEqualThan(0);
 
             this.NegativeSlope = negativeSlope;
         }
 
-        public float NegativeSlope { get; private set; }
+        public double NegativeSlope { get; private set; }
     }
 
     /// <summary>
@@ -51,7 +51,7 @@ namespace CudaLearn
             : base(param)
         { }
 
-        protected override float ForwardCpu(IList<Blob> bottom, IList<Blob> top)
+        protected override double ForwardCpu(IList<Blob> bottom, IList<Blob> top)
         {
             var bottomData = bottom[0].Data;
             var topData = top[0].Data;
@@ -73,7 +73,7 @@ namespace CudaLearn
 
                 var slope = this.Parameters.NegativeSlope;
 
-                bottomData.MapIndexed((i, v) => topDiff[i] * ( v > 0.0f ? 1.0f : 0.0f ) + slope * (v <= 0 ? 1.0f : 0.0f), bottomDiff, Zeros.Include);
+                bottomData.MapIndexed((i, v) => topDiff[i] * ( v > 0.0d ? 1.0d : 0.0d ) + slope * (v <= 0 ? 1.0d : 0.0d), bottomDiff, Zeros.Include);
             }
         }
     }

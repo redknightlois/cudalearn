@@ -25,7 +25,7 @@ namespace CudaLearn
     /// </summary>
     public class EuclideanLossLayer : LossLayer<EuclideanLossLayerConfiguration>
     {
-        private Vector<float> difference;
+        private Vector<double> difference;
 
         public EuclideanLossLayer()
             : this(new EuclideanLossLayerConfiguration())
@@ -52,10 +52,10 @@ namespace CudaLearn
             Guard.That(() => bottom).IsTrue(x => x[0].Width == bottom[1].Width, "Width in both bottom blobs must be equal.");
         }
 
-        protected override float ForwardCpu(IList<Blob> bottom, IList<Blob> top)
+        protected override double ForwardCpu(IList<Blob> bottom, IList<Blob> top)
         {
             difference = bottom[0].Data - bottom[1].Data;
-            float loss = (float)(difference.L2Norm() / (bottom[0].Count / 2));
+            double loss = (difference.L2Norm() / (bottom[0].Count / 2));
 
             // If we are expecting a value we just set it up.
             if ( top.Count == 1 )
@@ -70,8 +70,8 @@ namespace CudaLearn
             {
                 if ( propagateDown[i] )
                 {
-                    float sign = (i == 0) ? 1 : -1;
-                    float alpha = sign / bottom[i].Num;
+                    double sign = (i == 0) ? 1 : -1;
+                    double alpha = sign / bottom[i].Num;
 
                     var bottomDiff = bottom[i].Diff;
                     difference.Map(v => alpha * v, bottomDiff, Zeros.Include);

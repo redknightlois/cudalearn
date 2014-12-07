@@ -10,17 +10,17 @@ namespace CudaLearn
 {
     public class UniformFillerConfiguration : FillerConfiguration
     {
-        public UniformFillerConfiguration() : this(0.0f, 1.0f) { }
+        public UniformFillerConfiguration() : this(0.0d, 1.0d) { }
 
-        public UniformFillerConfiguration(float min, float max)
+        public UniformFillerConfiguration(double min, double max)
             : base(FillerType.Uniform)
         {
             this.Min = min;
             this.Max = max;
         }
 
-        public float Min { get; set; }
-        public float Max { get; set; }
+        public double Min { get; set; }
+        public double Max { get; set; }
     }
 
     public class UniformFiller : Filler<UniformFillerConfiguration>
@@ -33,7 +33,7 @@ namespace CudaLearn
             : base(param)
         { }
 
-        public UniformFiller(float min, float max) : this ( new UniformFillerConfiguration( min, max ))
+        public UniformFiller(double min, double max) : this ( new UniformFillerConfiguration( min, max ))
         {}
 
         public override void Fill(Blob blob)
@@ -41,7 +41,7 @@ namespace CudaLearn
             var data = blob.Data;
 
             var distribution = new ContinuousUniform(this.Parameters.Min, this.Parameters.Max);
-            data.MapInplace(x => (float)distribution.Sample(), Zeros.Include);
+            data.MapInplace(x => distribution.Sample(), Zeros.Include);
         }
     }
 }

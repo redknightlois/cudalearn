@@ -57,7 +57,7 @@ namespace CudaLearn.Tests
                     {
                         for (int pw = 0; pw < width; pw++)
                         {
-                            float pooled = topData[top.Offset(n, c, ph, pw)];
+                            double pooled = topData[top.Offset(n, c, ph, pw)];
 
                             int hstart = ph * 2;
                             int hend = Math.Min(hstart + 3, bottom.Height);

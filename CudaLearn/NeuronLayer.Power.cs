@@ -10,20 +10,20 @@ namespace CudaLearn
 {
     public class PowerLayerConfiguration : LayerConfiguration
     {
-        public float Power { get; private set; }
-        public float Scale { get; private set; }
-        public float Shift { get; private set; }
+        public double Power { get; private set; }
+        public double Scale { get; private set; }
+        public double Shift { get; private set; }
 
-        public float DiffScale 
+        public double DiffScale 
         { 
             get { return Scale * Power; } 
         }
 
         public PowerLayerConfiguration()
-            : this(1.0f, 1.0f, 0.0f)
+            : this(1.0d, 1.0d, 0.0d)
         { }
 
-        public PowerLayerConfiguration(float power, float scale, float shift)
+        public PowerLayerConfiguration(double power, double scale, double shift)
             : base(LayerType.Power)
         {
             this.Power = power;
@@ -50,7 +50,7 @@ namespace CudaLearn
             : base(param)
         { }
 
-        protected override float ForwardCpu(IList<Blob> bottom, IList<Blob> top)
+        protected override double ForwardCpu(IList<Blob> bottom, IList<Blob> top)
         {
             var topData = top[0].Data;
 
@@ -61,16 +61,16 @@ namespace CudaLearn
             // Special case where we can ignore the input: scale or power is 0.
             if (this.Parameters.DiffScale == 0f)
             {
-                float value = (power == 0f) ? 1.0f : (float)Math.Pow(shift, power);
+                double value = (power == 0f) ? 1.0d : Math.Pow(shift, power);
                 topData.Map(v => value, topData, Zeros.Include);
 
                 return 0;
             }
 
-            // TODO Math.Pow with floats is numerically highly unstable. Consider change everything to doubles or build a more stable version.
+            // TODO Math.Pow with doubles is numerically highly unstable. Consider change everything to doubles or build a more stable version.
             var bottomData = bottom[0].Data;
             if ( power != 1 )
-                bottomData.Map(v => (float)Math.Pow(((double)v) * scale + shift, power), topData, Zeros.Include);
+                bottomData.Map(v => Math.Pow((v) * scale + shift, power), topData, Zeros.Include);
             else
                 bottomData.Map(v => v * scale + shift, topData, Zeros.Include);
 

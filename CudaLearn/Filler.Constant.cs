@@ -9,20 +9,20 @@ namespace CudaLearn
 {
     public class ConstantFillerConfiguration : FillerConfiguration
     {
-        public ConstantFillerConfiguration() : this(0.0f) { }
+        public ConstantFillerConfiguration() : this(0.0d) { }
 
-        public ConstantFillerConfiguration(float value)
+        public ConstantFillerConfiguration(double value)
             : base(FillerType.Constant)
         {
             this.Value = value;
         }
 
-        public float Value { get; set; }
+        public double Value { get; set; }
     }
 
     public class ConstantFiller : Filler<ConstantFillerConfiguration>
     {
-        public ConstantFiller(float c)
+        public ConstantFiller(double c)
             : this(new ConstantFillerConfiguration(c))
         { }
 

@@ -38,8 +38,8 @@ namespace CudaLearn.Tests
             {
                 return new[]
                 {    
-                    //new object[] { 0.37f, 0.83f, 0f }, // This case is numerically unstable with floats.
-                    //new object[] { 0.95f, 0.83f, 0f }, // This case is numerically unstable with floats.
+                    //new object[] { 0.37f, 0.83f, 0f }, // This case is numerically unstable with doubles.
+                    //new object[] { 0.95f, 0.83f, 0f }, // This case is numerically unstable with doubles.
                     new object[] { 1f, 0.83f, 0f },
                     new object[] { 2f, 0.83f, 0f },                         
                     new object[] { 2f, 0.34f, -2.4f },
@@ -54,35 +54,35 @@ namespace CudaLearn.Tests
         }
 
         [Theory, MemberData("Samples")]
-        public void PowerLayer_Forward(float power, float scale, float shift)
+        public void PowerLayer_Forward(double power, double scale, double shift)
         {
             var config = new PowerLayerConfiguration(power, scale, shift);
             var layer = new PowerLayer(config);
             layer.Setup(bottom, top);
             layer.Forward(bottom, top);
 
-            float minPrecision = 1e-5f;
+            double minPrecision = 1e-5f;
 
             // Now, check values
             int count = bottom.Data.Count;
             for (int i = 0; i < count; i++)
             {
-                var expectedValue = (float)Math.Pow(shift + scale * bottom.DataAt(i), power);
+                var expectedValue = Math.Pow(shift + scale * bottom.DataAt(i), power);
                 if (power == 0 || power == 1 || power == 2)
-                    Assert.False(float.IsNaN(top.DataAt(i)));
+                    Assert.False(double.IsNaN(top.DataAt(i)));
 
-                if (float.IsNaN(expectedValue))
-                    Assert.True(float.IsNaN(top.DataAt(i)));
+                if (double.IsNaN(expectedValue))
+                    Assert.True(double.IsNaN(top.DataAt(i)));
                 else
                 {
-                    float precision = Math.Max(Math.Abs(expectedValue * 1e-4f), minPrecision);
+                    double precision = Math.Max(Math.Abs(expectedValue * 1e-4f), minPrecision);
                     Assert.True(MathHelpers.Equality(expectedValue, top.DataAt(i), precision));
                 }
             }
         }
 
         [Theory, MemberData("Samples")]
-        public void PowerLayer_Backward(float power, float scale, float shift)
+        public void PowerLayer_Backward(double power, double scale, double shift)
         {
             var config = new PowerLayerConfiguration(power, scale, shift);
             var layer = new PowerLayer(config);
@@ -99,7 +99,7 @@ namespace CudaLearn.Tests
                 }
             }
 
-            var checker = new GradientChecker(1e-2f, 1e-2f, 1701, 0.0f, 0.01f);
+            var checker = new GradientChecker(1e-2f, 1e-2f, 1701, 0.0d, 0.01f);
             checker.CheckEltwise(layer, bottom, top);
         }
     }

@@ -50,7 +50,7 @@ namespace CudaLearn
                 top[1].Reshape(bottom[0].Num, bottom[0].Channels, bottom[0].Height, bottom[0].Width);
         }
 
-        protected override float ForwardCpu(IList<Blob> bottom, IList<Blob> top)
+        protected override double ForwardCpu(IList<Blob> bottom, IList<Blob> top)
         {
             // The forward pass computes the softmax prob values.
             softmaxLayer.Forward(bottom, new[] { probability });
@@ -63,23 +63,23 @@ namespace CudaLearn
 
             double loss = 0;
             for (int i = 0; i < num; i++ )
-                loss -= Math.Log(Math.Max(probabilityData[i * dim + (int)labels[i]], float.Epsilon));
+                loss -= Math.Log(Math.Max(probabilityData[i * dim + (int)labels[i]], double.Epsilon));
 
             loss = loss / num;
 
             if (top.Count >= 1)
-                top[0].Data[0] = (float)loss;
+                top[0].Data[0] = loss;
 
             if (top.Count == 2)
                 top[1].ShareData(probability);
 
-            return (float)loss;
+            return loss;
         }
 
         protected override void BackwardCpu(IList<Blob> top, IList<bool> propagateDown, IList<Blob> bottom)
         {
             if (propagateDown[1])
-                throw new NotSupportedException("SoftmaxLossLayer cannot backpropagate to label inputs.");
+                throw new NotSupportedException("SoftmaxLossLayer cannot back-propagate to label inputs.");
 
             if (propagateDown[0])
             {
@@ -93,7 +93,7 @@ namespace CudaLearn
                     bottomDiff[i * dim + (int)labels[i]] -= 1;
 
                 // Scale down gradient
-                float scale = 1f / num;
+                double scale = 1f / num;
                 bottomDiff.Map(v => v * scale, Zeros.Include);
             }
         }

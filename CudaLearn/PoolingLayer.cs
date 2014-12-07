@@ -40,8 +40,8 @@ namespace CudaLearn
             int height = bottom[0].Height;
             int width = bottom[0].Width;
 
-            int pooledHeight = (int)(Math.Ceiling((float)(height + 2 * this.Parameters.Padding.Height - this.Parameters.Kernel.Height) / this.Parameters.Stride.Height) + 1);
-            int pooledWidth = (int)(Math.Ceiling((float)(width + 2 * this.Parameters.Padding.Width - this.Parameters.Kernel.Width) / this.Parameters.Stride.Width) + 1);
+            int pooledHeight = (int)(Math.Ceiling((double)(height + 2 * this.Parameters.Padding.Height - this.Parameters.Kernel.Height) / this.Parameters.Stride.Height) + 1);
+            int pooledWidth = (int)(Math.Ceiling((double)(width + 2 * this.Parameters.Padding.Width - this.Parameters.Kernel.Width) / this.Parameters.Stride.Width) + 1);
 
             Debug.Assert((pooledHeight - 1) * this.Parameters.Stride.Height <= height + this.Parameters.Padding.Height);
             Debug.Assert((pooledWidth - 1) * this.Parameters.Stride.Width <= width + this.Parameters.Padding.Width);

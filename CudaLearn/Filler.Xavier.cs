@@ -32,10 +32,10 @@ namespace CudaLearn
             var data = blob.Data;
 
             int fanIn = blob.Count / blob.Num;
-            float scale = (float) Math.Sqrt(3 / fanIn);
+            double scale =  Math.Sqrt(3 / fanIn);
 
             var distribution = new ContinuousUniform(-scale, scale);
-            data.MapInplace(x => (float)distribution.Sample(), Zeros.Include);
+            data.MapInplace(x => distribution.Sample(), Zeros.Include);
         }
     }
 }

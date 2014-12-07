@@ -1,6 +1,6 @@
 ﻿using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.LinearAlgebra.Single;
+using MathNet.Numerics.LinearAlgebra.Double;
 using MathNet.Numerics.Providers.LinearAlgebra;
 using Seterlund.CodeGuard;
 using System;
@@ -97,7 +97,7 @@ namespace CudaLearn
             }
         }
 
-        protected override float ForwardCpu(IList<Blob> bottom, IList<Blob> top)
+        protected override double ForwardCpu(IList<Blob> bottom, IList<Blob> top)
         {
             var provider = Control.LinearAlgebraProvider;
 

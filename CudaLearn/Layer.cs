@@ -96,7 +96,7 @@ namespace CudaLearn
             CheckBlobCount(bottom, top);
         }
 
-        public float Forward(Blob bottom, Blob top)
+        public double Forward(Blob bottom, Blob top)
         {
             Guard.That(() => bottom).IsNotNull();
             Guard.That(() => top).IsNotNull();
@@ -107,7 +107,7 @@ namespace CudaLearn
             return this.Forward(bottomList, topList);
         }
 
-        public float Forward(IList<Blob> bottom, IList<Blob> top)
+        public double Forward(IList<Blob> bottom, IList<Blob> top)
         {
             // TODO Fail if not initialized.
 
@@ -201,9 +201,9 @@ namespace CudaLearn
             }
         }
 
-        protected abstract float ForwardCpu(IList<Blob> bottom, IList<Blob> top);
+        protected abstract double ForwardCpu(IList<Blob> bottom, IList<Blob> top);
 
-        protected virtual float ForwardGpu(IList<Blob> bottom, IList<Blob> top)
+        protected virtual double ForwardGpu(IList<Blob> bottom, IList<Blob> top)
         {
             throw new NotSupportedException();
         }

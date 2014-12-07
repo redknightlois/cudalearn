@@ -25,7 +25,7 @@ namespace CudaLearn
     public class BnllLayer : NeuronLayer<BnllLayerConfiguration>
     {
 
-        private const float Threshold = 50.0f;
+        private const double Threshold = 50.0d;
 
         public BnllLayer()
             : this(new BnllLayerConfiguration())
@@ -35,12 +35,12 @@ namespace CudaLearn
             : base(param)
         { }
 
-        protected override float ForwardCpu(IList<Blob> bottom, IList<Blob> top)
+        protected override double ForwardCpu(IList<Blob> bottom, IList<Blob> top)
         {
             var bottomData = bottom[0].Data;
             var topData = top[0].Data;
 
-            bottomData.MapIndexed((i, v) => (v > 0) ? v + (float)Math.Log(1.0f + Math.Exp(-v)) : (float)Math.Log(1.0f + Math.Exp(v)), topData, Zeros.Include);
+            bottomData.MapIndexed((i, v) => (v > 0) ? v + Math.Log(1.0d + Math.Exp(-v)) : Math.Log(1.0d + Math.Exp(v)), topData, Zeros.Include);
 
             return 0;
         }
@@ -53,8 +53,8 @@ namespace CudaLearn
 
             bottomData.MapIndexed((i, v) => 
                 {
-                    var expVal = (float) Math.Exp(Math.Min(v, Threshold));
-                    return topDiff[i] * expVal / (expVal + 1.0f);
+                    var expVal =  Math.Exp(Math.Min(v, Threshold));
+                    return topDiff[i] * expVal / (expVal + 1.0d);
                 }, bottomDiff, Zeros.Include);
         }
     }

@@ -48,7 +48,7 @@ namespace CudaLearn.Tests
         {
             var bottom = new Blob(1, 1, 3, 3);
 
-            var filler = new ConstantFiller(2.0f);
+            var filler = new ConstantFiller(2.0d);
             filler.Fill(bottom);
 
             var layer = new AveragePoolingLayer(3, 1, 1);
@@ -62,15 +62,15 @@ namespace CudaLearn.Tests
             layer.Forward(bottom, top);
 
             var topData = top.Data;
-            AssertInRange(8.0f / 9, topData[0]);
-            AssertInRange(4.0f / 3, topData[1]);
-            AssertInRange(8.0f / 9, topData[2]);
-            AssertInRange(4.0f / 3, topData[3]);
-            AssertInRange(2.0f, topData[4]);
-            AssertInRange(4.0f / 3, topData[5]);
-            AssertInRange(8.0f / 9, topData[6]);
-            AssertInRange(4.0f / 3, topData[7]);
-            AssertInRange(8.0f / 9, topData[8]);
+            AssertInRange(8.0d / 9, topData[0]);
+            AssertInRange(4.0d / 3, topData[1]);
+            AssertInRange(8.0d / 9, topData[2]);
+            AssertInRange(4.0d / 3, topData[3]);
+            AssertInRange(2.0d, topData[4]);
+            AssertInRange(4.0d / 3, topData[5]);
+            AssertInRange(8.0d / 9, topData[6]);
+            AssertInRange(4.0d / 3, topData[7]);
+            AssertInRange(8.0d / 9, topData[8]);
         }
 
         public static IEnumerable<object[]> Configurations
@@ -94,7 +94,7 @@ namespace CudaLearn.Tests
         [Theory, MemberData("Configurations")]
         public void AveragePoolingLayer_BackwardGradient( Size kernel, Size stride, Size padding )
         {
-            var filler = new ConstantFiller(2.0f);
+            var filler = new ConstantFiller(2.0d);
             filler.Fill(bottom);
 
             var checker = new GradientChecker(1e-2f, 1e-2f);
@@ -104,9 +104,9 @@ namespace CudaLearn.Tests
         }
         
 
-        protected void AssertInRange(float expected, float value, float epsilon = 1e-5f)
+        protected void AssertInRange(double expected, double value, double epsilon = 1e-5f)
         {
-            float v = expected - value;
+            double v = expected - value;
             Assert.InRange(v, -epsilon, +epsilon);
         }
     }

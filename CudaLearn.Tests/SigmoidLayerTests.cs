@@ -42,11 +42,11 @@ namespace CudaLearn.Tests
             int count = bottom.Count;
             for (int i = 0; i < count; i++)
             {
-                Assert.True(MathHelpers.Equality(top.DataAt(i), 1.0f / (1.0f + (float)Math.Exp(-bottom.DataAt(i)))));
+                Assert.True(MathHelpers.Equality(top.DataAt(i), 1.0d / (1.0d + Math.Exp(-bottom.DataAt(i)))));
 
                 // check that we squashed the value between 0 and 1
-                Assert.True(top.DataAt(i) >= 0.0f);
-                Assert.True(top.DataAt(i) <= 1.0f);
+                Assert.True(top.DataAt(i) >= 0.0d);
+                Assert.True(top.DataAt(i) <= 1.0d);
             };
         }
 
@@ -55,7 +55,7 @@ namespace CudaLearn.Tests
         {
             var layer = new SigmoidLayer();
 
-            var checker = new GradientChecker(1e-2f, 1e-3f, 1701, 0.0f, 0.01f);
+            var checker = new GradientChecker(1e-2f, 1e-3f, 1701, 0.0d, 0.01f);
             checker.CheckEltwise(layer, bottom, top);
         }
     }

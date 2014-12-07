@@ -12,10 +12,10 @@ namespace CudaLearn
     public class DropoutLayerConfiguration : LayerConfiguration
     {
         public DropoutLayerConfiguration()
-            : this(0.0f)
+            : this(0.0d)
         { }
 
-        public DropoutLayerConfiguration(float ratio)
+        public DropoutLayerConfiguration(double ratio)
             : base(LayerType.Dropout)
         {
             Guard.That(() => ratio).IsGreaterOrEqualThan(0);
@@ -24,7 +24,7 @@ namespace CudaLearn
             this.Ratio = ratio;
         }
 
-        public float Ratio { get; private set; }
+        public double Ratio { get; private set; }
     }
 
     /// <summary>
@@ -40,7 +40,7 @@ namespace CudaLearn
     /// </summary>
     public class DropoutLayer : NeuronLayer<DropoutLayerConfiguration>
     {
-        private Vector<float> mask;
+        private Vector<double> mask;
 
         public DropoutLayer()
             : this(new DropoutLayerConfiguration())
@@ -50,7 +50,7 @@ namespace CudaLearn
             : base(param)
         { }
 
-        protected override float ForwardCpu(IList<Blob> bottom, IList<Blob> top)
+        protected override double ForwardCpu(IList<Blob> bottom, IList<Blob> top)
         {
             var bottomData = bottom[0].Data;
             var topData = top[0].Data;
@@ -61,7 +61,7 @@ namespace CudaLearn
                 var scale = 1f / (1f - ratio);
 
                 var bernoulli = new Bernoulli(1 - ratio);
-                mask = Vector<float>.Build.SameAs(bottomData, () => scale * (float)bernoulli.Sample());
+                mask = Vector<double>.Build.SameAs(bottomData, () => scale * bernoulli.Sample());
 
                 bottomData.PointwiseMultiply(mask, result: topData);
             }

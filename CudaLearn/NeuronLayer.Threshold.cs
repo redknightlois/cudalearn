@@ -11,16 +11,16 @@ namespace CudaLearn
     public class ThresholdLayerConfiguration : LayerConfiguration
     {
         public ThresholdLayerConfiguration()
-            : this(0.0f)
+            : this(0.0d)
         { }
 
-        public ThresholdLayerConfiguration(float threshold)
+        public ThresholdLayerConfiguration(double threshold)
             : base(LayerType.Threshold)
         {
             this.Threshold = threshold;
         }
 
-        public float Threshold { get; set; }
+        public double Threshold { get; set; }
     }
 
     /// <summary>
@@ -44,7 +44,7 @@ namespace CudaLearn
             : base(param)
         { }
 
-        protected override float ForwardCpu(IList<Blob> bottom, IList<Blob> top)
+        protected override double ForwardCpu(IList<Blob> bottom, IList<Blob> top)
         {
             var bottomData = bottom[0].Data;
             var topData = top[0].Data;
@@ -52,7 +52,7 @@ namespace CudaLearn
             var threshold = this.Parameters.Threshold;
 
             int count = bottom[0].Count;
-            bottomData.MapIndexed((i, v) => (v > threshold) ? 1.0f : 0.0f, topData, Zeros.Include);
+            bottomData.MapIndexed((i, v) => (v > threshold) ? 1.0d : 0.0d, topData, Zeros.Include);
 
             return 0;
         }

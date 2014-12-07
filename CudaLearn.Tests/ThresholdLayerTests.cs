@@ -41,14 +41,14 @@ namespace CudaLearn.Tests
             int count = bottom.Count;
             for (int i = 0; i < count; i++)
             {
-                Assert.True(top.DataAt(i) >= 0.0f);
-                Assert.True(top.DataAt(i) <= 1.0f);
+                Assert.True(top.DataAt(i) >= 0.0d);
+                Assert.True(top.DataAt(i) <= 1.0d);
 
-                if (top.DataAt(i) == 0.0f)
+                if (top.DataAt(i) == 0.0d)
                 {
                     Assert.True(bottom.DataAt(i) <= layer.Parameters.Threshold);
                 }
-                else if (top.DataAt(i) == 1.0f)
+                else if (top.DataAt(i) == 1.0d)
                 {
                     Assert.True(bottom.DataAt(i) > layer.Parameters.Threshold);
                 }
@@ -68,14 +68,14 @@ namespace CudaLearn.Tests
             int count = bottom.Count;
             for (int i = 0; i < count; i++)
             {
-                Assert.True(top.DataAt(i) >= 0.0f);
-                Assert.True(top.DataAt(i) <= 1.0f);
+                Assert.True(top.DataAt(i) >= 0.0d);
+                Assert.True(top.DataAt(i) <= 1.0d);
 
-                if (top.DataAt(i) == 0.0f)
+                if (top.DataAt(i) == 0.0d)
                 {
                     Assert.True(bottom.DataAt(i) <= layer.Parameters.Threshold);
                 }
-                else if (top.DataAt(i) == 1.0f)
+                else if (top.DataAt(i) == 1.0d)
                 {
                     Assert.True(bottom.DataAt(i) > layer.Parameters.Threshold);
                 }

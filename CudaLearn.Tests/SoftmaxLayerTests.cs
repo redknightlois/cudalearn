@@ -45,7 +45,7 @@ namespace CudaLearn.Tests
             int channels = bottom.Channels;
             for (int i = 0; i < num; i++ )
             {
-                float sum = 0;
+                double sum = 0;
                 for (int j = 0; j < channels; j++)
                     sum += top.DataAt(i, j, 0, 0);
 
@@ -55,9 +55,9 @@ namespace CudaLearn.Tests
 
             for ( int i = 0; i < num; i++ )
             {
-                float scale = 0;
+                double scale = 0;
                 for (int j = 0; j < channels; j++)
-                    scale += (float)Math.Exp(bottom.DataAt(i, j, 0, 0));
+                    scale += Math.Exp(bottom.DataAt(i, j, 0, 0));
 
                 for (int j = 0; j < channels; j++)
                 {

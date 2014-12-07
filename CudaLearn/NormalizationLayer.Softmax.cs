@@ -26,7 +26,7 @@ namespace CudaLearn
     public class SoftmaxLayer : Layer<SoftmaxLayerConfiguration>
     {
         private Vector<double> cache;
-        private Vector<float> scaleVector;
+        private Vector<double> scaleVector;
 
         public SoftmaxLayer()
             : this(new SoftmaxLayerConfiguration())
@@ -45,10 +45,10 @@ namespace CudaLearn
             topBlob.ReshapeAs(bottomBlob);
 
             this.cache = Vector<double>.Build.Dense(bottom[0].Count / bottom[0].Num);
-            this.scaleVector = Vector<float>.Build.Dense(bottomBlob.Num);
+            this.scaleVector = Vector<double>.Build.Dense(bottomBlob.Num);
         }
 
-        protected override float ForwardCpu(IList<Blob> bottom, IList<Blob> top)
+        protected override double ForwardCpu(IList<Blob> bottom, IList<Blob> top)
         {
             var bottomData = bottom[0].Data;
             var topData = top[0].Data;
@@ -61,7 +61,7 @@ namespace CudaLearn
             {
                 int offset = n * dim;
 
-                float scale = float.NegativeInfinity;
+                double scale = double.NegativeInfinity;
                 for ( int i = 0; i < dim; i++ )
                 {
                     if (bottomData[offset + i] > scale)
@@ -71,7 +71,7 @@ namespace CudaLearn
                 // Store the scale value to use when performing the backwards step.
                 this.scaleVector[n] = scale;
 
-                double z = 0.0f;
+                double z = 0.0d;
                 for ( int i = 0; i < dim; i++ )
                 {
                     double value = Math.Exp(bottomData[offset + i] - scale);                    
@@ -82,7 +82,7 @@ namespace CudaLearn
                 }
                     
                 for ( int i = 0; i < dim; i++)
-                    topData[offset + i] = (float)(cache[i] / z);
+                    topData[offset + i] = (cache[i] / z);
             }
 
             return 0;
@@ -104,8 +104,8 @@ namespace CudaLearn
             {
                 int offset = n * dim;
 
-                // REMARK: Numerically inestable dot implementation.
-                float scale = 0;
+                // REMARK: Numerically unstable dot implementation.
+                double scale = 0;
                 for (int i = 0; i < dim; i++)
                     scale += topDiff[offset + i] * topData[offset + i];
 
