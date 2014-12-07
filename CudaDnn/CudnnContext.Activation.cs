@@ -18,7 +18,9 @@ namespace CudaDnn
             Contract.Requires(destTensor != null);
             Contract.Requires(destData != null);
 
+            ThrowIfNotInitialized();
             CheckIfCompatible(CudnnType.Float, srcTensor, destTensor);
+            
 
             Invoke(() => CudnnNativeMethods.cudnnActivationForward(handle, mode, srcTensor.Handle, srcData.DevicePointer, destTensor.Handle, destData.DevicePointer));
         }
@@ -30,6 +32,7 @@ namespace CudaDnn
             Contract.Requires(destTensor != null);
             Contract.Requires(destData != null);
 
+            ThrowIfNotInitialized();
             CheckIfCompatible(CudnnType.Double, srcTensor, destTensor);
 
             Invoke(() => CudnnNativeMethods.cudnnActivationForward(handle, mode, srcTensor.Handle, srcData.DevicePointer, destTensor.Handle, destData.DevicePointer));
@@ -47,6 +50,7 @@ namespace CudaDnn
             Contract.Requires(destDiffTensor != null);
             Contract.Requires(destDiffData != null);
 
+            ThrowIfNotInitialized();
             CheckIfCompatible(CudnnType.Float, srcTensor, srcDiffTensor, destTensor, destDiffTensor);
 
             Invoke(() => CudnnNativeMethods.cudnnActivationBackward(handle, mode,
@@ -66,6 +70,7 @@ namespace CudaDnn
             Contract.Requires(destDiffTensor != null);
             Contract.Requires(destDiffData != null);
 
+            ThrowIfNotInitialized();
             CheckIfCompatible(CudnnType.Double, srcTensor, srcDiffTensor, destTensor, destDiffTensor);
 
             Invoke(() => CudnnNativeMethods.cudnnActivationBackward(handle, mode,
@@ -80,6 +85,7 @@ namespace CudaDnn
             Contract.Requires(destTensor != null);
             Contract.Requires(destData != null);
 
+            ThrowIfNotInitialized();
             CheckIfCompatible(CudnnType.Float, srcTensor, destTensor);
 
             using (var srcDataGpu = new CudaDeviceVariable<float>(srcData.Length))
@@ -100,6 +106,7 @@ namespace CudaDnn
             Contract.Requires(destTensor != null);
             Contract.Requires(destData != null);
 
+            ThrowIfNotInitialized();
             CheckIfCompatible(CudnnType.Double, srcTensor, destTensor);
 
             using (var srcDataGpu = new CudaDeviceVariable<double>(srcData.Length))
@@ -125,6 +132,7 @@ namespace CudaDnn
             Contract.Requires(destDiffTensor != null);
             Contract.Requires(destDiffData != null);
 
+            ThrowIfNotInitialized();
             CheckIfCompatible(CudnnType.Float, srcTensor, srcDiffTensor, destTensor, destDiffTensor);
 
             using (var srcDataGpu = new CudaDeviceVariable<float>(srcData.Length))
@@ -155,6 +163,7 @@ namespace CudaDnn
             Contract.Requires(destDiffTensor != null);
             Contract.Requires(destDiffData != null);
 
+            ThrowIfNotInitialized();
             CheckIfCompatible(CudnnType.Double, srcTensor, srcDiffTensor, destTensor, destDiffTensor);
 
             using (var srcDataGpu = new CudaDeviceVariable<double>(srcData.Length))

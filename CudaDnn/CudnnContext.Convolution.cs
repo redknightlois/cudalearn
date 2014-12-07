@@ -21,6 +21,7 @@ namespace CudaDnn
             Contract.Requires(destTensor != null);
             Contract.Requires(destData != null);
 
+            ThrowIfNotInitialized();
             CheckIfCompatible(CudnnType.Float, srcTensor, destTensor, filter);
 
             Invoke(() => CudnnNativeMethods.cudnnConvolutionForward(handle, srcTensor.Handle, srcData.DevicePointer, filter.Handle, filterData.DevicePointer, convolution.Handle, destTensor.Handle, destData.DevicePointer, accumulate));
@@ -36,6 +37,7 @@ namespace CudaDnn
             Contract.Requires(destTensor != null);
             Contract.Requires(destData != null);
 
+            ThrowIfNotInitialized();
             CheckIfCompatible(CudnnType.Double, srcTensor, destTensor, filter);
 
             Invoke(() => CudnnNativeMethods.cudnnConvolutionForward(handle, srcTensor.Handle, srcData.DevicePointer, filter.Handle, filterData.DevicePointer, convolution.Handle, destTensor.Handle, destData.DevicePointer, accumulate));
@@ -48,6 +50,7 @@ namespace CudaDnn
             Contract.Requires(destTensor != null);
             Contract.Requires(destData != null);
 
+            ThrowIfNotInitialized();
             CheckIfCompatible(CudnnType.Float, srcTensor, destTensor);
 
             Invoke(() => CudnnNativeMethods.cudnnConvolutionBackwardBias(handle, srcTensor.Handle, srcData.DevicePointer, destTensor.Handle, destData.DevicePointer, accumulate));            
@@ -60,6 +63,7 @@ namespace CudaDnn
             Contract.Requires(destTensor != null);
             Contract.Requires(destData != null);
 
+            ThrowIfNotInitialized();
             CheckIfCompatible(CudnnType.Double, srcTensor, destTensor);
 
             Invoke(() => CudnnNativeMethods.cudnnConvolutionBackwardBias(handle, srcTensor.Handle, srcData.DevicePointer, destTensor.Handle, destData.DevicePointer, accumulate));
@@ -75,6 +79,7 @@ namespace CudaDnn
             Contract.Requires(gradient != null);
             Contract.Requires(gradientData != null);
 
+            ThrowIfNotInitialized();
             CheckIfCompatible(CudnnType.Float, srcTensor, diffTensor, gradient);
 
             Invoke(() => CudnnNativeMethods.cudnnConvolutionBackwardFilter(handle, srcTensor.Handle, srcData.DevicePointer, diffTensor.Handle, diffData.DevicePointer, convolution.Handle, gradient.Handle, gradientData.DevicePointer, accumulate));
@@ -90,6 +95,7 @@ namespace CudaDnn
             Contract.Requires(gradient != null);
             Contract.Requires(gradientData != null);
 
+            ThrowIfNotInitialized();
             CheckIfCompatible(CudnnType.Double, srcTensor, diffTensor, gradient);
 
             Invoke(() => CudnnNativeMethods.cudnnConvolutionBackwardFilter(handle, srcTensor.Handle, srcData.DevicePointer, diffTensor.Handle, diffData.DevicePointer, convolution.Handle, gradient.Handle, gradientData.DevicePointer, accumulate));
@@ -105,6 +111,7 @@ namespace CudaDnn
             Contract.Requires(gradient != null);
             Contract.Requires(gradientData != null);
 
+            ThrowIfNotInitialized();
             CheckIfCompatible(CudnnType.Float, filter, diffTensor, gradient);
 
             Invoke(() => CudnnNativeMethods.cudnnConvolutionBackwardData(handle, filter.Handle, filterData.DevicePointer, diffTensor.Handle, diffData.DevicePointer, convolution.Handle, gradient.Handle, gradientData.DevicePointer, accumulate));
@@ -120,6 +127,7 @@ namespace CudaDnn
             Contract.Requires(gradient != null);
             Contract.Requires(gradientData != null);
 
+            ThrowIfNotInitialized();
             CheckIfCompatible(CudnnType.Double, filter, diffTensor, gradient);
 
             Invoke(() => CudnnNativeMethods.cudnnConvolutionBackwardData(handle, filter.Handle, filterData.DevicePointer, diffTensor.Handle, diffData.DevicePointer, convolution.Handle, gradient.Handle, gradientData.DevicePointer, accumulate));
@@ -139,6 +147,7 @@ namespace CudaDnn
             Contract.Requires(destTensor != null);
             Contract.Requires(destData != null);
 
+            ThrowIfNotInitialized();
             CheckIfCompatible(CudnnType.Float, srcTensor, destTensor, filter);
 
             using (var srcDataGpu = new CudaDeviceVariable<float>(srcData.Length))
@@ -163,6 +172,7 @@ namespace CudaDnn
             Contract.Requires(destTensor != null);
             Contract.Requires(destData != null);
 
+            ThrowIfNotInitialized();
             CheckIfCompatible(CudnnType.Double, srcTensor, destTensor, filter);
 
             using (var srcDataGpu = new CudaDeviceVariable<double>(srcData.Length))
@@ -184,6 +194,7 @@ namespace CudaDnn
             Contract.Requires(destTensor != null);
             Contract.Requires(destData != null);
 
+            ThrowIfNotInitialized();
             CheckIfCompatible(CudnnType.Float, srcTensor, destTensor);
 
             using (var srcDataGpu = new CudaDeviceVariable<float>(srcData.Length))
@@ -203,6 +214,7 @@ namespace CudaDnn
             Contract.Requires(destTensor != null);
             Contract.Requires(destData != null);
 
+            ThrowIfNotInitialized();
             CheckIfCompatible(CudnnType.Double, srcTensor, destTensor);
 
             using (var srcDataGpu = new CudaDeviceVariable<double>(srcData.Length))
@@ -225,6 +237,7 @@ namespace CudaDnn
             Contract.Requires(gradient != null);
             Contract.Requires(gradientData != null);
 
+            ThrowIfNotInitialized();
             CheckIfCompatible(CudnnType.Float, srcTensor, diffTensor, gradient);
 
             using (var srcDataGpu = new CudaDeviceVariable<float>(srcData.Length))
@@ -249,6 +262,7 @@ namespace CudaDnn
             Contract.Requires(gradient != null);
             Contract.Requires(gradientData != null);
 
+            ThrowIfNotInitialized();
             CheckIfCompatible(CudnnType.Double, srcTensor, diffTensor, gradient);
 
             using (var srcDataGpu = new CudaDeviceVariable<double>(srcData.Length))
@@ -273,6 +287,7 @@ namespace CudaDnn
             Contract.Requires(gradient != null);
             Contract.Requires(gradientData != null);
 
+            ThrowIfNotInitialized();
             CheckIfCompatible(CudnnType.Float, filter, diffTensor, gradient);
 
             using (var filterDataGpu = new CudaDeviceVariable<float>(filterData.Length))
@@ -297,6 +312,7 @@ namespace CudaDnn
             Contract.Requires(gradient != null);
             Contract.Requires(gradientData != null);
 
+            ThrowIfNotInitialized();
             CheckIfCompatible(CudnnType.Double, filter, diffTensor, gradient);
 
             using (var filterDataGpu = new CudaDeviceVariable<double>(filterData.Length))

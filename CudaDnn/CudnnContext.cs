@@ -15,6 +15,9 @@ namespace CudaDnn
         #region Lifecycle 
 
         private CudnnHandle handle;
+        private readonly CudaStream stream;
+
+        internal CudnnHandle Handle { get { return handle; } }
 
         static CudnnContext ()
         {
@@ -22,7 +25,7 @@ namespace CudaDnn
             DefaultTensorFormat = CudnnTensorFormat.MajorRow;
         }
 
-        private CudnnContext( CudnnHandle handle )
+        private CudnnContext( CudnnHandle handle, CudaStream stream )
         {
             if (handle.Pointer == IntPtr.Zero)
                 throw new ArgumentException("handle");
@@ -30,15 +33,20 @@ namespace CudaDnn
             Contract.EndContractBlock();
 
             this.handle = handle;
+            this.stream = stream;
         }
 
-        public static CudnnContext Create()
+        public static CudnnContext Create( CudaStream stream = null )
         {         
             CudnnHandle handle = default(CudnnHandle);            
             Invoke(() => CudnnNativeMethods.cudnnCreate(out handle));
             Contract.Assume(handle.Pointer != IntPtr.Zero);
 
-            return new CudnnContext(handle);
+            if (stream != null)
+            {
+                Invoke(() => CudnnNativeMethods.cudnnSetStream(handle, stream.Stream));
+            }
+            return new CudnnContext(handle, stream);
         }
 
         ~CudnnContext()
@@ -211,7 +219,7 @@ namespace CudaDnn
                 if (param.Type != type)
                     throw new ArgumentException(string.Format("One of the descriptors with type {0} is not CudnnType.{1}", param.GetType().Name, type.ToString()));
             }
-        }
+        }        
 
     }
 
