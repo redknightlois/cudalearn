@@ -67,7 +67,7 @@ namespace CudaLearn
                 return 0;
             }
 
-            // TODO Math.Pow with floats is numerically highly unestable. Consider change everything to doubles or build a more stable version.
+            // TODO Math.Pow with floats is numerically highly unstable. Consider change everything to doubles or build a more stable version.
             var bottomData = bottom[0].Data;
             if ( power != 1 )
                 bottomData.Map(v => (float)Math.Pow(((double)v) * scale + shift, power), topData, Zeros.Include);

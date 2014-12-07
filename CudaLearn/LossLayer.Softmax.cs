@@ -18,7 +18,7 @@ namespace CudaLearn
     ///  SoftmaxLossLayer
     ///     Implements softmax and computes the loss.
     ///     
-    ///     It is preferred over separate softmax + multinomiallogisticloss
+    ///     It is preferred over separate softmax + multinomial logistic loss
     ///     layers due to more numerically stable gradients.
     ///     
     ///     In test, this layer could be replaced by simple softmax layer.

@@ -40,7 +40,7 @@ namespace CudaLearn
 
     public abstract class Layer
     {
-        // We assume we always have gpu.
+        // We assume we always have GPU.
         private bool forwardGpuSupported = true;
         private bool backwardGpuSupported = true;
 

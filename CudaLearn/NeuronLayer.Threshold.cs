@@ -26,13 +26,13 @@ namespace CudaLearn
     /// <summary>
     /// ThresholdLayer
     ///     Outputs 1 if value in input is above threshold, 0 otherwise.
-    ///     The defult threshold = 0, which means positive values would become 1 and 
+    ///     The default threshold = 0, which means positive values would become 1 and 
     ///     negative or 0, would become 0
     ///     
     /// y = 1 if x greater than Threshold
     /// y = 0 if x less or equal than Threshold
     /// 
-    /// y' = don't differenciable
+    /// y' = don't differentiable
     /// </summary>
     public class ThresholdLayer : NeuronLayer<ThresholdLayerConfiguration>
     {

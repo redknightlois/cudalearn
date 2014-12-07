@@ -19,12 +19,12 @@ namespace CudaDnn
         SameHW = 0,
 
         /// <summary>
-        ///  Add a set of feature maps to a batch of inputs : tensorBias has n=1 , same nb feature than Src/dest
+        ///  Add a set of feature maps to a batch of inputs : tensorBias has n=1 , same nb feature than src/dest
         ///  In this mode, the bias tensor is defined as one image with multiple feature maps. This image will be added to every image of the input/output tensor.
         /// </summary>
         FeatureMap = 1,
         /// <summary>
-        ///  Add a set of feature maps to a batch of inputs : tensorBias has n=1 , same nb feature than Src/dest
+        ///  Add a set of feature maps to a batch of inputs : tensorBias has n=1 , same nb feature than src/dest
         ///  In this mode, the bias tensor is defined as one image with multiple feature maps. This image will be added to every image of the input/output tensor.
         /// </summary>
         SameCHW = 1,

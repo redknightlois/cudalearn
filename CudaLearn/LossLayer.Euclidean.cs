@@ -80,7 +80,7 @@ namespace CudaLearn
         }
 
 
-        // Unlike most loss layers, in the EuclideanLossLayer we can backpropagate
+        // Unlike most loss layers, in the EuclideanLossLayer we can back-propagate
         // to both inputs.
         protected override bool AllowForceBackward(int bottomIndex)
         {

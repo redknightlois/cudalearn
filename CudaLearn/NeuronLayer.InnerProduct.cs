@@ -77,7 +77,7 @@ namespace CudaLearn
                 var weightsFiller = FillerFactory.Create(Parameters.WeightsFiller);
                 weightsFiller.Fill(weights);
 
-                // If necessary, intiialize and fill the bias term
+                // If necessary, initialize and fill the bias term
                 if ( Parameters.UseBias )
                 {
                     this.bias = new Blob(1, 1, 1, n);
