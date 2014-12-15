@@ -8,10 +8,10 @@ using Xunit.Extensions;
 
 namespace CudaLearn.Tests
 {
-    public class PowerLayerTests
+    public class PowerLayerTests : CpuLayerTests
     {
-        private readonly Blob bottom = new Blob(2, 3, 6, 5);
-        private readonly Blob top = new Blob();
+        private readonly Tensor bottom = new Tensor(2, 3, 6, 5);
+        private readonly Tensor top = new Tensor();
 
         public PowerLayerTests()
         {
@@ -61,22 +61,26 @@ namespace CudaLearn.Tests
             layer.Setup(bottom, top);
             layer.Forward(bottom, top);
 
-            double minPrecision = 1e-5f;
-
-            // Now, check values
-            int count = bottom.Data.Count;
-            for (int i = 0; i < count; i++)
+            using (var topCpu = top.OnCpu())
+            using (var bottomCpu = bottom.OnCpu())
             {
-                var expectedValue = Math.Pow(shift + scale * bottom.DataAt(i), power);
-                if (power == 0 || power == 1 || power == 2)
-                    Assert.False(double.IsNaN(top.DataAt(i)));
+                double minPrecision = 1e-5f;
 
-                if (double.IsNaN(expectedValue))
-                    Assert.True(double.IsNaN(top.DataAt(i)));
-                else
+                // Now, check values
+                int count = bottomCpu.Data.Count;
+                for (int i = 0; i < count; i++)
                 {
-                    double precision = Math.Max(Math.Abs(expectedValue * 1e-4f), minPrecision);
-                    Assert.True(MathHelpers.Equality(expectedValue, top.DataAt(i), precision));
+                    var expectedValue = Math.Pow(shift + scale * bottomCpu.DataAt(i), power);
+                    if (power == 0 || power == 1 || power == 2)
+                        Assert.False(double.IsNaN(topCpu.DataAt(i)));
+
+                    if (double.IsNaN(expectedValue))
+                        Assert.True(double.IsNaN(topCpu.DataAt(i)));
+                    else
+                    {
+                        double precision = Math.Max(Math.Abs(expectedValue * 1e-4f), minPrecision);
+                        Assert.True(MathHelpers.Equality(expectedValue, topCpu.DataAt(i), precision));
+                    }
                 }
             }
         }
@@ -86,16 +90,19 @@ namespace CudaLearn.Tests
         {
             var config = new PowerLayerConfiguration(power, scale, shift);
             var layer = new PowerLayer(config);
-
+            
             if ( power != 0 && power != 1 && power != 2 )
             {
                 var minValue = -shift / scale;
-                
-                var bottomData = bottom.Data;
-                for ( int i = 0; i < bottom.Count; i++ )
+
+                using (var bottomCpu = bottom.OnCpu())
                 {
-                    if (bottomData[i] < minValue)
-                        bottomData[i] = minValue + (minValue - bottomData[i]);
+                    var bottomData = bottomCpu.Data;
+                    for (int i = 0; i < bottom.Count; i++)
+                    {
+                        if (bottomData[i] < minValue)
+                            bottomData[i] = minValue + (minValue - bottomData[i]);
+                    }
                 }
             }
 

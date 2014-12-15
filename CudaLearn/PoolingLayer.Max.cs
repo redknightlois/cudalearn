@@ -47,7 +47,7 @@ namespace CudaLearn
             : base(config)
         { }
 
-        public override void Setup(IList<Blob> bottom, IList<Blob> top)
+        public override void Setup(TensorCollection bottom, TensorCollection top)
         {
             CheckSizeParameters();
 
@@ -61,7 +61,10 @@ namespace CudaLearn
             foreach( var item in top )
                 item.Reshape(num, channels, Pooled.Height, Pooled.Width);
 
-            this.maxIndexes = Vector<double>.Build.SameAs(top[0].Data);
+            using (var topCpu = top[0].OnCpu())
+            {
+                this.maxIndexes = Vector<double>.Build.SameAs(topCpu.Data);
+            }           
         }
 
         private void CheckSizeParameters()
@@ -79,7 +82,7 @@ namespace CudaLearn
             Guard.That(() => this.Parameters.Padding.Depth).IsEqual(0);
         }
 
-        protected override double ForwardCpu(IList<Blob> bottom, IList<Blob> top)
+        internal override double ForwardCpu(CpuTensorScopeCollection bottom, CpuTensorScopeCollection top)
         {
             var bottomData = bottom[0].Data;
             var topData = top[0].Data;
@@ -151,7 +154,7 @@ namespace CudaLearn
             return 0;  
         }
 
-        protected override void BackwardCpu(IList<Blob> top, IList<bool> propagateDown, IList<Blob> bottom)
+        internal override void BackwardCpu(CpuTensorScopeCollection top, IList<bool> propagateDown, CpuTensorScopeCollection bottom)
         {
             if (!propagateDown[0])
                 return;

@@ -8,10 +8,10 @@ using Xunit;
 namespace CudaLearn.Tests
 {
 
-    public class SigmoidLayerTests
+    public class SigmoidLayerTests : CpuLayerTests
     {
-        private readonly Blob bottom = new Blob(2, 3, 6, 5);
-        private readonly Blob top = new Blob();
+        private readonly Tensor bottom = new Tensor(2, 3, 6, 5);
+        private readonly Tensor top = new Tensor();
 
         public SigmoidLayerTests()
         {
@@ -39,15 +39,20 @@ namespace CudaLearn.Tests
             layer.Forward(bottom, top);
 
             Assert.Equal(bottom.Count, top.Count);
-            int count = bottom.Count;
-            for (int i = 0; i < count; i++)
-            {
-                Assert.True(MathHelpers.Equality(top.DataAt(i), 1.0d / (1.0d + Math.Exp(-bottom.DataAt(i)))));
 
-                // check that we squashed the value between 0 and 1
-                Assert.True(top.DataAt(i) >= 0.0d);
-                Assert.True(top.DataAt(i) <= 1.0d);
-            };
+            using (var topCpu = top.OnCpu())
+            using (var bottomCpu = bottom.OnCpu())
+            {
+                int count = bottom.Count;
+                for (int i = 0; i < count; i++)
+                {
+                    Assert.True(MathHelpers.Equality(topCpu.DataAt(i), 1.0d / (1.0d + Math.Exp(-bottomCpu.DataAt(i)))));
+
+                    // check that we squashed the value between 0 and 1
+                    Assert.True(topCpu.DataAt(i) >= 0.0d);
+                    Assert.True(topCpu.DataAt(i) <= 1.0d);
+                };
+            }
         }
 
         [Fact]

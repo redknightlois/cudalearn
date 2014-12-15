@@ -49,7 +49,7 @@ namespace CudaLearn
         { }
 
 
-        public override void Setup(IList<Blob> bottom, IList<Blob> top)
+        public override void Setup(TensorCollection bottom, TensorCollection top)
         {
             CheckSizeParameters();
 
@@ -60,10 +60,12 @@ namespace CudaLearn
             int channels = bottom[0].Channels;
             top[0].Reshape(bottom[0].Num, channels, Pooled.Height, Pooled.Width);
 
-
-            this.randomIndexes = Vector<double>.Build.SameAs(top[0].Data); 
-            var distribution = new ContinuousUniform(0, 1);
-            randomIndexes.MapInplace(x => distribution.Sample(), Zeros.Include);                       
+            using (var topCpu = top[0].OnCpu())
+            {
+                this.randomIndexes = Vector<double>.Build.SameAs(topCpu.Data);
+                var distribution = new ContinuousUniform(0, 1);
+                randomIndexes.MapInplace(x => distribution.Sample(), Zeros.Include);   
+            }                    
         }
 
         private void CheckSizeParameters()
@@ -81,7 +83,7 @@ namespace CudaLearn
             Guard.That(() => this.Parameters.Padding.Depth).IsEqual(0);
         }
 
-        protected override double ForwardCpu(IList<Blob> bottom, IList<Blob> top)
+        internal override double ForwardCpu(CpuTensorScopeCollection bottom, CpuTensorScopeCollection top)
         {
             if (this.Phase == PhaseType.Train)
                 return ForwardTrainCpu(bottom, top);
@@ -89,7 +91,7 @@ namespace CudaLearn
                 return ForwardTestCpu(bottom, top);
         }
 
-        protected double ForwardTrainCpu(IList<Blob> bottom, IList<Blob> top)
+        protected double ForwardTrainCpu(CpuTensorScopeCollection bottom, CpuTensorScopeCollection top)
         {
             var bottomData = bottom[0].Data;
             var topData = top[0].Data;
@@ -148,7 +150,7 @@ namespace CudaLearn
         }
 
 
-        protected double ForwardTestCpu(IList<Blob> bottom, IList<Blob> top)
+        protected double ForwardTestCpu(IList<CpuTensorScope> bottom, IList<CpuTensorScope> top)
         {
             var bottomData = bottom[0].Data;
             var topData = top[0].Data;
@@ -193,7 +195,7 @@ namespace CudaLearn
             return 0;
         }
 
-        protected override void BackwardCpu(IList<Blob> top, IList<bool> propagateDown, IList<Blob> bottom)
+        internal override void BackwardCpu(CpuTensorScopeCollection top, IList<bool> propagateDown, CpuTensorScopeCollection bottom)
         {
             var bottomDiff = bottom[0].Diff;
             var topDiff = top[0].Diff;

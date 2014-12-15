@@ -7,38 +7,42 @@ using Xunit;
 
 namespace CudaLearn.Tests
 {
-    public class BlobTests
+    public class BlobTests : CpuLayerTests
     {
         [Fact]
         public void Blob_Initialization()
         {
-            var blob = new Blob();
+            var blob = new Tensor();
             Assert.Equal(0, blob.Num);
             Assert.Equal(0, blob.Count);
             Assert.Equal(0, blob.Channels);
             Assert.Equal(0, blob.Height);
             Assert.Equal(0, blob.Width);
 
-            Assert.Throws<InvalidOperationException>(() => blob.Data);
-            Assert.Throws<InvalidOperationException>(() => blob.Diff);
+            Assert.Throws<InvalidOperationException>(() => blob.OnCpu());
+            // Assert.Throws<InvalidOperationException>(() => blob.Data);
+            // Assert.Throws<InvalidOperationException>(() => blob.Diff);
 
-            var preshapedBlob = new Blob(2, 3, 4, 5);
+            var preshapedBlob = new Tensor(2, 3, 4, 5);
             Assert.Equal(2, preshapedBlob.Num);
             Assert.Equal(3, preshapedBlob.Channels);
             Assert.Equal(4, preshapedBlob.Height);
             Assert.Equal(5, preshapedBlob.Width);
             Assert.Equal(120, preshapedBlob.Count);
 
-            Assert.NotNull(preshapedBlob.Data);
-            Assert.NotNull(preshapedBlob.Diff);
-            Assert.Equal(preshapedBlob.Count, preshapedBlob.Data.Count);
-            Assert.Equal(preshapedBlob.Count, preshapedBlob.Diff.Count);
+            using (var preshapedBlobCpu = preshapedBlob.OnCpu())
+            {
+                Assert.NotNull(preshapedBlobCpu.Data);
+                Assert.NotNull(preshapedBlobCpu.Diff);
+                Assert.Equal(preshapedBlob.Count, preshapedBlobCpu.Data.Count);
+                Assert.Equal(preshapedBlob.Count, preshapedBlobCpu.Diff.Count);
+            }
         }
 
         [Fact]
         public void Blob_Reshape()
         {
-            var blob = new Blob();
+            var blob = new Tensor();
             blob.Reshape(2, 3, 4, 5);
             Assert.Equal(2, blob.Num);
             Assert.Equal(3, blob.Channels);
@@ -46,17 +50,20 @@ namespace CudaLearn.Tests
             Assert.Equal(5, blob.Width);
             Assert.Equal(120, blob.Count);
 
-            Assert.NotNull(blob.Data);
-            Assert.NotNull(blob.Diff);
-            Assert.Equal(blob.Count, blob.Data.Count);
-            Assert.Equal(blob.Count, blob.Diff.Count);
+            using (var blobCpu = blob.OnCpu())
+            {
+                Assert.NotNull(blobCpu.Data);
+                Assert.NotNull(blobCpu.Diff);
+                Assert.Equal(blobCpu.Count, blobCpu.Data.Count);
+                Assert.Equal(blobCpu.Count, blobCpu.Diff.Count);
+            }
         }
 
         [Fact]
         public void Blob_ReshapeAs()
         {
-            var blob = new Blob();
-            var preshaped = new Blob(2, 3, 4, 5);
+            var blob = new Tensor();
+            var preshaped = new Tensor(2, 3, 4, 5);
 
             blob.ReshapeAs(preshaped);
             Assert.Equal(2, blob.Num);
@@ -65,10 +72,13 @@ namespace CudaLearn.Tests
             Assert.Equal(5, blob.Width);
             Assert.Equal(120, blob.Count);
 
-            Assert.NotNull(blob.Data);
-            Assert.NotNull(blob.Diff);
-            Assert.Equal(blob.Count, blob.Data.Count);
-            Assert.Equal(blob.Count, blob.Diff.Count);
+            using (var blobCpu = blob.OnCpu())
+            {
+                Assert.NotNull(blobCpu.Data);
+                Assert.NotNull(blobCpu.Diff);
+                Assert.Equal(blobCpu.Count, blobCpu.Data.Count);
+                Assert.Equal(blobCpu.Count, blobCpu.Diff.Count);
+            }
         }
     }
 }

@@ -35,15 +35,15 @@ namespace CudaLearn
             : base(param)
         { }
 
-        public override void Setup(IList<Blob> bottom, IList<Blob> top)
+        public override void Setup(TensorCollection bottom, TensorCollection top)
         {
             base.Setup(bottom, top);
 
             if (!top.Any())
-                top.Add(new Blob(bottom[0]));
+                top.Add(new Tensor(bottom[0]));
         }
 
-        protected override void CheckBlobCount(IList<Blob> bottom, IList<Blob> top)
+        protected override void CheckBlobCount(TensorCollection bottom, TensorCollection top)
         {
             base.CheckBlobCount(bottom, top);
 
@@ -52,8 +52,8 @@ namespace CudaLearn
             Guard.That(() => bottom).IsTrue(x => x[0].Width == bottom[1].Width, "Width in both bottom blobs must be equal.");
         }
 
-        protected override double ForwardCpu(IList<Blob> bottom, IList<Blob> top)
-        {
+        internal override double ForwardCpu(CpuTensorScopeCollection bottom, CpuTensorScopeCollection top)
+        {            
             difference = bottom[0].Data - bottom[1].Data;
             double loss = (difference.L2Norm() / (bottom[0].Count / 2));
 
@@ -64,7 +64,7 @@ namespace CudaLearn
             return loss;
         }
 
-        protected override void BackwardCpu(IList<Blob> top, IList<bool> propagateDown, IList<Blob> bottom)
+        internal override void BackwardCpu(CpuTensorScopeCollection top, IList<bool> propagateDown, CpuTensorScopeCollection bottom)
         {
             for (int i = 0; i < 2; i++)
             {

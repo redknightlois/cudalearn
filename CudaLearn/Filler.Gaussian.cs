@@ -36,25 +36,28 @@ namespace CudaLearn
             : base(param)
         { }
 
-        public override void Fill(Blob blob)
+        public override void Fill(Tensor blob)
         {
-            var data = blob.Data;
-
-            var distribution = new Normal(this.Parameters.Mean, this.Parameters.Std);
-            data.MapInplace(x => distribution.Sample(), Zeros.Include);
-            
-            if ( this.Parameters.IsSparse )
+            using (var @cpuBlob = blob.OnCpu())
             {
-                Guard.That(() => blob.Num).Equals(1);
-                Guard.That(() => blob.Channels).Equals(1);
+                var data = @cpuBlob.Data;
 
-                int numberOfInputs = blob.Height;
-                double nonZeroProbability = 1.0d / numberOfInputs;
+                var distribution = new Normal(this.Parameters.Mean, this.Parameters.Std);
+                data.MapInplace(x => distribution.Sample(), Zeros.Include);
 
-                var bernoulli = new Bernoulli(nonZeroProbability);
-                var mask = Vector<double>.Build.SameAs(blob.Data, () => bernoulli.Sample());
+                if (this.Parameters.IsSparse)
+                {
+                    Guard.That(() => blob.Num).Equals(1);
+                    Guard.That(() => blob.Channels).Equals(1);
 
-                blob.Data.PointwiseMultiply(mask, result: blob.Data);
+                    int numberOfInputs = blob.Height;
+                    double nonZeroProbability = 1.0d / numberOfInputs;
+
+                    var bernoulli = new Bernoulli(nonZeroProbability);
+                    var mask = Vector<double>.Build.SameAs(data, () => bernoulli.Sample());
+
+                    data.PointwiseMultiply(mask, result: data);
+                }
             }
         }
     }

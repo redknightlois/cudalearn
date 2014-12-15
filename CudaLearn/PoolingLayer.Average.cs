@@ -45,7 +45,7 @@ namespace CudaLearn
         { }
 
 
-        public override void Setup(IList<Blob> bottom, IList<Blob> top)
+        public override void Setup(TensorCollection bottom, TensorCollection top)
         {
             CheckSizeParameters ();
 
@@ -73,7 +73,7 @@ namespace CudaLearn
         }
 
 
-        protected override double ForwardCpu(IList<Blob> bottom, IList<Blob> top)
+        internal override double ForwardCpu(CpuTensorScopeCollection bottom, CpuTensorScopeCollection top)
         {
             var bottomData = bottom[0].Data;
             var topData = top[0].Data;
@@ -129,7 +129,7 @@ namespace CudaLearn
             return 0;
         }
 
-        protected override void BackwardCpu(IList<Blob> top, IList<bool> propagateDown, IList<Blob> bottom)
+        internal override void BackwardCpu(CpuTensorScopeCollection top, IList<bool> propagateDown, CpuTensorScopeCollection bottom)
         {
             var bottomDiff = bottom[0].Diff;
             var topDiff = top[0].Diff;

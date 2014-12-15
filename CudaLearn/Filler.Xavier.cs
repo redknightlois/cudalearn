@@ -25,17 +25,20 @@ namespace CudaLearn
             : base(param)
         { }
 
-        public override void Fill(Blob blob)
+        public override void Fill(Tensor blob)
         {
             Guard.That(() => blob.Count).IsPositive();
 
-            var data = blob.Data;
+            using (var @cpuBlob = blob.OnCpu())
+            {
+                var data = @cpuBlob.Data;
 
-            int fanIn = blob.Count / blob.Num;
-            double scale =  Math.Sqrt(3 / fanIn);
+                int fanIn = blob.Count / blob.Num;
+                double scale = Math.Sqrt(3 / fanIn);
 
-            var distribution = new ContinuousUniform(-scale, scale);
-            data.MapInplace(x => distribution.Sample(), Zeros.Include);
+                var distribution = new ContinuousUniform(-scale, scale);
+                data.MapInplace(x => distribution.Sample(), Zeros.Include);
+            }
         }
     }
 }

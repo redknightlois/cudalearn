@@ -25,26 +25,29 @@ namespace CudaLearn
             : base(param)
         { }
 
-        public override void Fill(Blob blob)
+        public override void Fill(Tensor blob)
         {
             Guard.That(() => blob.Count).IsPositive();
-            
-            var data = blob.Data;            
 
-            var distribution = new ContinuousUniform(0, 1);
-            data.MapInplace(x => distribution.Sample(), Zeros.Include);
-
-            int dim = blob.Count / blob.Num;
-            Guard.That(() => dim).IsPositive();
-            
-            for ( int i = 0; i < blob.Num; i++ )
+            using (var @cpuBlob = blob.OnCpu())
             {
-                double sum = 0.0d;
-                for (int j = 0; j < dim; j++)
-                    sum += data[i * dim + j];
+                var data = @cpuBlob.Data;
 
-                for (int j = 0; j < dim; j++)
-                    data[i * dim + j] /= sum;
+                var distribution = new ContinuousUniform(0, 1);
+                data.MapInplace(x => distribution.Sample(), Zeros.Include);
+
+                int dim = blob.Count / blob.Num;
+                Guard.That(() => dim).IsPositive();
+
+                for (int i = 0; i < blob.Num; i++)
+                {
+                    double sum = 0.0d;
+                    for (int j = 0; j < dim; j++)
+                        sum += data[i * dim + j];
+
+                    for (int j = 0; j < dim; j++)
+                        data[i * dim + j] /= sum;
+                }
             }
         }
     }

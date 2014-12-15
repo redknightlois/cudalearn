@@ -39,9 +39,9 @@ namespace CudaLearn
     /// </summary>
     public class InnerProductLayer : NeuronLayer<InnerProductLayerConfiguration>
     {
-        private Blob weights;        // n x k
-        private Blob bias;           // 1 x n
-        private Blob biasMultiplier; // 1 x m
+        private Tensor weights;        // n x k
+        private Tensor bias;           // 1 x n
+        private Tensor biasMultiplier; // 1 x m
 
         // bottom: m x k
         // top: m x n
@@ -59,7 +59,7 @@ namespace CudaLearn
             : base(param)
         { }
 
-        public override void Setup(IList<Blob> bottom, IList<Blob> top)
+        public override void Setup(TensorCollection bottom, TensorCollection top)
         {
             base.Setup(bottom, top);
 
@@ -73,15 +73,15 @@ namespace CudaLearn
             if (this.weights == null || this.bias == null)
             {
                 // Fill the weights
-                this.weights = new Blob(1, 1, n, k);
+                this.weights = new Tensor(1, 1, n, k);
                 var weightsFiller = FillerFactory.Create(Parameters.WeightsFiller);
                 weightsFiller.Fill(weights);
 
                 // If necessary, initialize and fill the bias term
-                if ( Parameters.UseBias )
+                if (Parameters.UseBias)
                 {
-                    this.bias = new Blob(1, 1, 1, n);
-                    var biasFiller = FillerFactory.Create(Parameters.BiasFiller);                    
+                    this.bias = new Tensor(1, 1, 1, n);
+                    var biasFiller = FillerFactory.Create(Parameters.BiasFiller);
                     biasFiller.Fill(bias);
                 }
             }
@@ -90,57 +90,75 @@ namespace CudaLearn
                 // LOG we are skipping the parameter initialization
             }
 
-            if ( Parameters.UseBias )
+            if (Parameters.UseBias)
             {
-                this.biasMultiplier = new Blob(1, 1, 1, m);
-                this.biasMultiplier.Data.Map(v => 1, this.biasMultiplier.Data, Zeros.Include);
+                this.biasMultiplier = new Tensor(1, 1, 1, m);
+                using (var biasMultiplierCpu = this.biasMultiplier.OnCpu())
+                {
+                    biasMultiplierCpu.Data.Map(v => 1, biasMultiplierCpu.Data, Zeros.Include);
+                }
             }
         }
 
-        protected override double ForwardCpu(IList<Blob> bottom, IList<Blob> top)
+        internal override double ForwardCpu(CpuTensorScopeCollection bottom, CpuTensorScopeCollection top)
         {
             var provider = Control.LinearAlgebraProvider;
 
-            var bottomData = (DenseVector)bottom[0].Data;
-            var topData = (DenseVector)top[0].Data;
-            var weightsData = (DenseVector)weights.Data;
-
-            provider.MatrixMultiplyWithUpdate(Transpose.DontTranspose, Transpose.Transpose, 1f, bottomData.Values, m, k, weightsData.Values, n, k, 0f, topData.Values);
-
-            if (Parameters.UseBias)
+            using (var weightsCpu = this.weights.OnCpu())          
             {
-                var biasData = (DenseVector)bias.Data;
-                var biasMultiplierData = (DenseVector)biasMultiplier.Data;
-                provider.MatrixMultiplyWithUpdate(Transpose.DontTranspose, Transpose.DontTranspose, 1f, biasMultiplierData.Values, m, 1, biasData.Values, 1, n, 1f, topData.Values);
+                var bottomData = (DenseVector)bottom[0].Data;
+                var topData = (DenseVector)top[0].Data;
+                var weightsData = (DenseVector)weightsCpu.Data;
+
+                provider.MatrixMultiplyWithUpdate(Transpose.DontTranspose, Transpose.Transpose, 1f, bottomData.Values, m, k, weightsData.Values, n, k, 0f, topData.Values);
+
+                if (Parameters.UseBias)
+                {
+                    using (var biasCpu = this.bias.OnCpu())
+                    using (var biasMultiplierCpu = this.biasMultiplier.OnCpu())
+                    {
+                        var biasData = (DenseVector)biasCpu.Data;
+                        var biasMultiplierData = (DenseVector)biasMultiplierCpu.Data;
+                        provider.MatrixMultiplyWithUpdate(Transpose.DontTranspose, Transpose.DontTranspose, 1f, biasMultiplierData.Values, m, 1, biasData.Values, 1, n, 1f, topData.Values);
+                    }
+                }
             }
+ 
             return 0;
         }
 
-        protected override void BackwardCpu(IList<Blob> top, IList<bool> propagateDown, IList<Blob> bottom)
+        internal override void BackwardCpu(CpuTensorScopeCollection top, IList<bool> propagateDown, CpuTensorScopeCollection bottom)
         {
             var provider = Control.LinearAlgebraProvider;
-            
-            var bottomData = (DenseVector)bottom[0].Data;
-            var topDiff = (DenseVector)top[0].Diff;
-            var weightsData = (DenseVector)weights.Data;
 
-            if ( GetPropagateDownForParameter(0) )
+            using (var weightsCpu = this.weights.OnCpu())
             {
-                provider.MatrixMultiplyWithUpdate(Transpose.Transpose, Transpose.DontTranspose, 1f, topDiff.Values, m, n, bottomData.Values, m, k, 0f, weightsData.Values);
-            }
+                var bottomData = (DenseVector)bottom[0].Data;
+                var topDiff = (DenseVector)top[0].Diff;
+                var weightsData = (DenseVector)weightsCpu.Data;
 
-            if ( this.Parameters.UseBias && GetPropagateDownForParameter(1))
-            {
-                var biasData = (DenseVector)bias.Data;
-                var biasMultiplierData = (DenseVector)biasMultiplier.Data;
+                if (GetPropagateDownForParameter(0))
+                {
+                    provider.MatrixMultiplyWithUpdate(Transpose.Transpose, Transpose.DontTranspose, 1f, topDiff.Values, m, n, bottomData.Values, m, k, 0f, weightsData.Values);
+                }
 
-                provider.MatrixMultiplyWithUpdate(Transpose.Transpose, Transpose.DontTranspose, 1f, topDiff.Values, m, n, biasMultiplierData.Values, 1, m, 0f, biasData.Values);
-            }
+                if (this.Parameters.UseBias && GetPropagateDownForParameter(1))
+                {
+                    using (var biasCpu = this.bias.OnCpu())
+                    using (var biasMultiplierCpu = this.biasMultiplier.OnCpu())
+                    {
+                        var biasData = (DenseVector)biasCpu.Data;
+                        var biasMultiplierData = (DenseVector)biasMultiplierCpu.Data;
 
-            if ( propagateDown[0] )
-            {
-                provider.MatrixMultiplyWithUpdate(Transpose.DontTranspose, Transpose.DontTranspose, 1f, topDiff.Values, m, n, weightsData.Values, n, k, 0f, bottomData.Values);
-            }            
+                        provider.MatrixMultiplyWithUpdate(Transpose.Transpose, Transpose.DontTranspose, 1f, topDiff.Values, m, n, biasMultiplierData.Values, 1, m, 0f, biasData.Values);
+                    }
+                }
+
+                if (propagateDown[0])
+                {
+                    provider.MatrixMultiplyWithUpdate(Transpose.DontTranspose, Transpose.DontTranspose, 1f, topDiff.Values, m, n, weightsData.Values, n, k, 0f, bottomData.Values);
+                } 
+            }           
         }
     }
 }

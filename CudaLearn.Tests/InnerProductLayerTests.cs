@@ -9,10 +9,10 @@ using Xunit.Extensions;
 namespace CudaLearn.Tests
 {
 
-    public class InnerProductLayerTests
+    public class InnerProductLayerTests : CpuLayerTests
     {
-        private readonly Blob bottom = new Blob(2, 3, 4, 5);
-        private readonly Blob top = new Blob();        
+        private readonly Tensor bottom = new Tensor(2, 3, 4, 5);
+        private readonly Tensor top = new Tensor();        
 
         public InnerProductLayerTests()
         {
@@ -46,10 +46,13 @@ namespace CudaLearn.Tests
             layer.Setup(bottom, top);
             layer.Forward(bottom, top);
 
-            int count = top.Count;
+            using (var topCpu = top.OnCpu())
+            {
+                int count = top.Count;
 
-            for (int i = 0; i < count; i++)
-                Assert.True(top.DataAt(i) >= 1f);
+                for (int i = 0; i < count; i++)
+                    Assert.True(topCpu.DataAt(i) >= 1f);
+            }
         }
 
         public static IEnumerable<object[]> Configurations

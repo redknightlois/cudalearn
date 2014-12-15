@@ -1,6 +1,7 @@
 ﻿using Seterlund.CodeGuard;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,7 +32,7 @@ namespace CudaLearn
     {
         public abstract FillerType Type { get; }
 
-        public abstract void Fill ( Blob blob );
+        public abstract void Fill ( Tensor blob );
     }
 
     public abstract class Filler<TConfiguration> : Filler
@@ -59,6 +60,12 @@ namespace CudaLearn
     {
         public static Filler Create(FillerConfiguration configuration)
         {
+            if (configuration == null)
+                throw new ArgumentNullException("configuration");
+
+            Contract.Ensures(Contract.Result<Filler>() != null);
+            Contract.EndContractBlock();
+
             switch ( configuration.Type )
             {
                 case FillerType.Constant: return new ConstantFiller((ConstantFillerConfiguration)configuration);

@@ -8,10 +8,10 @@ using Xunit;
 namespace CudaLearn.Tests
 {
 
-    public class TanhLayerTests
+    public class TanhLayerTests : CpuLayerTests
     {
-        private readonly Blob bottom = new Blob(2, 3, 6, 5);
-        private readonly Blob top = new Blob();
+        private readonly Tensor bottom = new Tensor(2, 3, 6, 5);
+        private readonly Tensor top = new Tensor();
 
         public TanhLayerTests()
         {
@@ -39,18 +39,23 @@ namespace CudaLearn.Tests
             layer.Forward(bottom, top);
 
             Assert.Equal(bottom.Count, top.Count);
-            int count = bottom.Count;
 
-            for (int i = 0; i < bottom.Num; i++)
+            using (var topCpu = top.OnCpu())
+            using (var bottomCpu = bottom.OnCpu())
             {
-                for (int j = 0; j < bottom.Channels; j++)
+                int count = bottom.Count;
+
+                for (int i = 0; i < bottom.Num; i++)
                 {
-                    for ( int k = 0; k <bottom.Height; k++)
+                    for (int j = 0; j < bottom.Channels; j++)
                     {
-                        for ( int l = 0; l < bottom.Width; l++)
+                        for (int k = 0; k < bottom.Height; k++)
                         {
-                            var v = (Math.Exp(2 * bottom.DataAt(i, j, k, l)) - 1) / (Math.Exp(2 * bottom.DataAt(i, j, k, l)) + 1);
-                            Assert.True(MathHelpers.Equality(top.DataAt(i, j, k, l), v, 1e-4f));
+                            for (int l = 0; l < bottom.Width; l++)
+                            {
+                                var v = (Math.Exp(2 * bottomCpu.DataAt(i, j, k, l)) - 1) / (Math.Exp(2 * bottomCpu.DataAt(i, j, k, l)) + 1);
+                                Assert.True(MathHelpers.Equality(topCpu.DataAt(i, j, k, l), v, 1e-4f));
+                            }
                         }
                     }
                 }

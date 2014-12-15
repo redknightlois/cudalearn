@@ -8,10 +8,10 @@ using Xunit;
 namespace CudaLearn.Tests
 {
 
-    public class SoftmaxLossLayerTests
+    public class SoftmaxLossLayerTests : CpuLayerTests
     {
-        private readonly Blob bottom = new Blob(10, 5, 1, 1);
-        private readonly Blob labels = new Blob(10, 1, 1, 1);
+        private readonly Tensor bottom = new Tensor(10, 5, 1, 1);
+        private readonly Tensor labels = new Tensor(10, 1, 1, 1);
 
         public SoftmaxLossLayerTests()
         {
@@ -20,9 +20,14 @@ namespace CudaLearn.Tests
 
             Random rnd = new Random(1000);
 
-            var labelData = labels.Data;
-            for (int i = 0; i < labelData.Count; i++)
-                labelData[i] = rnd.Next(5);
+            using (var labelsCpu = labels.OnCpu())
+            {
+                var labelData = labelsCpu.Data;
+                for (int i = 0; i < labelData.Count; i++)
+                    labelData[i] = rnd.Next(5);
+            }
+
+
         }
 
         [Fact]

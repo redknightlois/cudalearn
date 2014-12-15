@@ -15,9 +15,9 @@ namespace CudaLearn.Tests
         private readonly double kink;
         private readonly double kinkRange;
 
-        // kink and kink_range specify an ignored nonsmooth region of the form
+        // kink and kink_range specify an ignored non-smooth region of the form
         // kink - kink_range <= |feature value| <= kink + kink_range,
-        // which accounts for all nonsmoothness in use
+        // which accounts for all non-smoothness in use
         public GradientChecker(double step, double threshold, int seed = 1701, double kink = 0.0d, double kinkRange = -1.0d)
         {
             this.step = step;
@@ -27,24 +27,24 @@ namespace CudaLearn.Tests
             this.kinkRange = kinkRange;
         }
 
-        public void Check ( Layer layer, Blob bottom, Blob top, int checkBottom = -1)
-        {            
-            this.Check ( layer, new List<Blob> { bottom }, new List<Blob> { top }, checkBottom );
+        public void Check ( Layer layer, Tensor bottom, Tensor top, int checkBottom = -1)
+        {
+            this.Check(layer, new TensorCollection { bottom }, new TensorCollection { top }, checkBottom);
         }
 
-        public void Check ( Layer layer, IList<Blob> bottom, IList<Blob> top, int checkBottom = -1)
+        public void Check(Layer layer, TensorCollection bottom, TensorCollection top, int checkBottom = -1)
         {
             layer.Setup( bottom, top );
             CheckSingle( layer, bottom, top, checkBottom, -1, -1);
         }
 
 
-        public void CheckExhaustive ( Layer layer, Blob bottom, Blob top, int checkBottom = -1)
+        public void CheckExhaustive ( Layer layer, Tensor bottom, Tensor top, int checkBottom = -1)
         {
-            this.CheckExhaustive ( layer, new List<Blob> { bottom }, new List<Blob> { top }, checkBottom );
+            this.CheckExhaustive(layer, new TensorCollection { bottom }, new TensorCollection { top }, checkBottom);
         }
 
-        public void CheckExhaustive( Layer layer, IList<Blob> bottom, IList<Blob> top, int checkBottom = -1)
+        public void CheckExhaustive(Layer layer, TensorCollection bottom, TensorCollection top, int checkBottom = -1)
         {
             layer.Setup( bottom, top );
             Assert.True(top.Count > 0, "Exhaustive mode requires at least one top blob.");
@@ -54,13 +54,13 @@ namespace CudaLearn.Tests
                     CheckSingle(layer, bottom, top, checkBottom, i, j);
         }
 
-        public void CheckEltwise ( Layer layer, Blob bottom, Blob top)
+        public void CheckEltwise ( Layer layer, Tensor bottom, Tensor top)
         {
-            this.CheckEltwise ( layer, new List<Blob> { bottom }, new List<Blob> { top });
+            this.CheckEltwise(layer, new TensorCollection { bottom }, new TensorCollection { top });
         }
 
 
-        public void CheckEltwise ( Layer layer, IList<Blob> bottom, IList<Blob> top )
+        public void CheckEltwise(Layer layer, TensorCollection bottom, TensorCollection top)
         {
             layer.Setup(bottom, top);
             Assert.True(top.Count > 0, "Exhaustive mode requires at least one top blob.");
@@ -70,12 +70,12 @@ namespace CudaLearn.Tests
                 for (int j = 0; j < top[i].Count; j++)
                     CheckSingle(layer, bottom, top, checkBottom, i, j, elementwise: true);
         }
-        public void CheckSingle( Layer layer,  Blob bottom, Blob top, int checkBottom, int topId, int topDataId, bool elementWise = false)
+        public void CheckSingle( Layer layer,  Tensor bottom, Tensor top, int checkBottom, int topId, int topDataId, bool elementWise = false)
         {
-            this.CheckSingle ( layer, new List<Blob> { bottom }, new List<Blob> { top }, checkBottom, topId, topDataId, elementWise );
+            this.CheckSingle(layer, new TensorCollection { bottom }, new TensorCollection { top }, checkBottom, topId, topDataId, elementWise);
         }
 
-        public void CheckSingle( Layer layer,  IList<Blob> bottom, IList<Blob> top, int checkBottom, int topId, int topDataId, bool elementwise = false)
+        public void CheckSingle(Layer layer, TensorCollection bottom, TensorCollection top, int checkBottom, int topId, int topDataId, bool elementwise = false)
         {
             //TODO If implemented at all the ability of the layer to access stored blobs, we need to recheck this.
             if ( elementwise )
@@ -89,7 +89,7 @@ namespace CudaLearn.Tests
             }
 
             // First, figure out what blobs we need to check against.
-            var blobsToCheck = new List<Blob>();
+            var blobsToCheck = new TensorCollection();
             var propagateDown = new List<bool>().Repeated(bottom.Count, checkBottom < 0);
             if ( checkBottom < 0 )
             {
@@ -116,15 +116,19 @@ namespace CudaLearn.Tests
             layer.Backward(top, propagateDown, bottom);
 
             // Store computed gradients for all checked blobs
-            var computedGradientsBlob = new Blob[blobsToCheck.Count];
+            var computedGradientsBlob = new Tensor[blobsToCheck.Count];
             for ( int blobId = 0; blobId < blobsToCheck.Count; blobId++ )
             {
                 var currentBlob = blobsToCheck[blobId];
-                computedGradientsBlob[blobId] = new Blob(currentBlob);
+                computedGradientsBlob[blobId] = new Tensor(currentBlob);
 
-                var currentDiff = currentBlob.Diff;
-                var computedGradients = computedGradientsBlob[blobId].Data;                
-                currentDiff.CopyTo(computedGradients);
+                using (var currentBlobCpu = currentBlob.OnCpu())
+                using (var computedGradientsBlobCpu = computedGradientsBlob[blobId].OnCpu())
+                {
+                    var currentDiff = currentBlobCpu.Diff;
+                    var computedGradients = computedGradientsBlobCpu.Data;
+                    currentDiff.CopyTo(computedGradients);
+                }
             }
 
             // Compute derivative of top w.r.t. each bottom and parameter input using
@@ -133,54 +137,59 @@ namespace CudaLearn.Tests
             for (int blobId = 0; blobId < blobsToCheck.Count; blobId++ )
             {
                 var currentBlob = blobsToCheck[blobId];
-                var computedGradients = computedGradientsBlob[blobId].Data;
-                for ( int featId = 0; featId < currentBlob.Count; featId++ )
+
+                using (var currentBlobCpu = currentBlob.OnCpu())
+                using (var computedGradientsBlobCpu = computedGradientsBlob[blobId].OnCpu())
                 {
-                    // For an element-wise layer, we only need to do finite differencing to
-                    // compute the derivative of topData[top_id][top_data_id] w.r.t.
-                    // bottomData[blob_id][i] only for i == top_data_id.  For any other
-                    // i != top_data_id, we know the derivative is 0 by definition, and simply
-                    // check that that's true.
-                    double estimatedGradient = 0;
-                    if (!elementwise || featId == topDataId)
+                    var computedGradients = computedGradientsBlobCpu.Data;
+                    for (int featId = 0; featId < currentBlob.Count; featId++)
                     {
-                        //TODO Add a general random generator that layers should use, to ensure we always apply it when layers are non-deterministic.
+                        // For an element-wise layer, we only need to do finite differencing to
+                        // compute the derivative of topData[top_id][top_data_id] w.r.t.
+                        // bottomData[blob_id][i] only for i == top_data_id.  For any other
+                        // i != top_data_id, we know the derivative is 0 by definition, and simply
+                        // check that that's true.
+                        double estimatedGradient = 0;
+                        if (!elementwise || featId == topDataId)
+                        {
+                            //TODO Add a general random generator that layers should use, to ensure we always apply it when layers are non-deterministic.
 
-                        // Do finite differencing.
-                        // Compute loss with stepsize added to input.
-                        currentBlob.Data[featId] += step;
-                        double positiveObjective = layer.Forward(bottom, top);
-                        positiveObjective += GetObjectiveAndGradient(top, topId, topDataId);
+                            // Do finite differencing.
+                            // Compute loss with step-size added to input.
+                            currentBlobCpu.Data[featId] += step;
+                            double positiveObjective = layer.Forward(bottom, top);
+                            positiveObjective += GetObjectiveAndGradient(top, topId, topDataId);
 
-                        // Compute loss with stepsize subtracted from input.
-                        currentBlob.Data[featId] -= step * 2;
+                            // Compute loss with step-size subtracted from input.
+                            currentBlobCpu.Data[featId] -= step * 2;
 
-                        //TODO Add a general random generator that layers should use, to ensure we always apply it when layers are non-deterministic.
+                            //TODO Add a general random generator that layers should use, to ensure we always apply it when layers are non-deterministic.
 
-                        double negativeObjective = layer.Forward(bottom, top);
-                        negativeObjective += GetObjectiveAndGradient(top, topId, topDataId);
+                            double negativeObjective = layer.Forward(bottom, top);
+                            negativeObjective += GetObjectiveAndGradient(top, topId, topDataId);
 
-                        // Recover original input value.
-                        currentBlob.Data[featId] += step;
-                        estimatedGradient = (positiveObjective - negativeObjective) / step / 2.0d;
+                            // Recover original input value.
+                            currentBlobCpu.Data[featId] += step;
+                            estimatedGradient = (positiveObjective - negativeObjective) / step / 2.0d;
+                        }
+
+                        double computedGradient = computedGradients[featId];
+                        double feature = currentBlobCpu.Data[featId];
+                        if (kink - kinkRange > Math.Abs(feature) || Math.Abs(feature) > kink + kinkRange)
+                        {
+                            // We check relative accuracy, but for too small values, we threshold
+                            // the scale factor by 1
+
+                            double scale = Math.Max(Math.Max(Math.Abs(computedGradient), Math.Abs(estimatedGradient)), 1.0d);
+                            Assert.InRange(computedGradient - estimatedGradient, -threshold * scale, threshold * scale);
+                        }
                     }
-
-                    double computedGradient = computedGradients[featId];
-                    double feature = currentBlob.Data[featId];
-                    if ( kink - kinkRange > Math.Abs(feature) || Math.Abs(feature) > kink + kinkRange )
-                    {
-                        // We check relative accuracy, but for too small values, we threshold
-                        // the scale factor by 1
-
-                        double scale = Math.Max( Math.Max(Math.Abs(computedGradient), Math.Abs(estimatedGradient)), 1.0d);
-                        Assert.InRange(computedGradient - estimatedGradient, -threshold * scale, threshold * scale);
-                    }
-                }
+                }            
             }
 
         }
 
-        private double GetObjectiveAndGradient(IList<Blob> top, int topId, int topDataId)
+        private double GetObjectiveAndGradient(IList<Tensor> top, int topId, int topDataId)
         {
             double loss = 0;
             if ( topId < 0 )
@@ -188,12 +197,14 @@ namespace CudaLearn.Tests
                 // the loss will be half of the sum of squares of all outputs
                 for (int i = 0; i < top.Count; i++)
                 {
-                    var topBlob = top[i];
-                    int count = topBlob.Count;
-                    for ( int j = 0; j < count; j++ )
-                        loss += topBlob.Data[j] * topBlob.Data[j];
+                    using (var topBlobCpu = top[i].OnCpu())
+                    {
+                        int count = topBlobCpu.Count;
+                        for (int j = 0; j < count; j++)
+                            loss += topBlobCpu.Data[j] * topBlobCpu.Data[j];
 
-                    topBlob.Data.CopyTo(topBlob.Diff);
+                        topBlobCpu.Data.CopyTo(topBlobCpu.Diff);
+                    }
                 }
                 loss /= 2.0d;
             }
@@ -201,10 +212,18 @@ namespace CudaLearn.Tests
             {
                 // the loss will be the top_data_id-th element in the top_id-th blob.
                 for (int i = 0; i < top.Count; i++)
-                    top[i].Diff.Clear();
+                {
+                    using (var topCpu = top[i].OnCpu())
+                    {
+                        topCpu.Diff.Clear();
+                    }
+                }
 
-                loss = top[topId].Data[topDataId];
-                top[topId].Diff[topDataId] = 1.0d;
+                using (var topCpu = top[topId].OnCpu())
+                {
+                    loss = topCpu.Data[topDataId];
+                    topCpu.Diff[topDataId] = 1.0d;
+                }
             }
             return loss;
         }

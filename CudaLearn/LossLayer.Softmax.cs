@@ -26,7 +26,7 @@ namespace CudaLearn
     public class SoftmaxLossLayer : LossLayer<SoftmaxLossLayerConfiguration>
     {
         private readonly SoftmaxLayer softmaxLayer = new SoftmaxLayer();
-        private readonly Blob probability = new Blob();
+        private readonly Tensor probability = new Tensor();
 
         public SoftmaxLossLayer()
             : this(new SoftmaxLossLayerConfiguration())
@@ -36,10 +36,10 @@ namespace CudaLearn
             : base(param)
         { }
 
-        public override void Setup(IList<Blob> bottom, IList<Blob> top)
+        public override void Setup(TensorCollection bottom, TensorCollection top)
         {
             base.Setup(bottom, top);
-            softmaxLayer.Setup(bottom, new[] { probability } );
+            softmaxLayer.Setup(bottom, new TensorCollection { probability });
 
             // Softmax loss ( averaged across batch )
             if (top.Count >= 1)
@@ -50,33 +50,36 @@ namespace CudaLearn
                 top[1].Reshape(bottom[0].Num, bottom[0].Channels, bottom[0].Height, bottom[0].Width);
         }
 
-        protected override double ForwardCpu(IList<Blob> bottom, IList<Blob> top)
+        internal override double ForwardCpu(CpuTensorScopeCollection bottom, CpuTensorScopeCollection top)
         {
-            // The forward pass computes the softmax prob values.
-            softmaxLayer.Forward(bottom, new[] { probability });
+            using (var probabilityCpu = probability.OnCpu())
+            {
+                // The forward pass computes the softmax prob values.
+                softmaxLayer.ForwardCpu(bottom, new CpuTensorScopeCollection { probabilityCpu });
 
-            var probabilityData = probability.Data;
-            var labels = bottom[1].Data;
+                var probabilityData = probabilityCpu.Data;
+                var labels = bottom[1].Data;
 
-            int num = bottom[0].Num;
-            int dim = bottom[0].Count / num;
+                int num = bottom[0].Num;
+                int dim = bottom[0].Count / num;
 
-            double loss = 0;
-            for (int i = 0; i < num; i++ )
-                loss -= Math.Log(Math.Max(probabilityData[i * dim + (int)labels[i]], double.Epsilon));
+                double loss = 0;
+                for (int i = 0; i < num; i++)
+                    loss -= Math.Log(Math.Max(probabilityData[i * dim + (int)labels[i]], double.Epsilon));
 
-            loss = loss / num;
+                loss = loss / num;
 
-            if (top.Count >= 1)
-                top[0].Data[0] = loss;
+                if (top.Count >= 1)
+                    top[0].Data[0] = loss;
 
-            if (top.Count == 2)
-                top[1].ShareData(probability);
+                if (top.Count == 2)
+                    top[1].Tensor.ShareData(probability);
 
-            return loss;
+                return loss;
+            }
         }
 
-        protected override void BackwardCpu(IList<Blob> top, IList<bool> propagateDown, IList<Blob> bottom)
+        internal override void BackwardCpu(CpuTensorScopeCollection top, IList<bool> propagateDown, CpuTensorScopeCollection bottom)
         {
             if (propagateDown[1])
                 throw new NotSupportedException("SoftmaxLossLayer cannot back-propagate to label inputs.");

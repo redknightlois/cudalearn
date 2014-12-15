@@ -7,10 +7,10 @@ using Xunit;
 
 namespace CudaLearn.Tests
 {
-    public class ThresholdLayerTests
+    public class ThresholdLayerTests : CpuLayerTests
     {
-        private readonly Blob bottom = new Blob(2, 3, 6, 5);
-        private readonly Blob top = new Blob();
+        private readonly Tensor bottom = new Tensor(2, 3, 6, 5);
+        private readonly Tensor top = new Tensor();
 
         public ThresholdLayerTests()
         {
@@ -38,22 +38,27 @@ namespace CudaLearn.Tests
             layer.Forward(bottom, top);
 
             Assert.Equal(bottom.Count, top.Count);
-            int count = bottom.Count;
-            for (int i = 0; i < count; i++)
-            {
-                Assert.True(top.DataAt(i) >= 0.0d);
-                Assert.True(top.DataAt(i) <= 1.0d);
 
-                if (top.DataAt(i) == 0.0d)
+            using (var topCpu = top.OnCpu())
+            using (var bottomCpu = bottom.OnCpu())
+            {
+                int count = bottom.Count;
+                for (int i = 0; i < count; i++)
                 {
-                    Assert.True(bottom.DataAt(i) <= layer.Parameters.Threshold);
-                }
-                else if (top.DataAt(i) == 1.0d)
-                {
-                    Assert.True(bottom.DataAt(i) > layer.Parameters.Threshold);
-                }
-                else Assert.True(false);
-            };
+                    Assert.True(topCpu.DataAt(i) >= 0.0d);
+                    Assert.True(topCpu.DataAt(i) <= 1.0d);
+
+                    if (topCpu.DataAt(i) == 0.0d)
+                    {
+                        Assert.True(bottomCpu.DataAt(i) <= layer.Parameters.Threshold);
+                    }
+                    else if (topCpu.DataAt(i) == 1.0d)
+                    {
+                        Assert.True(bottomCpu.DataAt(i) > layer.Parameters.Threshold);
+                    }
+                    else Assert.True(false);
+                };
+            }
         }
 
         [Fact]
@@ -65,22 +70,27 @@ namespace CudaLearn.Tests
             layer.Forward(bottom, top);
 
             Assert.Equal(bottom.Count, top.Count);
-            int count = bottom.Count;
-            for (int i = 0; i < count; i++)
-            {
-                Assert.True(top.DataAt(i) >= 0.0d);
-                Assert.True(top.DataAt(i) <= 1.0d);
 
-                if (top.DataAt(i) == 0.0d)
+            using (var topCpu = top.OnCpu())
+            using (var bottomCpu = bottom.OnCpu())
+            {
+                int count = bottom.Count;
+                for (int i = 0; i < count; i++)
                 {
-                    Assert.True(bottom.DataAt(i) <= layer.Parameters.Threshold);
-                }
-                else if (top.DataAt(i) == 1.0d)
-                {
-                    Assert.True(bottom.DataAt(i) > layer.Parameters.Threshold);
-                }
-                else Assert.True(false);
-            };
+                    Assert.True(topCpu.DataAt(i) >= 0.0d);
+                    Assert.True(topCpu.DataAt(i) <= 1.0d);
+
+                    if (topCpu.DataAt(i) == 0.0d)
+                    {
+                        Assert.True(bottomCpu.DataAt(i) <= layer.Parameters.Threshold);
+                    }
+                    else if (topCpu.DataAt(i) == 1.0d)
+                    {
+                        Assert.True(bottomCpu.DataAt(i) > layer.Parameters.Threshold);
+                    }
+                    else Assert.True(false);
+                };
+            }
         }
 
         [Fact]

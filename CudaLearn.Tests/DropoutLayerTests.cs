@@ -8,10 +8,10 @@ using Xunit.Extensions;
 
 namespace CudaLearn.Tests
 {
-    public class DropoutLayerTests
+    public class DropoutLayerTests : CpuLayerTests
     {
-        private readonly Blob bottom = new Blob(2, 3, 6, 5);
-        private readonly Blob top = new Blob();
+        private readonly Tensor bottom = new Tensor(2, 3, 6, 5);
+        private readonly Tensor top = new Tensor();
 
         public DropoutLayerTests()
         {
@@ -59,23 +59,27 @@ namespace CudaLearn.Tests
 
             Assert.Equal(bottom.Count, top.Count);
 
-            double scale = 1f / (1f - layer.Parameters.Ratio);
-
-            int count = bottom.Count;
-            int kept = 0;
-            for (int i = 0; i < count; i++)
+            using (var topCpu = top.OnCpu())
+            using (var bottomCpu = bottom.OnCpu())
             {
-                if (!MathHelpers.Equality(top.DataAt(i), 0))
+                double scale = 1f / (1f - layer.Parameters.Ratio);
+
+                int count = bottom.Count;
+                int kept = 0;
+                for (int i = 0; i < count; i++)
                 {
-                    kept++;
-                    Assert.True(MathHelpers.Equality(top.DataAt(i), bottom.DataAt(i) * scale));
-                }                    
-            };
+                    if (!MathHelpers.Equality(topCpu.DataAt(i), 0))
+                    {
+                        kept++;
+                        Assert.True(MathHelpers.Equality(topCpu.DataAt(i), bottomCpu.DataAt(i) * scale));
+                    }
+                };
 
-            double stdError = Math.Sqrt(ratio * (1 - ratio) / count);
-            double empiricalDropoutRatio = 1.0d - ((double)kept / count);
+                double stdError = Math.Sqrt(ratio * (1 - ratio) / count);
+                double empiricalDropoutRatio = 1.0d - ((double)kept / count);
 
-            Assert.True(MathHelpers.Equality(ratio, empiricalDropoutRatio, 1.96 * stdError));
+                Assert.True(MathHelpers.Equality(ratio, empiricalDropoutRatio, 1.96 * stdError));
+            } 
         }
 
         [Fact]
@@ -89,12 +93,16 @@ namespace CudaLearn.Tests
 
             Assert.Equal(bottom.Count, top.Count);
 
-            int count = bottom.Count;
-            for (int i = 0; i < count; i++)
+            using (var topCpu = top.OnCpu())
+            using (var bottomCpu = bottom.OnCpu())
             {
-                if (!MathHelpers.Equality(top.DataAt(i), 0))
-                    Assert.True(MathHelpers.Equality(top.DataAt(i), bottom.DataAt(i)));
-            };
+                int count = bottom.Count;
+                for (int i = 0; i < count; i++)
+                {
+                    if (!MathHelpers.Equality(topCpu.DataAt(i), 0))
+                        Assert.True(MathHelpers.Equality(topCpu.DataAt(i), bottomCpu.DataAt(i)));
+                };
+            }
         }
 
         [Fact]

@@ -8,10 +8,10 @@ using Xunit;
 namespace CudaLearn.Tests
 {
 
-    public class SoftmaxLayerTests
+    public class SoftmaxLayerTests : CpuLayerTests
     {
-        private readonly Blob bottom = new Blob(2, 10, 1, 1);
-        private readonly Blob top = new Blob();
+        private readonly Tensor bottom = new Tensor(2, 10, 1, 1);
+        private readonly Tensor top = new Tensor();
 
         public SoftmaxLayerTests()
         {
@@ -39,30 +39,35 @@ namespace CudaLearn.Tests
             layer.Forward(bottom, top);
 
             Assert.Equal(bottom.Count, top.Count);
-            int count = bottom.Count;
 
-            int num = bottom.Num;
-            int channels = bottom.Channels;
-            for (int i = 0; i < num; i++ )
+            using (var topCpu = top.OnCpu())
+            using (var bottomCpu = bottom.OnCpu())
             {
-                double sum = 0;
-                for (int j = 0; j < channels; j++)
-                    sum += top.DataAt(i, j, 0, 0);
+                int count = bottom.Count;
 
-                Assert.True(sum >= 0.999);
-                Assert.True(sum <= 1.001);
-            }
-
-            for ( int i = 0; i < num; i++ )
-            {
-                double scale = 0;
-                for (int j = 0; j < channels; j++)
-                    scale += Math.Exp(bottom.DataAt(i, j, 0, 0));
-
-                for (int j = 0; j < channels; j++)
+                int num = bottom.Num;
+                int channels = bottom.Channels;
+                for (int i = 0; i < num; i++)
                 {
-                    Assert.True(top.DataAt(i, j, 0, 0) + 1e-4f >= Math.Exp(bottom.DataAt(i, j, 0, 0)) / scale);
-                    Assert.True(top.DataAt(i, j, 0, 0) - 1e-4f <= Math.Exp(bottom.DataAt(i, j, 0, 0)) / scale);
+                    double sum = 0;
+                    for (int j = 0; j < channels; j++)
+                        sum += topCpu.DataAt(i, j, 0, 0);
+
+                    Assert.True(sum >= 0.999);
+                    Assert.True(sum <= 1.001);
+                }
+
+                for (int i = 0; i < num; i++)
+                {
+                    double scale = 0;
+                    for (int j = 0; j < channels; j++)
+                        scale += Math.Exp(bottomCpu.DataAt(i, j, 0, 0));
+
+                    for (int j = 0; j < channels; j++)
+                    {
+                        Assert.True(topCpu.DataAt(i, j, 0, 0) + 1e-4f >= Math.Exp(bottomCpu.DataAt(i, j, 0, 0)) / scale);
+                        Assert.True(topCpu.DataAt(i, j, 0, 0) - 1e-4f <= Math.Exp(bottomCpu.DataAt(i, j, 0, 0)) / scale);
+                    }
                 }
             }
         }

@@ -14,7 +14,7 @@ namespace CudaLearn
             : base(param)
         {}
 
-        public virtual void PostSetup(IList<Blob> bottom, IList<Blob> top) { }
+        public virtual void PostSetup(IList<Tensor> bottom, IList<Tensor> top) { }
 
         public override int ExactNumBottomBlobs
         {

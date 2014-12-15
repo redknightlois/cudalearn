@@ -8,10 +8,10 @@ using Xunit.Extensions;
 
 namespace CudaLearn.Tests
 {
-    public class AveragePoolingLayerTests
+    public class AveragePoolingLayerTests : CpuLayerTests
     {
-        private readonly Blob bottom = new Blob(2, 3, 6, 5);
-        private readonly Blob top = new Blob();
+        private readonly Tensor bottom = new Tensor(2, 3, 6, 5);
+        private readonly Tensor top = new Tensor();
 
         public AveragePoolingLayerTests()
         {
@@ -46,7 +46,7 @@ namespace CudaLearn.Tests
         [Fact]
         public void AveragePoolingLayer_Forward()
         {
-            var bottom = new Blob(1, 1, 3, 3);
+            var bottom = new Tensor(1, 1, 3, 3);
 
             var filler = new ConstantFiller(2.0d);
             filler.Fill(bottom);
@@ -61,16 +61,19 @@ namespace CudaLearn.Tests
 
             layer.Forward(bottom, top);
 
-            var topData = top.Data;
-            AssertInRange(8.0d / 9, topData[0]);
-            AssertInRange(4.0d / 3, topData[1]);
-            AssertInRange(8.0d / 9, topData[2]);
-            AssertInRange(4.0d / 3, topData[3]);
-            AssertInRange(2.0d, topData[4]);
-            AssertInRange(4.0d / 3, topData[5]);
-            AssertInRange(8.0d / 9, topData[6]);
-            AssertInRange(4.0d / 3, topData[7]);
-            AssertInRange(8.0d / 9, topData[8]);
+            using (var topCpu = top.OnCpu())
+            {
+                var topData = topCpu.Data;
+                AssertInRange(8.0d / 9, topData[0]);
+                AssertInRange(4.0d / 3, topData[1]);
+                AssertInRange(8.0d / 9, topData[2]);
+                AssertInRange(4.0d / 3, topData[3]);
+                AssertInRange(2.0d, topData[4]);
+                AssertInRange(4.0d / 3, topData[5]);
+                AssertInRange(8.0d / 9, topData[6]);
+                AssertInRange(4.0d / 3, topData[7]);
+                AssertInRange(8.0d / 9, topData[8]);
+            }
         }
 
         public static IEnumerable<object[]> Configurations

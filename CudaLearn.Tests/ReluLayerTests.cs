@@ -7,10 +7,10 @@ using Xunit;
 
 namespace CudaLearn.Tests
 {
-    public class ReluLayerTests
+    public class ReluLayerTests : CpuLayerTests
     {
-        private readonly Blob bottom = new Blob(2, 3, 6, 5);
-        private readonly Blob top = new Blob();
+        private readonly Tensor bottom = new Tensor(2, 3, 6, 5);
+        private readonly Tensor top = new Tensor();
 
         public ReluLayerTests()
         {
@@ -39,12 +39,17 @@ namespace CudaLearn.Tests
             layer.Forward(bottom, top);
 
             Assert.Equal(bottom.Count, top.Count);
-            int count = bottom.Count;
-            for (int i = 0; i < count; i++)
+
+            using (var topCpu = top.OnCpu())
+            using (var bottomCpu = bottom.OnCpu())
             {
-                Assert.True(top.DataAt(i) >= 0.0d);
-                Assert.True(top.DataAt(i) == 0.0d || top.DataAt(i) == bottom.DataAt(i));
-            };
+                int count = bottom.Count;
+                for (int i = 0; i < count; i++)
+                {
+                    Assert.True(topCpu.DataAt(i) >= 0.0d);
+                    Assert.True(topCpu.DataAt(i) == 0.0d || topCpu.DataAt(i) == bottomCpu.DataAt(i));
+                };
+            }
         }
 
         [Fact]
@@ -69,19 +74,24 @@ namespace CudaLearn.Tests
             double slope = layer.Parameters.NegativeSlope;
 
             Assert.Equal(bottom.Count, top.Count);
-            int count = bottom.Count;
-            for (int i = 0; i < count; i++)
+
+            using (var topCpu = top.OnCpu())
+            using (var bottomCpu = bottom.OnCpu())
             {
-                if (bottom.DataAt(i) <= 0)
+                int count = bottom.Count;
+                for (int i = 0; i < count; i++)
                 {
-                    Assert.True(top.DataAt(i) >= bottom.DataAt(i) * slope - 0.000001);
-                }
-                else
-                {
-                    Assert.True(top.DataAt(i) >= 0.0d);
-                    Assert.True(top.DataAt(i) == 0.0d || top.DataAt(i) == bottom.DataAt(i));
-                }
-            };
+                    if (bottomCpu.DataAt(i) <= 0)
+                    {
+                        Assert.True(topCpu.DataAt(i) >= bottomCpu.DataAt(i) * slope - 0.000001);
+                    }
+                    else
+                    {
+                        Assert.True(topCpu.DataAt(i) >= 0.0d);
+                        Assert.True(topCpu.DataAt(i) == 0.0d || topCpu.DataAt(i) == bottomCpu.DataAt(i));
+                    }
+                };
+            }
         }
 
         [Fact]
@@ -97,19 +107,24 @@ namespace CudaLearn.Tests
             double slope = layer.Parameters.NegativeSlope;
 
             Assert.Equal(bottom.Count, top.Count);
-            int count = bottom.Count;
-            for (int i = 0; i < count; i++)
+
+            using (var topCpu = top.OnCpu())
+            using (var bottomCpu = bottom.OnCpu())
             {
-                if (bottom.DataAt(i) <= 0)
+                int count = bottom.Count;
+                for (int i = 0; i < count; i++)
                 {
-                    Assert.True(top.DataAt(i) >= bottom.DataAt(i) * slope - 0.000001);
-                }
-                else
-                {
-                    Assert.True(top.DataAt(i) >= 0.0d);
-                    Assert.True(top.DataAt(i) == 0.0d || top.DataAt(i) == bottom.DataAt(i));
-                }
-            };
+                    if (bottomCpu.DataAt(i) <= 0)
+                    {
+                        Assert.True(topCpu.DataAt(i) >= bottomCpu.DataAt(i) * slope - 0.000001);
+                    }
+                    else
+                    {
+                        Assert.True(topCpu.DataAt(i) >= 0.0d);
+                        Assert.True(topCpu.DataAt(i) == 0.0d || topCpu.DataAt(i) == bottomCpu.DataAt(i));
+                    }
+                };
+            }
         }
 
         [Fact]

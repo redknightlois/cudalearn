@@ -9,10 +9,10 @@ using Xunit.Extensions;
 namespace CudaLearn.Tests
 {
 
-    public class StocasticPoolingLayerTests
+    public class StocasticPoolingLayerTests : CpuLayerTests
     {
-        private readonly Blob bottom = new Blob(2, 3, 6, 5);
-        private readonly Blob top = new Blob();
+        private readonly Tensor bottom = new Tensor(2, 3, 6, 5);
+        private readonly Tensor top = new Tensor();
 
         public StocasticPoolingLayerTests()
         {
@@ -46,33 +46,37 @@ namespace CudaLearn.Tests
             int height = top.Height;
             int width = top.Width;
 
-            var topData = top.Data;
-            var bottomData = bottom.Data;
-            
-            for (int n = 0; n < num; n++)
+            using (var topCpu = top.OnCpu())
+            using (var bottomCpu = bottom.OnCpu())
             {
-                for (int c = 0; c < channels; c++)
+                var topData = topCpu.Data;
+                var bottomData = bottomCpu.Data;
+
+                for (int n = 0; n < num; n++)
                 {
-                    for (int ph = 0; ph < height; ph++)
+                    for (int c = 0; c < channels; c++)
                     {
-                        for (int pw = 0; pw < width; pw++)
+                        for (int ph = 0; ph < height; ph++)
                         {
-                            double pooled = topData[top.Offset(n, c, ph, pw)];
-
-                            int hstart = ph * 2;
-                            int hend = Math.Min(hstart + 3, bottom.Height);
-                            int wstart = pw * 2;
-                            int wend = Math.Min(wstart + 3, bottom.Width);
-
-                            bool hasEqual = false;
-                            for (int h = hstart; h < hend; ++h) 
+                            for (int pw = 0; pw < width; pw++)
                             {
-                                for (int w = wstart; w < wend; ++w)
+                                double pooled = topData[topCpu.Offset(n, c, ph, pw)];
+
+                                int hstart = ph * 2;
+                                int hend = Math.Min(hstart + 3, bottom.Height);
+                                int wstart = pw * 2;
+                                int wend = Math.Min(wstart + 3, bottom.Width);
+
+                                bool hasEqual = false;
+                                for (int h = hstart; h < hend; ++h)
                                 {
-                                    hasEqual |= (pooled == bottomData[bottom.Offset(n, c, h, w)]);
+                                    for (int w = wstart; w < wend; ++w)
+                                    {
+                                        hasEqual |= (pooled == bottomData[bottomCpu.Offset(n, c, h, w)]);
+                                    }
                                 }
+                                Assert.True(hasEqual);
                             }
-                            Assert.True(hasEqual);
                         }
                     }
                 }

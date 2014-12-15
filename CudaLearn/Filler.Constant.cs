@@ -34,12 +34,16 @@ namespace CudaLearn
             : base(param)
         { }
 
-        public override void Fill(Blob blob)
+        public override void Fill(Tensor blob)
         {
-            var data = blob.Data;
-            var value = this.Parameters.Value;
+            using (var @cpuBlob = blob.OnCpu())
+            {
+                var data = @cpuBlob.Data;
 
-            data.MapInplace(x => value, Zeros.Include);
+                var value = this.Parameters.Value;
+
+                data.MapInplace(x => value, Zeros.Include);
+            }
         }
     }
 }

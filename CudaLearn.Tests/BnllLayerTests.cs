@@ -7,10 +7,10 @@ using Xunit;
 
 namespace CudaLearn.Tests
 {
-    public class BnllLayerTests
+    public class BnllLayerTests : CpuLayerTests
     {
-        private readonly Blob bottom = new Blob(2, 3, 6, 5);
-        private readonly Blob top = new Blob();
+        private readonly Tensor bottom = new Tensor(2, 3, 6, 5);
+        private readonly Tensor top = new Tensor();
 
         public BnllLayerTests()
         {
@@ -38,12 +38,17 @@ namespace CudaLearn.Tests
             layer.Forward(bottom, top);
 
             Assert.Equal(bottom.Count, top.Count);
-            int count = bottom.Count;
-            for (int i = 0; i < count; i++)
+
+            using (var topCpu = top.OnCpu())
+            using (var bottomCpu = bottom.OnCpu())
             {
-                Assert.True(top.DataAt(i) >= 0.0d);
-                Assert.True(top.DataAt(i) >= bottom.DataAt(i));
-            };
+                int count = bottom.Count;
+                for (int i = 0; i < count; i++)
+                {
+                    Assert.True(topCpu.DataAt(i) >= 0.0d);
+                    Assert.True(topCpu.DataAt(i) >= bottomCpu.DataAt(i));
+                };
+            }
         }
 
         [Fact]

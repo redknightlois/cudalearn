@@ -42,7 +42,7 @@ namespace CudaLearn
         {
         }
 
-        public override void Setup(IList<Blob> bottom, IList<Blob> top)
+        public override void Setup(TensorCollection bottom, TensorCollection top)
         {
             base.Setup(bottom, top);
         }

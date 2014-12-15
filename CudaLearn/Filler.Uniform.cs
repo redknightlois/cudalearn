@@ -36,12 +36,15 @@ namespace CudaLearn
         public UniformFiller(double min, double max) : this ( new UniformFillerConfiguration( min, max ))
         {}
 
-        public override void Fill(Blob blob)
+        public override void Fill(Tensor blob)
         {
-            var data = blob.Data;
+            using (var @cpuBlob = blob.OnCpu())
+            {
+                var data = @cpuBlob.Data;
 
-            var distribution = new ContinuousUniform(this.Parameters.Min, this.Parameters.Max);
-            data.MapInplace(x => distribution.Sample(), Zeros.Include);
+                var distribution = new ContinuousUniform(this.Parameters.Min, this.Parameters.Max);
+                data.MapInplace(x => distribution.Sample(), Zeros.Include);
+            }
         }
     }
 }

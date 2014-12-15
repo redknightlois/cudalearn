@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Runtime.ConstrainedExecution;
 using System.Text;
@@ -81,36 +82,49 @@ namespace CudaLearn
 
 
 
-        public void Setup( Blob bottom, Blob top )
+        public void Setup( Tensor bottom, Tensor top )
         {
-            var bottomList = new List<Blob> { bottom };
-            var topList = new List<Blob> { top };
+            Contract.Requires(bottom != null);
+            Contract.Requires(top != null);
+
+            var bottomList = new TensorCollection { bottom };
+            var topList = new TensorCollection { top };
             this.Setup( bottomList, topList );
         }
 
-        public virtual void Setup(IList<Blob> bottom, IList<Blob> top)
+        public virtual void Setup(TensorCollection bottom, TensorCollection top)
         {
+            Contract.Requires(bottom != null);
+            Contract.Requires(top != null);
+
             Guard.That(() => bottom).IsNotNull();
             Guard.That(() => top).IsNotNull();
    
             CheckBlobCount(bottom, top);
         }
 
-        public double Forward(Blob bottom, Blob top)
+        public double Forward(Tensor bottom, Tensor top)
         {
+            Contract.Requires(bottom != null);
+            Contract.Requires(top != null);
+
             Guard.That(() => bottom).IsNotNull();
             Guard.That(() => top).IsNotNull();
 
-            var bottomList = new List<Blob> { bottom };
-            var topList = new List<Blob> { top };
+            var bottomList = new TensorCollection { bottom };
+            var topList = new TensorCollection { top };
 
             return this.Forward(bottomList, topList);
         }
 
-        public double Forward(IList<Blob> bottom, IList<Blob> top)
+        public double Forward(TensorCollection bottom, TensorCollection top)
         {
-            // TODO Fail if not initialized.
+            Contract.Requires(bottom != null);
+            Contract.Requires(top != null);
+            Contract.ForAll<Tensor>(bottom, x => x != null);
+            Contract.ForAll<Tensor>(top, x => x != null);
 
+            // TODO Fail if not initialized.
             Guard.That(() => bottom).IsNotNull();
             Guard.That(() => top).IsNotNull();
 
@@ -120,41 +134,68 @@ namespace CudaLearn
             Guard.That(() => top).IsTrue(x => !x.Contains(null), "Cannot contain null.");
 
 #endif
-
-            switch(Context.Instance.Mode)
+            switch (Context.Instance.Mode)
             {
                 case ExecutionModeType.Automatic:
                     {
                         if (forwardGpuSupported)
                         {
-                            try
+                            using (var bottomGpu = bottom.OnGpu())
+                            using (var topGpu = top.OnGpu())
                             {
-                                return ForwardGpu(bottom, top);
-                            }
-                            catch (NotSupportedException)
-                            {
-                                forwardGpuSupported = false;
+                                try
+                                {
+                                    return ForwardGpu(bottomGpu, topGpu);
+                                }
+                                catch (NotSupportedException)
+                                {
+                                    forwardGpuSupported = false;
+                                }
                             }
                         }
 
-                        return ForwardCpu(bottom, top);
+                        using (var bottomCpu = bottom.OnCpu())
+                        using (var topCpu = top.OnCpu())
+                        {
+                            return ForwardCpu(bottomCpu, topCpu);
+                        }
                     }
-                case ExecutionModeType.Gpu: return ForwardGpu(bottom, top);
-                case ExecutionModeType.Cpu: return ForwardCpu(bottom, top);
+                case ExecutionModeType.Gpu:
+                    {
+                        using (var bottomGpu = bottom.OnGpu())
+                        using (var topGpu = top.OnGpu())
+                        {
+                            return ForwardGpu(bottomGpu, topGpu);
+                        }
+                    }
+                case ExecutionModeType.Cpu:
+                    {
+                        using (var bottomCpu = bottom.OnCpu())
+                        using (var topCpu = top.OnCpu())
+                        {
+                            return ForwardCpu(bottomCpu, topCpu);
+                        }
+                    }
                 default: throw new NotSupportedException(string.Format("Mode of operation '{0}' not support", Context.Instance.Mode.ToString()));
             }
-        }
+        }        
 
-        public void Backward(Blob top, IList<bool> propagateDown, Blob bottom)
+        public void Backward(Tensor top, IList<bool> propagateDown, Tensor bottom)
         {
             Guard.That(() => bottom).IsNotNull();
             Guard.That(() => top).IsNotNull();
 
-            this.Backward(new[] { top }, propagateDown, new[] {bottom});
+            this.Backward(new TensorCollection { top }, propagateDown, new TensorCollection { bottom });
         }
 
-        public void Backward(IList<Blob> top, IList<bool> propagateDown, IList<Blob> bottom)
+        public void Backward(TensorCollection top, IList<bool> propagateDown, TensorCollection bottom)
         {
+            Contract.Requires(bottom != null);
+            Contract.Requires(top != null);
+            Contract.Requires(propagateDown != null);
+            Contract.ForAll<Tensor>(bottom, x => x != null);
+            Contract.ForAll<Tensor>(top, x => x != null);            
+
             // TODO Fail if not initialized.
 
             Guard.That(() => bottom).IsNotNull();
@@ -173,53 +214,71 @@ namespace CudaLearn
                     {
                         if (backwardGpuSupported)
                         {
-                            try
+                            using (var bottomGpu = bottom.OnGpu())
+                            using (var topGpu = top.OnGpu())
                             {
-                                BackwardGpu(top, propagateDown, bottom);
-                                return;
-                            }
-                            catch (NotSupportedException)
-                            {
-                                backwardGpuSupported = false;
+                                try
+                                {
+                                    BackwardGpu(topGpu, propagateDown, bottomGpu);
+                                }
+                                catch (NotSupportedException)
+                                {
+                                    backwardGpuSupported = false;
+                                }
                             }
                         }
-
-                        BackwardCpu(top, propagateDown, bottom);
+                        else
+                        {
+                            using (var bottomCpu = bottom.OnCpu())
+                            using (var topCpu = top.OnCpu())
+                            {
+                                BackwardCpu(topCpu, propagateDown, bottomCpu);
+                            }                            
+                        }
+                       
                         return;
                     }
                 case ExecutionModeType.Gpu:
                     {
-                        BackwardGpu(top, propagateDown, bottom);
+                        using (var bottomGpu = bottom.OnGpu())
+                        using (var topGpu = top.OnGpu())
+                        {
+                            BackwardGpu(topGpu, propagateDown, bottomGpu);
+                        }
                         return;
                     }
                 case ExecutionModeType.Cpu:
                     {
-                        BackwardCpu(top, propagateDown, bottom);
+                        using (var bottomCpu = bottom.OnCpu())
+                        using (var topCpu = top.OnCpu())
+                        {
+                            BackwardCpu(topCpu, propagateDown, bottomCpu);
+                        }                            
                         return;
                     }
                 default: throw new NotSupportedException(string.Format("Mode of operation '{0}' not support", Context.Instance.Mode.ToString()));
             }
         }
 
-        protected abstract double ForwardCpu(IList<Blob> bottom, IList<Blob> top);
+        internal abstract double ForwardCpu(CpuTensorScopeCollection bottom, CpuTensorScopeCollection top);
 
-        protected virtual double ForwardGpu(IList<Blob> bottom, IList<Blob> top)
+        internal virtual double ForwardGpu(GpuTensorScopeCollection bottom, GpuTensorScopeCollection top)
         {
             throw new NotSupportedException();
         }
 
 
-        protected virtual void BackwardCpu(IList<Blob> top, IList<bool> propagateDown, IList<Blob> bottom)
+        internal virtual void BackwardCpu(CpuTensorScopeCollection top, IList<bool> propagateDown, CpuTensorScopeCollection bottom)
         {
             throw new NotSupportedException();
         }
 
-        protected virtual void BackwardGpu(IList<Blob> top, IList<bool> propagateDown, IList<Blob> bottom)
+        internal virtual void BackwardGpu(GpuTensorScopeCollection top, IList<bool> propagateDown, GpuTensorScopeCollection bottom)
         {
             throw new NotSupportedException();
         }
 
-        protected virtual void CheckBlobCount(IList<Blob> bottom, IList<Blob> top)
+        protected virtual void CheckBlobCount(TensorCollection bottom, TensorCollection top)
         {
             // Bottom layer
             if (ExactNumBottomBlobs >= 0)
@@ -307,7 +366,7 @@ namespace CudaLearn
 
         // Declare for each bottom blob whether to allow force_backward -- that is,
         // if AllowForceBackward(i) == false, we will ignore the force_backward
-        // setting and backpropagate to blob i only if it needs gradient information
+        // setting and back-propagate to blob i only if it needs gradient information
         // (as is done when force_backward == false).
         protected virtual bool AllowForceBackward(int bottomIndex)
         {

@@ -8,23 +8,23 @@ using Xunit;
 namespace CudaLearn.Tests
 {
     //TODO Implement a tests that will use a known loss and check accordingly. I am not entirely sure that the current gradient based implementation is correct.
-    public class EuclideanLossLayerTests
+    public class EuclideanLossLayerTests : CpuLayerTests
     {
-        private readonly Blob blobBottomData;
-        private readonly Blob blobBottomLabel;
+        private readonly Tensor blobBottomData;
+        private readonly Tensor blobBottomLabel;
 
-        private readonly IList<Blob> bottom = new List<Blob>();
-        private readonly IList<Blob> top = new List<Blob>();
+        private readonly TensorCollection bottom = new TensorCollection();
+        private readonly TensorCollection top = new TensorCollection();
 
         public EuclideanLossLayerTests()
         {             
             var filler = new GaussianFiller();
 
-            blobBottomData = new Blob(10, 5, 1, 1);
+            blobBottomData = new Tensor(10, 5, 1, 1);
             filler.Fill(blobBottomData);
             bottom.Add(blobBottomData);
 
-            blobBottomLabel = new Blob(10, 5, 1, 1);
+            blobBottomLabel = new Tensor(10, 5, 1, 1);
             filler.Fill(blobBottomLabel);
             bottom.Add(blobBottomLabel);
         }
