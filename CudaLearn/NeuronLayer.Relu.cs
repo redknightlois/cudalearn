@@ -2,6 +2,7 @@
 using Seterlund.CodeGuard;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +22,8 @@ namespace CudaLearn
 
         public ReluLayerConfiguration(double negativeSlope) : base ( LayerType.Relu )
         {
+            Contract.Requires(negativeSlope >= 0);
+
             Guard.That(() => negativeSlope).IsGreaterOrEqualThan(0);
 
             this.NegativeSlope = negativeSlope;

@@ -3,6 +3,7 @@ using MathNet.Numerics.LinearAlgebra;
 using Seterlund.CodeGuard;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +19,8 @@ namespace CudaLearn
         public DropoutLayerConfiguration(double ratio)
             : base(LayerType.Dropout)
         {
+            Contract.Requires(ratio >= 0.0d && ratio <= 1.0d);
+
             Guard.That(() => ratio).IsGreaterOrEqualThan(0);
             Guard.That(() => ratio).IsLessOrEqualThan(1);
 

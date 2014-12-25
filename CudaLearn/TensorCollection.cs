@@ -14,18 +14,25 @@ namespace CudaLearn
         { }
         public TensorCollection(int capacity)
             : base(capacity)
-        { }
+        {
+            Contract.Requires(capacity >= 0);
+        }
+
         public TensorCollection(IEnumerable<Tensor> list) : base ( list )
         { }
 
 
         public CpuTensorScopeCollection OnCpu ()
         {
+            Contract.Ensures(Contract.Result<CpuTensorScopeCollection>() != null);
+
             return new CpuTensorScopeCollection(this.Select(x => x.OnCpu())); 
         }
 
-        public GpuTensorScopeCollection OnGpu ()
+        public GpuTensorScopeCollection OnGpu()
         {
+            Contract.Ensures(Contract.Result<GpuTensorScopeCollection>() != null);
+
             return new GpuTensorScopeCollection(this.Select(x => x.OnGpu())); 
         }
 
@@ -44,7 +51,9 @@ namespace CudaLearn
         { }
         public CpuTensorScopeCollection(int capacity)
             : base(capacity)
-        { }
+        {
+            Contract.Requires(capacity >= 0);
+        }
 
         public CpuTensorScopeCollection(CpuTensorScope item)
             : base(new[] { item })
@@ -89,7 +98,9 @@ namespace CudaLearn
         { }
         public GpuTensorScopeCollection(int capacity)
             : base(capacity)
-        { }
+        {
+            Contract.Requires(capacity >= 0);
+        }
 
         public GpuTensorScopeCollection(GpuTensorScope item) : base (new[] { item })
         { }

@@ -5,6 +5,7 @@ using MathNet.Numerics.Providers.LinearAlgebra;
 using Seterlund.CodeGuard;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +17,8 @@ namespace CudaLearn
         public InnerProductLayerConfiguration(int outputs, bool bias = true, FillerConfiguration weightsFiller = null, FillerConfiguration biasFiller = null)
             : base(LayerType.Dropout)
         {
+            Contract.Requires(outputs > 0);
+
             Guard.That(() => outputs).IsGreaterThan(0);
 
             this.Outputs = outputs;

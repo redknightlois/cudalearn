@@ -105,8 +105,7 @@ namespace CudaLearn
 
         public double Forward(Tensor bottom, Tensor top)
         {
-            Contract.Requires(bottom != null);
-            Contract.Requires(top != null);
+            Contract.Requires(bottom != null && top != null);
 
             Guard.That(() => bottom).IsNotNull();
             Guard.That(() => top).IsNotNull();
@@ -119,8 +118,8 @@ namespace CudaLearn
 
         public double Forward(TensorCollection bottom, TensorCollection top)
         {
-            Contract.Requires(bottom != null);
-            Contract.Requires(top != null);
+            Contract.Requires(bottom != null && top != null);
+            Contract.Requires(bottom.Count > 0 && top.Count > 0);
             Contract.ForAll<Tensor>(bottom, x => x != null);
             Contract.ForAll<Tensor>(top, x => x != null);
 
@@ -182,6 +181,8 @@ namespace CudaLearn
 
         public void Backward(Tensor top, IList<bool> propagateDown, Tensor bottom)
         {
+            Contract.Requires(bottom != null && top != null);
+
             Guard.That(() => bottom).IsNotNull();
             Guard.That(() => top).IsNotNull();
 
@@ -190,8 +191,8 @@ namespace CudaLearn
 
         public void Backward(TensorCollection top, IList<bool> propagateDown, TensorCollection bottom)
         {
-            Contract.Requires(bottom != null);
-            Contract.Requires(top != null);
+            Contract.Requires(bottom != null && top != null);
+            Contract.Requires(bottom.Count > 0 && top.Count > 0);
             Contract.Requires(propagateDown != null);
             Contract.ForAll<Tensor>(bottom, x => x != null);
             Contract.ForAll<Tensor>(top, x => x != null);            
@@ -409,6 +410,8 @@ namespace CudaLearn
 
         protected Layer(TConfiguration param)
         {
+            Contract.Requires(param != null);
+
             Guard.That(() => param).IsNotNull();
 
             this.Parameters = param;

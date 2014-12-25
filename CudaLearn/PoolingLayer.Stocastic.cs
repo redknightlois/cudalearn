@@ -150,7 +150,7 @@ namespace CudaLearn
         }
 
 
-        protected double ForwardTestCpu(IList<CpuTensorScope> bottom, IList<CpuTensorScope> top)
+        protected double ForwardTestCpu(CpuTensorScopeCollection bottom, CpuTensorScopeCollection top)
         {
             var bottomData = bottom[0].Data;
             var topData = top[0].Data;

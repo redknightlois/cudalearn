@@ -2,6 +2,7 @@
 using Seterlund.CodeGuard;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,10 +13,17 @@ namespace CudaLearn
     {
         public AveragePoolingLayerConfiguration(int kernelSize, int stride = 1, int padding = 0)
             : this(new Size(kernelSize, kernelSize), new Size(stride, stride), new Size(padding, padding))
-        { }
-
-        public AveragePoolingLayerConfiguration( Size kernel, Size stride, Size padding = default(Size)) : base ( LayerType.AveragePooling)
         {
+            Contract.Requires(kernelSize > 0);
+        }
+
+        public AveragePoolingLayerConfiguration(Size kernel, Size stride, Size padding = default(Size))
+            : base(LayerType.AveragePooling)
+        {
+            Contract.Requires(kernel.Height > 0 && kernel.Width > 0);
+            Contract.Requires(stride.Height > 0 && stride.Width > 0);
+            Contract.Requires(padding.Height >= 0 && padding.Width >= 0);
+
             this.Kernel = kernel;
             this.Stride = stride;
             this.Padding = padding;

@@ -458,7 +458,7 @@ namespace CudaLearn
                 }
                 finally
                 {
-                    this.Location = TensorLocation.Cpu;
+                    this.Location = TensorLocation.Gpu;
                 }
             }
         }
