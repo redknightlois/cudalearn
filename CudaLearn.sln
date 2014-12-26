@@ -26,6 +26,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{8BF45E
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{FC60EC16-E6EB-40D3-9C07-E9459E95FAFD}"
+	ProjectSection(SolutionItems) = preProject
+		build.cmd = build.cmd
+		build.fsx = build.fsx
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
