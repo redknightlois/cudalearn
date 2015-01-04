@@ -50,16 +50,16 @@ namespace CudaLearn
             get { return Tensor.Num * Tensor.Channels * Tensor.Height * Tensor.Width; }
         }        
 
-        internal CpuTensorScope(Tensor @this, Vector<double> data, Vector<double> diff)
+        internal CpuTensorScope(Tensor @this)
         {
             Contract.Requires(@this != null);
-            Contract.Requires(data != null);
-            Contract.Requires(diff != null);
             Contract.Requires(@this.Count != 0);
 
             this.Tensor = @this;
-            this._data = data;
-            this._diff = diff;
+
+            var tensorImpl = (ITensorHostImpl) @this;
+            this._data = Vector<double>.Build.OfStorage( tensorImpl.Data );
+            this._diff = Vector<double>.Build.OfStorage( tensorImpl.Diff );
         }
 
         ~CpuTensorScope()
@@ -228,7 +228,13 @@ namespace CudaLearn
         }
     }
 
-    public class Tensor
+    internal interface ITensorHostImpl
+    {
+        DenseVectorStorage<double> Data { get; }
+        DenseVectorStorage<double> Diff { get; }
+    }
+
+    public class Tensor : ITensorHostImpl
     {
         public TensorLocation Location { get; private set; }
 
@@ -424,7 +430,7 @@ namespace CudaLearn
                     Lock(TensorLocation.Cpu);
                     switch (this.Location)
                     {
-                        case TensorLocation.Cpu: return new CpuTensorScope(this, Vector<double>.Build.OfStorage(_data), Vector<double>.Build.OfStorage(_diff));
+                        case TensorLocation.Cpu: return new CpuTensorScope(this);
                         case TensorLocation.Gpu: throw new NotImplementedException();
                         default: throw new NotSupportedException("The location is not supported. Make sure you didn't a new TensorLocation and haven't updated this code appropriately");
                     }
@@ -461,6 +467,16 @@ namespace CudaLearn
                     this.Location = TensorLocation.Gpu;
                 }
             }
+        }
+
+        DenseVectorStorage<double> ITensorHostImpl.Data
+        {
+            get { return this._data; }
+        }
+
+        DenseVectorStorage<double> ITensorHostImpl.Diff
+        {
+            get { return this._diff; }
         }
     }
 }

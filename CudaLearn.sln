@@ -4,6 +4,10 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CudaLearn", "src\CudaLearn\CudaLearn.csproj", "{5EF2A1B7-88F4-414B-B903-2E030D02485D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{68914540-2E9F-4346-ABE6-12FC4786CCC5} = {68914540-2E9F-4346-ABE6-12FC4786CCC5}
+		{5684E0F7-1038-4593-931D-D0F31D92BD33} = {5684E0F7-1038-4593-931D-D0F31D92BD33}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CudaLearn.Tests", "src\CudaLearn.Tests\CudaLearn.Tests.csproj", "{CBDBE39A-AC9B-4A24-8942-5BCA24134E71}"
 EndProject
@@ -32,6 +36,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{FC60EC16
 		build.fsx = build.fsx
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CudaLearn.Native.Viennacl", "src\CudaLearn.Native.Viennacl\CudaLearn.Native.vcxproj", "{5684E0F7-1038-4593-931D-D0F31D92BD33}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -58,6 +64,10 @@ Global
 		{8525FC02-E582-48BA-B16F-8265AD4D028A}.Debug|x64.Build.0 = Debug|x64
 		{8525FC02-E582-48BA-B16F-8265AD4D028A}.Release|x64.ActiveCfg = Release|x64
 		{8525FC02-E582-48BA-B16F-8265AD4D028A}.Release|x64.Build.0 = Release|x64
+		{5684E0F7-1038-4593-931D-D0F31D92BD33}.Debug|x64.ActiveCfg = Debug|x64
+		{5684E0F7-1038-4593-931D-D0F31D92BD33}.Debug|x64.Build.0 = Debug|x64
+		{5684E0F7-1038-4593-931D-D0F31D92BD33}.Release|x64.ActiveCfg = Release|x64
+		{5684E0F7-1038-4593-931D-D0F31D92BD33}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

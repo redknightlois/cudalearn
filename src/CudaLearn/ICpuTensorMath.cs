@@ -9,14 +9,14 @@ namespace CudaLearn
 {
     public enum BlasTranspose
     {
-        None,
-        Transpose
+        None = 0,
+        Transpose = 1
     }
 
     [ContractClass(typeof(ITensorMathContract))]
-    public interface ITensorMath
+    public interface ICpuTensorMath
     {
-        void Gemm(BlasTranspose transA, BlasTranspose transB, int m, int n, int k, double alpha, ArraySlice<double> a, ArraySlice<double> b, float beta, ArraySlice<double> c);
+        void Gemm(BlasTranspose transA, BlasTranspose transB, int m, int n, int k, double alpha, ArraySlice<double> a, ArraySlice<double> b, double beta, ArraySlice<double> c);
         void Gemv(BlasTranspose transA, int m, int n, double alpha, ArraySlice<double> a, ArraySlice<double> x, double beta, ArraySlice<double> y);
         void Axpy(double alpha, ArraySlice<double> x, ArraySlice<double> y);
         void Axpby(double alpha, ArraySlice<double> x, double beta, ArraySlice<double> y);
@@ -45,11 +45,10 @@ namespace CudaLearn
         void Scale(double alpha, ArraySlice<double> x, ArraySlice<double> y);
     }
 
-    [ContractClassFor(typeof(ITensorMath))]
-    internal abstract class ITensorMathContract : ITensorMath
+    [ContractClassFor(typeof(ICpuTensorMath))]
+    internal abstract class ITensorMathContract : ICpuTensorMath
     {
-
-        void ITensorMath.Gemm(BlasTranspose transA, BlasTranspose transB, int m, int n, int k, double alpha, ArraySlice<double> a, ArraySlice<double> b, float beta, ArraySlice<double> c)
+        void ICpuTensorMath.Gemm(BlasTranspose transA, BlasTranspose transB, int m, int n, int k, double alpha, ArraySlice<double> a, ArraySlice<double> b, double beta, ArraySlice<double> c)
         {
             Contract.Requires(m > 0 && n > 0 && k > 0);
             
@@ -68,7 +67,7 @@ namespace CudaLearn
             Contract.Ensures(Contract.ForAll(c, cc => !double.IsNaN(cc)));
         }
 
-        void ITensorMath.Gemv(BlasTranspose transA, int m, int n, double alpha, ArraySlice<double> a, ArraySlice<double> x, double beta, ArraySlice<double> y)
+        void ICpuTensorMath.Gemv(BlasTranspose transA, int m, int n, double alpha, ArraySlice<double> a, ArraySlice<double> x, double beta, ArraySlice<double> y)
         {
             Contract.Requires(a != null);
             Contract.Requires(x != null);
@@ -84,7 +83,7 @@ namespace CudaLearn
             Contract.Ensures(Contract.ForAll(y, yy => !double.IsNaN(yy)));
         }
 
-        void ITensorMath.Axpy(double alpha, ArraySlice<double> x, ArraySlice<double> y)
+        void ICpuTensorMath.Axpy(double alpha, ArraySlice<double> x, ArraySlice<double> y)
         {
             Contract.Requires(x != null);
             Contract.Requires(y != null);
@@ -97,7 +96,7 @@ namespace CudaLearn
             Contract.Ensures(Contract.ForAll(y, yy => !double.IsNaN(yy)));
         }
 
-        void ITensorMath.Axpby(double alpha, ArraySlice<double> x, double beta, ArraySlice<double> y)
+        void ICpuTensorMath.Axpby(double alpha, ArraySlice<double> x, double beta, ArraySlice<double> y)
         {
             Contract.Requires(x != null);
             Contract.Requires(y != null);
@@ -110,28 +109,28 @@ namespace CudaLearn
             Contract.Ensures(Contract.ForAll(y, yy => !double.IsNaN(yy)));
         }
 
-        void ITensorMath.Set(double alpha, ArraySlice<double> y)
+        void ICpuTensorMath.Set(double alpha, ArraySlice<double> y)
         {
             Contract.Requires(y != null);
             Contract.Requires(!double.IsNaN(alpha));
             Contract.Ensures(Contract.ForAll(y, x => x == alpha));
         }
 
-        void ITensorMath.Set(int alpha, ArraySlice<double> y)
+        void ICpuTensorMath.Set(int alpha, ArraySlice<double> y)
         {
             Contract.Requires(y != null);
             Contract.Requires(!double.IsNaN(alpha));
             Contract.Ensures(Contract.ForAll(y, x => x == alpha));
         }
 
-        void ITensorMath.Copy(ArraySlice<double> x, ArraySlice<double> y)
+        void ICpuTensorMath.Copy(ArraySlice<double> x, ArraySlice<double> y)
         {
             Contract.Requires(x != null);
             Contract.Requires(y != null);
             Contract.Requires(x.Length == y.Length);
         }
         
-        void ITensorMath.Add(double alpha, ArraySlice<double> y)
+        void ICpuTensorMath.Add(double alpha, ArraySlice<double> y)
         {
             Contract.Requires(y != null);
 
@@ -139,7 +138,7 @@ namespace CudaLearn
             Contract.Ensures(Contract.ForAll(y, yy => !double.IsNaN(yy)));
         }
 
-        void ITensorMath.Add(ArraySlice<double> a, ArraySlice<double> b)
+        void ICpuTensorMath.Add(ArraySlice<double> a, ArraySlice<double> b)
         {
             Contract.Requires(a != null);
             Contract.Requires(b != null);
@@ -151,7 +150,7 @@ namespace CudaLearn
             Contract.Ensures(Contract.ForAll(b, bb => !double.IsNaN(bb)));
         }
 
-        void ITensorMath.Substract(ArraySlice<double> a, ArraySlice<double> b)
+        void ICpuTensorMath.Substract(ArraySlice<double> a, ArraySlice<double> b)
         {
             Contract.Requires(a != null);
             Contract.Requires(b != null);
@@ -163,7 +162,7 @@ namespace CudaLearn
             Contract.Ensures(Contract.ForAll(b, bb => !double.IsNaN(bb)));
         }
 
-        void ITensorMath.Multiply(ArraySlice<double> a, ArraySlice<double> b)
+        void ICpuTensorMath.Multiply(ArraySlice<double> a, ArraySlice<double> b)
         {
             Contract.Requires(a != null);
             Contract.Requires(b != null);
@@ -175,7 +174,7 @@ namespace CudaLearn
             Contract.Ensures(Contract.ForAll(b, bb => !double.IsNaN(bb)));
         }
 
-        void ITensorMath.Divide(ArraySlice<double> a, ArraySlice<double> b)
+        void ICpuTensorMath.Divide(ArraySlice<double> a, ArraySlice<double> b)
         {
             Contract.Requires(a != null);
             Contract.Requires(b != null);
@@ -187,7 +186,7 @@ namespace CudaLearn
             Contract.Ensures(Contract.ForAll(b, bb => !double.IsNaN(bb)));
         }
 
-        void ITensorMath.Powx(ArraySlice<double> a, ArraySlice<double> b)
+        void ICpuTensorMath.Powx(ArraySlice<double> a, ArraySlice<double> b)
         {
             Contract.Requires(a != null);
             Contract.Requires(b != null);
@@ -199,7 +198,7 @@ namespace CudaLearn
             Contract.Ensures(Contract.ForAll(b, bb => !double.IsNaN(bb)));
         }
 
-        void ITensorMath.Square(ArraySlice<double> a, ArraySlice<double> b)
+        void ICpuTensorMath.Square(ArraySlice<double> a, ArraySlice<double> b)
         {
             Contract.Requires(a != null);
             Contract.Requires(b != null);
@@ -212,7 +211,7 @@ namespace CudaLearn
             Contract.Ensures(Contract.ForAll(b, bb => !double.IsNaN(bb)));
         }
 
-        void ITensorMath.Exp(ArraySlice<double> a, ArraySlice<double> b)
+        void ICpuTensorMath.Exp(ArraySlice<double> a, ArraySlice<double> b)
         {
             Contract.Requires(a != null);
             Contract.Requires(b != null);
@@ -224,7 +223,7 @@ namespace CudaLearn
             Contract.Ensures(Contract.ForAll(b, bb => !double.IsNaN(bb)));
         }
 
-        void ITensorMath.Abs(ArraySlice<double> a, ArraySlice<double> b)
+        void ICpuTensorMath.Abs(ArraySlice<double> a, ArraySlice<double> b)
         {
             Contract.Requires(a != null);
             Contract.Requires(b != null);
@@ -237,7 +236,7 @@ namespace CudaLearn
             Contract.Ensures(Contract.ForAll(b, bb => !double.IsNaN(bb)));
         }
 
-        double ITensorMath.Dot(ArraySlice<double> x, ArraySlice<double> y)
+        double ICpuTensorMath.Dot(ArraySlice<double> x, ArraySlice<double> y)
         {
             Contract.Requires(x != null);
             Contract.Requires(y != null);
@@ -250,7 +249,7 @@ namespace CudaLearn
             return 0;
         }
 
-        double ITensorMath.Dot(ArraySlice<double> x, int incx, ArraySlice<double> y, int incy)
+        double ICpuTensorMath.Dot(ArraySlice<double> x, int incx, ArraySlice<double> y, int incy)
         {
             Contract.Requires(incx > 0 && incy > 0);
 
@@ -266,7 +265,7 @@ namespace CudaLearn
             return 0;
         }
 
-        double ITensorMath.Asum(ArraySlice<double> x)
+        double ICpuTensorMath.Asum(ArraySlice<double> x)
         {
             Contract.Requires(x != null);
             Contract.Requires(Contract.ForAll(x, xx => !double.IsNaN(xx)));
@@ -278,7 +277,7 @@ namespace CudaLearn
             return 0;
         }
 
-        void ITensorMath.Scale(double alpha, ArraySlice<double> x)
+        void ICpuTensorMath.Scale(double alpha, ArraySlice<double> x)
         {
             Contract.Requires(x != null);
             Contract.Requires(!double.IsNaN(alpha));
@@ -287,7 +286,7 @@ namespace CudaLearn
             Contract.Ensures(Contract.ForAll(x, xx => !double.IsNaN(xx)));
         }
 
-        void ITensorMath.Scale(double alpha, ArraySlice<double> x, ArraySlice<double> y)
+        void ICpuTensorMath.Scale(double alpha, ArraySlice<double> x, ArraySlice<double> y)
         {
             Contract.Requires(x != null);
             Contract.Requires(y != null);
