@@ -426,7 +426,7 @@ namespace CudaLearn
                     {
                         case TensorLocation.Cpu: return new CpuTensorScope(this, Vector<double>.Build.OfStorage(_data), Vector<double>.Build.OfStorage(_diff));
                         case TensorLocation.Gpu: throw new NotImplementedException();
-                        default: throw new NotSupportedException("The location is not supported. Make sure you didn't a new TensorLocation and haven't updated this code appropriately");
+                        default: throw new NotSupportedException("The location is not supported. Make sure you didn't add a new TensorLocation and haven't updated this code appropriately");
                     }
                 }
                 finally
@@ -453,7 +453,7 @@ namespace CudaLearn
                     {
                         case TensorLocation.Cpu: throw new NotImplementedException();
                         case TensorLocation.Gpu: throw new NotImplementedException();
-                        default: throw new NotSupportedException("The location is not supported. Make sure you didn't a new TensorLocation and haven't updated this code appropriately");
+                        default: throw new NotSupportedException("The location is not supported. Make sure you didn't add a new TensorLocation and haven't updated this code appropriately");
                     }
                 }
                 finally
