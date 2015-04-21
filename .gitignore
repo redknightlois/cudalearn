@@ -185,3 +185,5 @@ UpgradeLog*.htm
 # Microsoft Fakes
 FakesAssemblies/
 CudaLearn/MatrixHelper.cs
+lib/viennacl/
+src/CudaLearn/costura64/
